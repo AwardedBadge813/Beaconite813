@@ -1,0 +1,10 @@
+{
+  "type": "beaconite813:refinery",
+  "ingredient": {
+    "item": "minecraft:oak_log"
+  },
+  "result": {
+    "count":48,
+    "id": "minecraft:oak_planks"
+  }
+}

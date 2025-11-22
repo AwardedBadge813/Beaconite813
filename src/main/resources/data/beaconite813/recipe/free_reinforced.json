@@ -1,0 +1,10 @@
+{
+  "type": "beaconite813:refinery",
+  "ingredient": {
+    "item": "minecraft:glass"
+  },
+  "result": {
+    "count": 6,
+    "id": "beaconite813:reinforced_glass"
+  }
+}

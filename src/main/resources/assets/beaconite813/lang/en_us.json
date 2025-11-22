@@ -1,0 +1,19 @@
+{
+  "item.beaconite813.beaconite": "Unrefined Beaconite",
+  "item.beaconite813.refinedbeaconite": "Crude Beaconite",
+  "item.beaconite813.purebeaconite": "Pure Beaconite",
+  "item.beaconite813.powdered_beaconite": "Powdered Beaconite",
+  "item.beaconite813.refinery_catalyst": "Catalyst",
+
+  "block.beaconite813.beaconite_block": "Beaconite Block",
+  "block.beaconite813.condensed_beaconite": "Condensed Beaconite",
+  "block.beaconite813.refinery": "Refinery",
+  "block.beaconite813.unstable_beacon": "Unstable Beacon",
+  "block.beaconite813.reinforced_glass": "Reinforced Glass",
+  "block.beaconite813.constructor": "Bea-Constructor",
+  "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",
+
+  "creativetab.awardedbadge813.beaconite_tab": "Beaconite"
+
+
+}
