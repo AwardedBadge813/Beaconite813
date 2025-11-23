@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import static net.minecraft.util.Mth.floor;
@@ -20,7 +21,7 @@ public class ConstructorMenu extends AbstractContainerMenu {
     protected final ContainerData data;
 
     public ConstructorMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(9));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(7));
     }
 
     public ConstructorMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
@@ -30,20 +31,13 @@ public class ConstructorMenu extends AbstractContainerMenu {
                 this.data=data;
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
+        addInventory(blockEntity.inputItemHandler, 3, 5, 8, 17);
+        addInventory(blockEntity.outputItemHandler, 3, 5, 116, 17);
         int leftXpos = 25;
         int lowYpos  =84;
 
 
-        for(int i=0; i<2; i++) {
-            for(int j=0; j<3; j++) {
-                this.addSlot(new SlotItemHandler(blockEntity.inputItemHandler, i*3+j, leftXpos+i*18, lowYpos-j*18));
-            }
-        }
-        for(int i=0; i<3; i++) {
-            for(int j=0; j<5; j++) {
-                this.addSlot(new SlotItemHandler(blockEntity.outputItemHandler, i*5+j, leftXpos+i*18+100, lowYpos-j*18));
-            }
-        }
+
 
 
         addDataSlots(data);
@@ -64,7 +58,7 @@ public class ConstructorMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 21;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 30;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
@@ -97,6 +91,28 @@ public class ConstructorMenu extends AbstractContainerMenu {
         sourceSlot.onTake(playerIn, sourceStack);
         return copyOfSourceStack;
     }
+    private void addInventory(ItemStackHandler itemHandler, int width, int height, int x, int y){
+        for (int i=0; i<height; ++i){
+            for (int l=0; l<width; ++l){
+                this.addSlot(new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18));
+
+            }
+        }
+    }
+
+    public int getScaledArrowProgress(int arrowPixelSize) {
+        int progress = this.data.get(6);
+        int maxProgress = 40;
+        if (!isPlacing()) {
+            return 0;
+        } else {
+            return progress * arrowPixelSize/maxProgress;
+        }
+    }
+    public boolean isPlacing() {
+        return this.data.get(6)>0;
+
+    }
 
 
 
@@ -105,7 +121,7 @@ public class ConstructorMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory inventory){
         for (int i=0; i<3; ++i){
             for (int l=0; l<9; ++l){
-                this.addSlot(new Slot(inventory, l+i*9+9, xHotbar +l*18, yHotbar -62+i*19));
+                this.addSlot(new Slot(inventory, l+i*9+9, xHotbar +l*18, yHotbar -57+i*18));
 
             }
         }
@@ -114,11 +130,10 @@ public class ConstructorMenu extends AbstractContainerMenu {
     private void addPlayerHotbar(Inventory inventory) {
         for (int i=0; i<9; ++i){
             this.addSlot(new Slot(inventory, i, xHotbar +i*18, yHotbar));
-
         }
     }
-    public static int yHotbar =177;
-    public static int xHotbar =10;
+    public static int yHotbar =186;
+    public static int xHotbar =8;
 
     @Override
     public boolean stillValid(Player pPlayer) {

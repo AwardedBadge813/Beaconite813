@@ -13,7 +13,7 @@ public class ModItems {
         ITEMS.register(eventbus);
     }
 
-    public static final DeferredItem<Item> BEACONITE = ITEMS.register("beaconite813",
+    public static final DeferredItem<Item> BEACONITE = ITEMS.register("beaconite",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> REFINEDBEACONITE = ITEMS.register("refinedbeaconite",
             () -> new Item(new Item.Properties()));
@@ -22,6 +22,8 @@ public class ModItems {
     public static final DeferredItem<Item> BEACONPOWDER = ITEMS.register("powdered_beaconite",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CATALYST = ITEMS.register("refinery_catalyst",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> QUARRY_TALISMAN = ITEMS.register("quarry_talisman",
             () -> new Item(new Item.Properties()));
 
 

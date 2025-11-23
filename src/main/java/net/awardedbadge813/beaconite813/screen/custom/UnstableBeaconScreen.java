@@ -35,8 +35,8 @@ public class UnstableBeaconScreen extends AbstractContainerScreen<UnstableBeacon
     public UnstableBeaconScreen(UnstableBeaconMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.titleLabelX = -10;
-        this.titleLabelY = -30;
-        this.inventoryLabelX = -10;
+        this.titleLabelY = -15;
+        this.inventoryLabelX = 8;
         this.inventoryLabelY = this.imageHeight - 154;
     }
 

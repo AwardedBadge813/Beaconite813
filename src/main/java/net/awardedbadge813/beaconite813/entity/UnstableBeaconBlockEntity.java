@@ -178,10 +178,11 @@ public class UnstableBeaconBlockEntity extends BlockEntity implements MenuProvid
         if(this.timeToExplode<=0) {
             float radius = (float) Config.EXPLOSION_RADIUS.getAsInt() * 0.75f;
             level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.NONE);
-            beaconBomb(pos, Config.EXPLOSION_RADIUS.getAsInt(), 20);
+            beaconBomb(pos, 25, 20);
             SimpleContainer inventory = new SimpleContainer(1);
             inventory.setItem(0, new ItemStack(ModItems.PUREBEACONITE.get(), 16));
             Containers.dropContents(this.level, this.worldPosition, inventory);
+            //Config.EXPLOSION_RADIUS.getAsInt()
 
 
 
@@ -210,15 +211,15 @@ public class UnstableBeaconBlockEntity extends BlockEntity implements MenuProvid
         return pos.getZ()-n;
     }
 
-    //rewritten vanilla beacon code
     private int levelSize(int n) {
         return 1+2*n;
     }
-    private boolean checkBlockStateForBeaconPassable(BlockPos pos) {
-        return level.getBlockState(pos).is(AIR.defaultBlockState().getBlock())||level.getBlockState(pos).is(BEDROCK.defaultBlockState().getBlock());
-    }
+
     private boolean checkBlockStateForBeaconBlock(BlockPos pPos) {
         return level.getBlockState(pPos).is(BlockTags.BEACON_BASE_BLOCKS);
+    }
+    private boolean checkBlockStateForBeaconPassable(BlockPos pos) {
+        return level.getBlockState(pos).is(AIR.defaultBlockState().getBlock())||level.getBlockState(pos).is(BEDROCK.defaultBlockState().getBlock());
     }
     private int updateLevel(BlockPos pos) {
         int i=1;

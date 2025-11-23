@@ -1,5 +1,6 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.screen.custom.ConstructorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -30,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static java.lang.Math.random;
 
 public class ConstructorBlockEntity extends BlockEntity implements MenuProvider {
 
@@ -64,6 +68,9 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
                     case 5 -> {
                         return updatedLevel;
                     }
+                    case 6 -> {
+                        return counter;
+                    }
                     default -> {
                         return 0;
                     }
@@ -91,6 +98,9 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
                     case 5 -> {
                         updatedLevel = i1;
                     }
+                    case 6 -> {
+                        counter = i1;
+                    }
                     default -> {
                     }
                 }
@@ -99,14 +109,14 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
 
             @Override
             public int getCount() {
-                return 6;
+                return 7;
             }
 
         };
     }
 
 
-    public final ItemStackHandler inputItemHandler = new ItemStackHandler(6) {
+    public final ItemStackHandler inputItemHandler = new ItemStackHandler(15) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return stack.getMaxStackSize();
@@ -143,6 +153,30 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
             }
         }
         userSelectedLevel=yLevel;
+    }
+
+    private int levelSize(int n) {
+        return 1+2*n;
+    }
+
+    private boolean checkBlockStateForBeaconBlock(BlockPos pPos) {
+        return level.getBlockState(pPos).is(BlockTags.BEACON_BASE_BLOCKS);
+    }
+    private int updateLevel(BlockPos pos) {
+        updateSelectedLevel();
+        int i=1;
+        int y=pos.getY()-1;
+        for (i = 1; i<=this.MaxPlacingLevel; i++){
+            for (int x = getX(pos, i); x < getX(pos, i) + levelSize(i); x++) {
+                for (int z = getZ(pos, i); z < (getZ(pos, i) + levelSize(i)); z++) {
+                    if (!checkBlockStateForBeaconBlock(new BlockPos(x,y,z))){
+                        return i-1;
+                    }
+                }
+            }
+            y--;
+        }
+        return i - 1;
     }
 
     //I rewrote this so many times before figuring out how simulate works...
@@ -227,9 +261,9 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
 
     public void tick(Level level, BlockPos pos, BlockState state) {
         BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
-        updateSelectedLevel();
-        int counter = 0;
-
+        this.updatedLevel=updateLevel(pos);
+        this.counter%=40;
+        int lastCounter = counter;
         if (BlockValidForDestruction(currentPos)
                 && hasSpaceForItems(outputItemHandler,
                 Block.getDrops(level.getBlockState(currentPos),
@@ -240,20 +274,36 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
             for (int i = inputItemHandler.getSlots() - 1; i >= 0; i--) {
                 ItemStack inputItem = inputItemHandler.getStackInSlot(i);
                 if (!inputItem.isEmpty()
-                        && checkBeaconBase(inputItem.getItem())) {
+                        && checkBeaconBase(inputItem.getItem()) && !inputItem.is(ModItems.QUARRY_TALISMAN.get())) {
 
                     inputItemHandler.extractItem(i, 1, testBlockItem(level.getBlockState(currentPos).getBlock(), inputItemHandler.getStackInSlot(i).getItem()));
                     if(!testBlockItem(level.getBlockState(currentPos).getBlock(), inputItemHandler.getStackInSlot(i).getItem())) {
                         placeItemsInContainer(outputItemHandler, Block.getDrops(level.getBlockState(currentPos), (ServerLevel) level, currentPos, level.getBlockEntity(currentPos)));
-                        if(counter%20==0) {
-                            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.5f, 0.5f);
+
+                        //fix this sound logic with a counter eventually
+                        if(counter%20==1) {
+                            level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1f, 0.5f);
                         }
                     }
-                    placeBlock(Block.byItem(inputItem.getItem()));
-                    counter++;
+                    placeBlock(Block.byItem(inputItem.getItem()), null);
+                    this.counter++;
+                    break;
+                } else if (inputItem.is(ModItems.QUARRY_TALISMAN.get())) {
+                    if(pos.getX()!=xCurrent || pos.getZ()!=zCurrent) {
+                        placeItemsInContainer(outputItemHandler, Block.getDrops(level.getBlockState(currentPos), (ServerLevel) level, currentPos, level.getBlockEntity(currentPos)));
+                    }
+                    placeBlock(Blocks.AIR.defaultBlockState().getBlock(), ModItems.QUARRY_TALISMAN.get());
+                    if(counter%20==1) {
+                        level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1f, 0.5f);
+                    }
+                    this.counter++;
                     break;
                 }
+
             }
+        }
+        if (lastCounter==counter && counter!=0) {
+            this.counter=0;
         }
     }
 
@@ -269,7 +319,7 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
     }
 
 
-    public void placeBlock (@NotNull Block block) {
+    public void placeBlock (@NotNull Block block, @Nullable Item item) {
         // Initial declaration of positions, etc. that are used often in this method
         BlockPos pos = getBlockPos();int x=pos.getX();int y=pos.getY();
         int z=pos.getZ();int currentSize = y-yCurrent;
@@ -277,9 +327,13 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
         //places the block
         level.getBlockState(currentPos);
 
+        // I cannot be bothered to sort out this negation.
+        if(!(currentPos.getX()==pos.getX() && currentPos.getZ()==pos.getZ() && item == ModItems.QUARRY_TALISMAN.get())) {
+            level.setBlockAndUpdate(currentPos, block.defaultBlockState());
+        }
+
         //the majority of this method is literally just updating the current position.
         // This references the shape the pyramid should take and finds the next position in it.
-        level.setBlockAndUpdate(currentPos, block.defaultBlockState());
         if (xCurrent+1<=x+currentSize) {
             xCurrent++;
         } else if (zCurrent+1<=z+currentSize) {
@@ -344,6 +398,8 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
         private int yCurrent= getBlockPos().getY()-1;
         private int zCurrent= getBlockPos().getZ()-1;
         private int updatedLevel=0;
+        private int counter;
+
 
 
 

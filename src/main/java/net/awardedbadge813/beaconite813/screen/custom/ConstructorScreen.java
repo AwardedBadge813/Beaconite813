@@ -14,13 +14,9 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ConstructorScreen extends AbstractContainerScreen<ConstructorMenu> {
     private static final ResourceLocation GUI_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/refinery/refinery_gui_test.png");
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/constructor/constructor_gui.png");
     private static final ResourceLocation ARROW_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/refinery/refinery_progress_template.png");
-    private static final ResourceLocation FLUID_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/refinery/inner_chamber_refinery.png");
-    private static final ResourceLocation OUTER_CHAMBER =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/refinery/outer_chamber.png");
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/constructor/constructor_progress.png");
     private static final ResourceLocation BUTTON_SPRITE =
             ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/refinery/outer_chamber.png");
     private static final ResourceLocation BUTTON_HIGHLIGHTED_SPRITE =
@@ -91,10 +87,10 @@ public class ConstructorScreen extends AbstractContainerScreen<ConstructorMenu> 
 
     public ConstructorScreen(ConstructorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.titleLabelX = -10;
-        this.titleLabelY = -30;
-        this.inventoryLabelX = -10;
-        this.inventoryLabelY = this.imageHeight - 154;
+        this.titleLabelX = 0;
+        this.titleLabelY =-25;
+        this.inventoryLabelX = 7;
+        this.inventoryLabelY = this.imageHeight - 140;
     }
 
 
@@ -108,10 +104,17 @@ public class ConstructorScreen extends AbstractContainerScreen<ConstructorMenu> 
 
 
 
-        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-        guiGraphics.drawString(this.font, "Beacon Level: " + String.valueOf(menu.data.get(0)) , 490, 283, 4210752, false);
 
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, 256, 256, 256, 256);
 
+        guiGraphics.drawString(this.font, "Input", x+48, y+50, 4210752, false);
+        guiGraphics.drawString(this.font, "Output", x+155, y+50, 4210752, false);
+        guiGraphics.drawString(this.font, "Level: " + String.valueOf(menu.data.get(5)) , x+110, y+120, 4210752, false);
+        guiGraphics.drawString(this.font, "Max: " + String.valueOf(menu.data.get(0)) , x+110, y+130, 4210752, false);
+        guiGraphics.drawString(this.font, "Beacon blocks below raise max", x+40, y+32, 4210752, false);
+        if(menu.isPlacing()) {
+            guiGraphics.blit(ARROW_TEXTURE, x+113, y+91, 0, 0, 30, 4+menu.getScaledArrowProgress(24), 30, 30);
+        }
     }
 
 }

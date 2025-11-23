@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "beaconite813:refinery_catalyst"
+    },
+    "D": {
+      "item": "beaconite813:ultra_dense_beaconite"
+    },
+    "B": {
+      "item": "minecraft:netherite_pickaxe"
+    }
+  },
+  "pattern": [
+    "DBD",
+    "BCB",
+    "DBD"
+  ],
+  "result": {
+    "count": 1,
+    "id": "beaconite813:quarry_talisman"
+  }
+}

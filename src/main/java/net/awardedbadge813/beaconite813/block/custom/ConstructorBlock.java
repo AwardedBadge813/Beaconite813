@@ -3,6 +3,7 @@ package net.awardedbadge813.beaconite813.block.custom;
 import com.mojang.serialization.MapCodec;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ConstructorBlockEntity;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -10,7 +11,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
@@ -20,9 +23,25 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.List;
+
 public class ConstructorBlock extends BaseEntityBlock {
     public static final MapCodec<ConstructorBlock> CODEC = simpleCodec(ConstructorBlock::new);
 
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        if(Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor2.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor3.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor4.tooltip"));
+        }else {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructorjoke.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+        }
+
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    }
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
