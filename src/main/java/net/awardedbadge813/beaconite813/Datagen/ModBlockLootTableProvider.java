@@ -20,9 +20,9 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.LIVING_BEACON.get());
         dropSelf(ModBlocks.CONSTRUCTOR.get());
         dropSelf(ModBlocks.UNSTABLE_BEACON.get());
-        dropSelf(ModBlocks.BEACONITEGLASS.get());
-        dropSelf(ModBlocks.CONDENSEDBEACONITE.get());
-        dropSelf(ModBlocks.BEACONITEBLOCK.get());
+        dropSelf(ModBlocks.BEACONITE_GLASS.get());
+        dropSelf(ModBlocks.CONDENSED_BEACONITE.get());
+        dropSelf(ModBlocks.BEACONITE_BLOCK.get());
         dropSelf(ModBlocks.POLYMORPH_BEACONITE.get());
         dropSelf(ModBlocks.REFINERY.get());
         dropSelf(ModBlocks.ULTRA_DENSE_BEACONITE.get());

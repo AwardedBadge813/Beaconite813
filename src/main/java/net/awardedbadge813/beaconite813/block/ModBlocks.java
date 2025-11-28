@@ -26,11 +26,7 @@ public class ModBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(beaconite813.MOD_ID);
 
-    /*public static final DeferredBlock<Block> REFINERY =registerBlock("refinery",
-            () -> new Block(BlockBehaviour.Properties.of().strength(2f).sound(SoundType.STONE).noOcclusion()));
-*/
-
-    public static final DeferredBlock<Block> BEACONITEBLOCK =
+    public static final DeferredBlock<Block> BEACONITE_BLOCK =
             registerBlock("beaconite_block",
                     () -> new
                             Block(BlockBehaviour.Properties.of()
@@ -39,7 +35,7 @@ public class ModBlocks {
                             .noOcclusion().requiresCorrectToolForDrops()
                     )
             );
-    public static final DeferredBlock<Block> CONDENSEDBEACONITE =
+    public static final DeferredBlock<Block> CONDENSED_BEACONITE =
             registerBlock("condensed_beaconite",
                     () -> new
                             Block(BlockBehaviour.Properties.of()
@@ -47,7 +43,7 @@ public class ModBlocks {
                             .sound(SoundType.METAL).requiresCorrectToolForDrops()
                     )
             );
-    public static final DeferredBlock<Block> BEACONITEGLASS =
+    public static final DeferredBlock<Block> BEACONITE_GLASS =
             registerBlock("reinforced_glass",
                     () -> new
                             TransparentBlock(BlockBehaviour.Properties.of()

@@ -22,7 +22,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEACONITEBLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEACONITE_BLOCK.get())
                 .pattern("BBB")
                 .pattern("BBB")
                 .pattern("BBB")
@@ -68,7 +68,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_beaconite", has(ModItems.BEACONITE))
                 .save(recipeOutput, "beaconite813:netherite_synthesis");
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEACONITEGLASS.get(), 4)
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BEACONITE_GLASS.get(), 4)
                 .pattern("BBB")
                 .pattern("BCB")
                 .pattern("BBB")
@@ -97,7 +97,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(recipeOutput);
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CONDENSEDBEACONITE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.CONDENSED_BEACONITE.get())
                 .pattern("BBB")
                 .pattern("BBB")
                 .pattern("BBB")
@@ -115,7 +115,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .pattern("BDB")
                 .pattern("CCC")
-                .define('B', ModBlocks.BEACONITEGLASS.get())
+                .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModBlocks.ULTRA_DENSE_BEACONITE.get())
                 .define('C', Blocks.NETHERITE_BLOCK.asItem())
                 .unlockedBy("has_pure_beaconite", has(ModItems.PUREBEACONITE)).save(recipeOutput);
@@ -124,7 +124,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .pattern("BDB")
                 .pattern("CCC")
-                .define('B', ModBlocks.BEACONITEGLASS.get())
+                .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModBlocks.POLYMORPH_BEACONITE.get())
                 .define('C', ModBlocks.ULTRA_DENSE_BEACONITE.asItem())
                 .unlockedBy("has_polymorph_beaconite", has(ModBlocks.POLYMORPH_BEACONITE)).save(recipeOutput);
@@ -133,7 +133,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .pattern("BDB")
                 .pattern("CCC")
-                .define('B', ModBlocks.BEACONITEGLASS.get())
+                .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModItems.CATALYST.get())
                 .define('C', Blocks.NETHERITE_BLOCK.asItem())
                 .unlockedBy("has_catalyst", has(ModItems.CATALYST)).save(recipeOutput);
@@ -142,8 +142,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .pattern("BDB")
                 .pattern("CCC")
-                .define('B', ModBlocks.BEACONITEGLASS.get())
-                .define('D', ModBlocks.CONDENSEDBEACONITE.get())
+                .define('B', ModBlocks.BEACONITE_GLASS.get())
+                .define('D', ModBlocks.CONDENSED_BEACONITE.get())
                 .define('C', Blocks.NETHERITE_BLOCK.asItem())
                 .unlockedBy("has_refined_beaconite", has(ModItems.REFINEDBEACONITE)).save(recipeOutput);
 
@@ -159,12 +159,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BEACONITE.get(), 9)
-                .requires(ModBlocks.BEACONITEBLOCK)
-                .unlockedBy("has_beaconite_block", has(ModBlocks.BEACONITEBLOCK)).save(recipeOutput);
+                .requires(ModBlocks.BEACONITE_BLOCK)
+                .unlockedBy("has_beaconite_block", has(ModBlocks.BEACONITE_BLOCK)).save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.REFINEDBEACONITE.get(), 9)
-                .requires(ModBlocks.CONDENSEDBEACONITE)
-                .unlockedBy("has_refined_beaconite_block", has(ModBlocks.CONDENSEDBEACONITE)).save(recipeOutput);
+                .requires(ModBlocks.CONDENSED_BEACONITE)
+                .unlockedBy("has_refined_beaconite_block", has(ModBlocks.CONDENSED_BEACONITE)).save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PUREBEACONITE.get(), 9)
                 .requires(ModBlocks.ULTRA_DENSE_BEACONITE)

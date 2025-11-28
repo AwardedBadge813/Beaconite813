@@ -18,7 +18,7 @@
   "tooltip.beaconite813.unstable_beacon_block5.tooltip": "§9§oYou'll get better loot by making a bigger beacon, but this will make the explosion much larger.",
   "tooltip.beaconite813.unstable_beacon_block4.tooltip": "§9§oAlso instakills all withers in range. Nether star farm, anyone?",
 
-  "tooltip.beaconite813.constructorjoke.tooltip": "§9§oGet it? Because it's a beacon?",
+  "tooltip.beaconite813.constructor_joke.tooltip": "§9§oGet it? Because it's a beacon?",
   "tooltip.beaconite813.constructor1.tooltip": "§9§oFor every beacon block below the constructor, it will build a base of the corresponding area.",
   "tooltip.beaconite813.constructor2.tooltip": "§9§oYou can get a max of 20 levels by default, changeable in the config.",
   "tooltip.beaconite813.constructor3.tooltip": "§9§oThe quarry talisman, if placed in the input, will make the constructor break blocks...",

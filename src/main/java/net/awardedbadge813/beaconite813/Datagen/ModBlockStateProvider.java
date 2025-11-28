@@ -24,7 +24,7 @@ public class ModBlockStateProvider  extends BlockStateProvider {
         BlockWithItem(ModBlocks.LIVING_BLOCK);
         BlockWithItem(ModBlocks.ULTRA_DENSE_BEACONITE);
         BlockWithItem(ModBlocks.POLYMORPH_BEACONITE);
-        BlockWithItem(ModBlocks.CONDENSEDBEACONITE);
+        BlockWithItem(ModBlocks.CONDENSED_BEACONITE);
 
         makeCrop(((CropBlock) ModBlocks.BEACONITE_CROP.get()), "beaconite_crop_stage", "beaconite_crop_stage");
 

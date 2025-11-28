@@ -6,7 +6,6 @@ import net.awardedbadge813.beaconite813.entity.ConstructorBlockEntity;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,21 +29,21 @@ public class ConstructorBlock extends BaseEntityBlock {
     public static final MapCodec<ConstructorBlock> CODEC = simpleCodec(ConstructorBlock::new);
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         if(Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor2.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor3.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor4.tooltip"));
         }else {
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructorjoke.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor_joke.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
         }
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -53,17 +53,17 @@ public class ConstructorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new ConstructorBlockEntity(blockPos, blockState);
     }
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    protected void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean movedByPiston) {
         if(state.getBlock()!=newState.getBlock()) {
             if(level.getBlockEntity(pos) instanceof ConstructorBlockEntity constructorBlockEntity) {
                 constructorBlockEntity.drops();
@@ -75,12 +75,12 @@ public class ConstructorBlock extends BaseEntityBlock {
 
 
 
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
-                                              Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack pStack, @NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos,
+                                                       @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof ConstructorBlockEntity constructorBlockEntity) {
-                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(constructorBlockEntity, Component.literal("Bea-Constructor")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(constructorBlockEntity, Component.literal("Bea-Constructor")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }
@@ -88,7 +88,7 @@ public class ConstructorBlock extends BaseEntityBlock {
         return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
-    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         if(level.isClientSide()) {
             return null;
         }

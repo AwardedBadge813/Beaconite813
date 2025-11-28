@@ -6,7 +6,6 @@ import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -32,18 +32,18 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
     }
     public static final MapCodec<LivingBeaconBlock> CODEC = simpleCodec(LivingBeaconBlock::new);
 
-    public MapCodec<LivingBeaconBlock> codec() {
+    public @NotNull MapCodec<LivingBeaconBlock> codec() {
         return CODEC;
     }
 
 
 
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new LivingBeaconBlockEntity(pos, state);
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    protected void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean movedByPiston) {
         if(state.getBlock()!=newState.getBlock()) {
             if(level.getBlockEntity(pos) instanceof LivingBeaconBlockEntity livingBeaconBlockEntity) {
                 livingBeaconBlockEntity.drops();
@@ -54,7 +54,7 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
     }
 //
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         if(Screen.hasShiftDown()){
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.living_beacon1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.living_beacon2.tooltip"));
@@ -70,7 +70,7 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
     }
 
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         if(level.isClientSide()) {
             return null;
         }
@@ -82,12 +82,12 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
 
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
-                                              Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack pStack, @NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos,
+                                                       @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof LivingBeaconBlockEntity livingBeaconBlockEntity) {
-                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(livingBeaconBlockEntity, Component.literal("Living Beacon")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(livingBeaconBlockEntity, Component.literal("Living Beacon")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }
@@ -95,7 +95,7 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
         return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
     }
 
-    protected RenderShape getRenderShape(BlockState state) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 }

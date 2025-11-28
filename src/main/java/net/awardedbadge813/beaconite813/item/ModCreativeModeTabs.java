@@ -29,9 +29,9 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.BEACON_BEAM_ITEM);
                 output.accept(ModItems.QUARRY_TALISMAN);
 
-                output.accept(ModBlocks.BEACONITEBLOCK);
-                output.accept(ModBlocks.BEACONITEGLASS);
-                output.accept(ModBlocks.CONDENSEDBEACONITE);
+                output.accept(ModBlocks.BEACONITE_BLOCK);
+                output.accept(ModBlocks.BEACONITE_GLASS);
+                output.accept(ModBlocks.CONDENSED_BEACONITE);
                 output.accept(ModBlocks.UNSTABLE_BEACON);
                 output.accept(ModBlocks.REFINERY);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);

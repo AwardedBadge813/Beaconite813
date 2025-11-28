@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -25,17 +26,17 @@ public class BaseBeaconBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new BaseBeaconBlockEntity(blockPos, blockState);
     }
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    protected void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean movedByPiston) {
         if(state.getBlock()!=newState.getBlock()) {
             if(level.getBlockEntity(pos) instanceof BaseBeaconBlockEntity entity) {
                 entity.kill();
@@ -46,12 +47,12 @@ public class BaseBeaconBlock extends BaseEntityBlock {
     public static final MapCodec<BaseBeaconBlock> CODEC = simpleCodec(BaseBeaconBlock::new);
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         if(Screen.hasShiftDown()){
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.base_beacon_block1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.base_beacon_block2.tooltip"));
@@ -62,7 +63,7 @@ public class BaseBeaconBlock extends BaseEntityBlock {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
-    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         if(level.isClientSide()) {
             return null;
         }

@@ -6,7 +6,6 @@ import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.RefineryBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -16,14 +15,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.List;
 
 public class RefineryBlock extends BaseEntityBlock {
 
-    public static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
     public static final MapCodec<RefineryBlock> CODEC = simpleCodec(RefineryBlock::new);
 
     public RefineryBlock(Properties properties) {
@@ -39,30 +36,30 @@ public class RefineryBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         tooltipComponents.add(Component.translatable("tooltip.beaconite813.refinery_block.tooltip"));
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.MODEL;
     }
 
 
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new RefineryBlockEntity(blockPos, blockState);
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    protected void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean movedByPiston) {
         if(state.getBlock()!=newState.getBlock()) {
             if(level.getBlockEntity(pos) instanceof RefineryBlockEntity refineryBlockEntity) {
                 refineryBlockEntity.drops();
@@ -74,12 +71,12 @@ public class RefineryBlock extends BaseEntityBlock {
 
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
-                                              Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack pStack, @NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos,
+                                                       @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof RefineryBlockEntity refineryBlockEntity) {
-                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(refineryBlockEntity, Component.literal("Refinery")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(refineryBlockEntity, Component.literal("Refinery")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }
@@ -88,7 +85,7 @@ public class RefineryBlock extends BaseEntityBlock {
     }
     @Nullable
     @Override
-    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         if(level.isClientSide()) {
             return null;
         }

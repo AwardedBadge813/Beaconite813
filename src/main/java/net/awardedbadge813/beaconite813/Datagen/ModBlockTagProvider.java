@@ -25,25 +25,25 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.POLYMORPH_BEACONITE.get())
                 .add(ModBlocks.REFINERY.get())
                 .add(ModBlocks.LIVING_BLOCK.get())
-                .add(ModBlocks.BEACONITEBLOCK.get())
-                .add(ModBlocks.CONDENSEDBEACONITE.get())
-                .add(ModBlocks.BEACONITEGLASS.get())
+                .add(ModBlocks.BEACONITE_BLOCK.get())
+                .add(ModBlocks.CONDENSED_BEACONITE.get())
+                .add(ModBlocks.BEACONITE_GLASS.get())
                 .add(ModBlocks.UNSTABLE_BEACON.get())
                 .add(ModBlocks.CONSTRUCTOR.get())
                 .add(ModBlocks.LIVING_BEACON.get());
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
                 .add(ModBlocks.LIVING_BLOCK.get());
         tag(BlockTags.WITHER_IMMUNE)
-                .add(ModBlocks.BEACONITEGLASS.get())
-                .add(ModBlocks.BEACONITEBLOCK.get())
-                .add(ModBlocks.CONDENSEDBEACONITE.get())
+                .add(ModBlocks.BEACONITE_GLASS.get())
+                .add(ModBlocks.BEACONITE_BLOCK.get())
+                .add(ModBlocks.CONDENSED_BEACONITE.get())
                 .add(ModBlocks.ULTRA_DENSE_BEACONITE.get());
         tag(BlockTags.BEACON_BASE_BLOCKS)
                 .add(ModBlocks.ULTRA_DENSE_BEACONITE.get());
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.ULTRA_DENSE_BEACONITE.get())
-                .add(ModBlocks.BEACONITEBLOCK.get())
-                .add(ModBlocks.CONDENSEDBEACONITE.get());
+                .add(ModBlocks.BEACONITE_BLOCK.get())
+                .add(ModBlocks.CONDENSED_BEACONITE.get());
 
 
 
