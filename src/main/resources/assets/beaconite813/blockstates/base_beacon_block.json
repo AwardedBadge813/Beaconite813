@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "beaconite813:block/base_beacon_block"
+    }
+  }
+}

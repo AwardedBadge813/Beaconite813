@@ -25,6 +25,14 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("constructor_be", () -> BlockEntityType.Builder.of(
                             ConstructorBlockEntity::new, ModBlocks.CONSTRUCTOR.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<LivingBeaconBlockEntity>> LIVING_BEACON_BE =
+            BLOCK_ENTITIES.register("living_beacon_be", () -> BlockEntityType.Builder.of(
+                            LivingBeaconBlockEntity::new, ModBlocks.LIVING_BEACON.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<BaseBeaconBlockEntity>> BASE_BEACON_BLOCK_BE =
+            BLOCK_ENTITIES.register("base_beacon_block_be", () -> BlockEntityType.Builder.of(
+                            BaseBeaconBlockEntity::new, ModBlocks.BASE_BEACON_BLOCK.get())
+                    .build(null));
 
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);

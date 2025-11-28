@@ -1,0 +1,39 @@
+{
+  "item.beaconite813.beaconite": "Unrefined Beaconite",
+  "item.beaconite813.refinedbeaconite": "Crude Beaconite",
+  "item.beaconite813.purebeaconite": "Pure Beaconite",
+  "item.beaconite813.powdered_beaconite": "Powdered Beaconite",
+  "item.beaconite813.refinery_catalyst": "Catalyst",
+  "item.beaconite813.quarry_talisman": "Quarry Talisman",
+  "tooltip.beaconite813.refinery_block.tooltip": "§9§oMaybe make this first...",
+  "tooltip.beaconite813.shift.tooltip": "§9§oPress §6SHIFT §9for more info.",
+  "tooltip.beaconite813.unstable_beacon_block1.tooltip": "§9§oRequires a level 5 beacon base and visibility to the sky.",
+  "tooltip.beaconite813.unstable_beacon_block2.tooltip": "§9§oThen, supply a nether star, and run away if you want to live.",
+  "tooltip.beaconite813.unstable_beacon_block3.tooltip": "§9§oMake sure to check the crater afterwards for a special surprise...",
+  "tooltip.beaconite813.unstable_beacon_block5.tooltip": "§9§oYou'll get better loot by making a bigger beacon, but this will make the explosion much larger.",
+  "tooltip.beaconite813.unstable_beacon_block4.tooltip": "§9§oAlso instakills all withers in range. Nether star farm, anyone?",
+
+  "tooltip.beaconite813.constructorjoke.tooltip": "§9§oGet it? Because it's a beacon?",
+  "tooltip.beaconite813.constructor1.tooltip": "§9§oFor every beacon block below the constructor, it will build a base of the corresponding area.",
+  "tooltip.beaconite813.constructor2.tooltip": "§9§oYou can get a max of 20 levels by default, changeable in the config.",
+  "tooltip.beaconite813.constructor3.tooltip": "§9§oThe quarry talisman, if placed in the input, will make the constructor break blocks...",
+  "tooltip.beaconite813.constructor4.tooltip": "§9§oBut you still need the beacon base blocks beneath!",
+  "tooltip.beaconite813.living_beacon1.tooltip": "§9§oConsumes foods in the yellow slot and applies the food effects to nearby players.",
+  "tooltip.beaconite813.living_beacon2.tooltip": "§9§oAdd extra food in the red slot to increase duration.",
+  "tooltip.beaconite813.living_beacon3.tooltip": "§9§oMore effects mean that filling the beacon will be harder.",
+  "tooltip.beaconite813.living_beacon4.tooltip": "§9§oMinimum beacon level is 6, maximum level is 15(Level X effects)",
+  "tooltip.beaconite813.living_beacon5.tooltip": "§9§oWhen satiation runs out, all effects will be reset... Feed it regularly!",
+  "tooltip.beaconite813.living_beacon6.tooltip": "§9§oAlso: Don't feed this a pufferfish. It will work and you will probably die.",
+  "block.beaconite813.beaconite_block": "Beaconite Block",
+  "block.beaconite813.condensed_beaconite": "Condensed Beaconite",
+  "block.beaconite813.refinery": "Refinery",
+  "block.beaconite813.unstable_beacon": "Unstable Beacon",
+  "block.beaconite813.reinforced_glass": "Reinforced Glass",
+  "block.beaconite813.constructor": "Bea-Constructor",
+  "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",
+  "block.beaconite813.living_beacon": "Living Beacon",
+
+  "creativetab.awardedbadge813.beaconite_tab": "Beaconite"
+
+
+}

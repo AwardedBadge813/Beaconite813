@@ -1,5 +1,7 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
+import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.screen.custom.ConstructorMenu;
 import net.minecraft.core.BlockPos;
@@ -23,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.apache.commons.logging.Log;
@@ -33,9 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static java.lang.Math.random;
-
-public class ConstructorBlockEntity extends BlockEntity implements MenuProvider {
+public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
 
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
 
@@ -155,29 +154,8 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
         userSelectedLevel=yLevel;
     }
 
-    private int levelSize(int n) {
-        return 1+2*n;
-    }
 
-    private boolean checkBlockStateForBeaconBlock(BlockPos pPos) {
-        return level.getBlockState(pPos).is(BlockTags.BEACON_BASE_BLOCKS);
-    }
-    private int updateLevel(BlockPos pos) {
-        updateSelectedLevel();
-        int i=1;
-        int y=pos.getY()-1;
-        for (i = 1; i<=this.MaxPlacingLevel; i++){
-            for (int x = getX(pos, i); x < getX(pos, i) + levelSize(i); x++) {
-                for (int z = getZ(pos, i); z < (getZ(pos, i) + levelSize(i)); z++) {
-                    if (!checkBlockStateForBeaconBlock(new BlockPos(x,y,z))){
-                        return i-1;
-                    }
-                }
-            }
-            y--;
-        }
-        return i - 1;
-    }
+
 
     //I rewrote this so many times before figuring out how simulate works...
     public boolean hasSpaceForItems(ItemStackHandler itemHandler,  List<ItemStack> itemStacks) {
@@ -261,9 +239,16 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
 
     public void tick(Level level, BlockPos pos, BlockState state) {
         BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
-        this.updatedLevel=updateLevel(pos);
+        this.updatedLevel=getLayers(level, pos);
+        updateSelectedLevel();
         this.counter%=40;
         int lastCounter = counter;
+        if (Dev) {
+            for(int i=0; i<20; i++) {
+                placeBlock(Blocks.NETHERITE_BLOCK.defaultBlockState().getBlock(), null);
+            }
+
+        }
         if (BlockValidForDestruction(currentPos)
                 && hasSpaceForItems(outputItemHandler,
                 Block.getDrops(level.getBlockState(currentPos),
@@ -277,7 +262,7 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
                         && checkBeaconBase(inputItem.getItem()) && !inputItem.is(ModItems.QUARRY_TALISMAN.get())) {
 
                     inputItemHandler.extractItem(i, 1, testBlockItem(level.getBlockState(currentPos).getBlock(), inputItemHandler.getStackInSlot(i).getItem()));
-                    if(!testBlockItem(level.getBlockState(currentPos).getBlock(), inputItemHandler.getStackInSlot(i).getItem())) {
+                    if(Dev||!testBlockItem(level.getBlockState(currentPos).getBlock(), inputItemHandler.getStackInSlot(i).getItem())) {
                         placeItemsInContainer(outputItemHandler, Block.getDrops(level.getBlockState(currentPos), (ServerLevel) level, currentPos, level.getBlockEntity(currentPos)));
 
                         //fix this sound logic with a counter eventually
@@ -287,6 +272,7 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
                     }
                     placeBlock(Block.byItem(inputItem.getItem()), null);
                     this.counter++;
+                    this.isPlacing = true;
                     break;
                 } else if (inputItem.is(ModItems.QUARRY_TALISMAN.get())) {
                     if(pos.getX()!=xCurrent || pos.getZ()!=zCurrent) {
@@ -297,6 +283,7 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
                         level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1f, 0.5f);
                     }
                     this.counter++;
+                    this.isPlacing = true;
                     break;
                 }
 
@@ -304,8 +291,10 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
         }
         if (lastCounter==counter && counter!=0) {
             this.counter=0;
+            this.isPlacing = false;
         }
     }
+    private boolean isPlacing;
 
     private boolean testBlockItem(Block block, Item item) {
             Block blockver=Block.byItem(item);
@@ -321,15 +310,23 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
 
     public void placeBlock (@NotNull Block block, @Nullable Item item) {
         // Initial declaration of positions, etc. that are used often in this method
-        BlockPos pos = getBlockPos();int x=pos.getX();int y=pos.getY();
-        int z=pos.getZ();int currentSize = y-yCurrent;
+        BlockPos pos = getBlockPos();
+        int x=pos.getX();
+        int y=pos.getY();
+        int z=pos.getZ();
+        int currentSize = y-yCurrent;
         BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
         //places the block
         level.getBlockState(currentPos);
+        if(isPlacing) {
+            level.playSound(null, pos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundSource.BLOCKS);
+        }
 
         // I cannot be bothered to sort out this negation.
         if(!(currentPos.getX()==pos.getX() && currentPos.getZ()==pos.getZ() && item == ModItems.QUARRY_TALISMAN.get())) {
             level.setBlockAndUpdate(currentPos, block.defaultBlockState());
+        } else if (Dev) {
+            level.setBlockAndUpdate(currentPos, Blocks.NETHERITE_BLOCK.defaultBlockState());
         }
 
         //the majority of this method is literally just updating the current position.
@@ -389,6 +386,7 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
 
 
         }
+        private boolean Dev = true;
 
 
         protected final ContainerData data;
@@ -401,6 +399,18 @@ public class ConstructorBlockEntity extends BlockEntity implements MenuProvider 
         private int counter;
 
 
+    @Override
+    public boolean IsBeaconActive() {
+        return isPlacing;
+    }
 
+    @Override
+    public List<BeaconBeamHolder.BeaconBeamSection> getBeamSections() {
+        BeaconBeamHolder.BeaconBeamSection beamsection = new BeaconBeamHolder.BeaconBeamSection();
+        beamsection.setParams(16383998, level.getMaxBuildHeight() - getBlockPos().getY());
+        this.beamSections=List.of(beamsection);
+
+        return this.beamSections;
+    }
 
 }

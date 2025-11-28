@@ -1,0 +1,10 @@
+{
+  "type": "beaconite813:refinery",
+  "ingredient": {
+    "item": "beaconite813:refinedbeaconite"
+  },
+  "result": {
+    "count": 4,
+    "id": "beaconite813:purebeaconite"
+  }
+}

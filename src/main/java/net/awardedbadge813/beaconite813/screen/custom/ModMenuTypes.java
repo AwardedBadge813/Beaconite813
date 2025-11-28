@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.screen.custom;
 
 import net.awardedbadge813.beaconite813.beaconite813;
+import net.awardedbadge813.beaconite813.entity.LivingBeaconBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -23,6 +24,8 @@ public class ModMenuTypes {
             registerMenuType("unstable_beacon_menu", UnstableBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ConstructorMenu>> CONSTRUCTOR_MENU =
             registerMenuType("constructor_menu", ConstructorMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<LivingBeaconMenu>> LIVING_BEACON_MENU =
+            registerMenuType("living_beacon_menu", LivingBeaconMenu::new);
 
 
 

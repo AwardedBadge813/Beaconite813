@@ -3,19 +3,16 @@ package net.awardedbadge813.beaconite813.block;
 import net.awardedbadge813.beaconite813.beaconite813;
 
 
-import net.awardedbadge813.beaconite813.block.custom.ConstructorBlock;
-import net.awardedbadge813.beaconite813.block.custom.RefineryBlock;
-import net.awardedbadge813.beaconite813.block.custom.UnstableBeaconBlock;
+import net.awardedbadge813.beaconite813.block.custom.*;
 import net.awardedbadge813.beaconite813.item.ModItems;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -62,11 +59,29 @@ public class ModBlocks {
     public static final DeferredBlock<Block> ULTRA_DENSE_BEACONITE =
             registerBlock("ultra_dense_beaconite",
                     () -> new
-                            TransparentBlock(BlockBehaviour.Properties.of()
+                            Block(BlockBehaviour.Properties.of()
                             .strength(20f, 120f)
                             .sound(SoundType.METAL).requiresCorrectToolForDrops()
                     )
             );
+    public static final DeferredBlock<Block> LIVING_BLOCK =
+            registerBlock("living_block",
+                    () -> new
+                            Block(BlockBehaviour.Properties.of()
+                            .strength(8f)
+                            .sound(SoundType.MUD)
+                    )
+            );
+    public static final DeferredBlock<Block> POLYMORPH_BEACONITE =
+            registerBlock("polymorph_block",
+                    () -> new
+                            Block(BlockBehaviour.Properties.of()
+                            .strength(8f)
+                            .sound(SoundType.MUD)
+                    )
+            );
+
+
 
 
 
@@ -84,6 +99,15 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> CONSTRUCTOR =registerBlock("constructor",
             () -> new ConstructorBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> LIVING_BEACON =registerBlock("living_beacon",
+            () -> new LivingBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.MUD).noOcclusion().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> BASE_BEACON_BLOCK =registerBlock("base_beacon_block",
+            () -> new BaseBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.MUD).noOcclusion().requiresCorrectToolForDrops()));
+
+    public static final DeferredBlock<Block> BEACONITE_CROP =BLOCKS.register("beaconite_crop",
+            () -> new BeaconiteCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
+
 
 
 

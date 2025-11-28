@@ -4,10 +4,12 @@ import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ModEntities;
 import net.awardedbadge813.beaconite813.entity.client.ExplosionEntityRenderer;
+import net.awardedbadge813.beaconite813.entity.custom.BasicBeaconRenderer;
 import net.awardedbadge813.beaconite813.item.ModCreativeModeTabs;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.awardedbadge813.beaconite813.screen.custom.*;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -42,12 +44,20 @@ public class beaconite813 {
                 event.register(ModMenuTypes.REFINERY_MENU.get(), RefineryScreen::new);
                 event.register(ModMenuTypes.UNSTABLE_BEACON_MENU.get(), UnstableBeaconScreen::new);
                 event.register(ModMenuTypes.CONSTRUCTOR_MENU.get(), ConstructorScreen::new);
+                event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
             }
 
             @SubscribeEvent
             public static void onClientSetup(FMLClientSetupEvent event) {
                 EntityRenderers.register(ModEntities.EXPLOSION.get(), ExplosionEntityRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.LIVING_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.REFINERY_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.CONSTRUCTOR_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.UNSTABLE_BEACON_BE.get(), BasicBeaconRenderer::new);
+
             }
+
+
         }
 
 

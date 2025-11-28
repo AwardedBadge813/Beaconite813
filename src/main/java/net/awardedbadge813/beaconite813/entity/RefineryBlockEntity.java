@@ -1,7 +1,8 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
-import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
+import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
 import net.awardedbadge813.beaconite813.recipe.RefineryRecipeInput;
@@ -13,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.commands.SummonCommand;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -21,24 +21,20 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.Level.ExplosionInteraction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.logging.ILogger;
 
-import javax.swing.plaf.basic.BasicComboBoxUI;
+import java.util.ArrayList;
 import java.util.Optional;
 
-public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
+public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
     private static final Log log = LogFactory.getLog(RefineryBlockEntity.class);
 
     public RefineryBlockEntity(BlockPos pos, BlockState blockState) {
@@ -73,6 +69,7 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
         };
 
     }
+
     private static final int INPUT_SLOT_1=1;
     private static final int INPUT_SLOT_2=2;
     private static final int INPUT_SLOT_3=3;
@@ -85,7 +82,9 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
 
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 1600;
+    private int layers = 1;
+
+
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
@@ -149,9 +148,14 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
+    private boolean update=false;
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if(hasRecipe()) {
+        this.layers = getLayers(level, blockPos)+1;
+        if (!update) {
+            getBeamUpdated();
+        }
+        if(hasRecipe() && getSkyStatus(level, blockPos)==1) {
             progress++;
             setChanged(level, blockPos, blockState);
             if(hasCraftingFinished()) {
@@ -165,6 +169,8 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
         }
 
     }
+    private int maxProgress = (int) Config.REFINERYCOOKTIME.getAsInt()/layers;
+
 
     private boolean hasCraftingFinished() {
         return progress>=maxProgress;
@@ -185,7 +191,7 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
 
     private void resetProgress() {
         progress=0;
-        maxProgress= Config.REFINERYCOOKTIME.getAsInt();
+        maxProgress = (int) (Config.REFINERYCOOKTIME.getAsInt()/layers);
     }
 
     public static int inventory_max=8; //hardcoded for now
@@ -223,8 +229,30 @@ public class RefineryBlockEntity extends BlockEntity implements MenuProvider {
     }
 
 
+    @Override
+    public boolean IsBeaconActive() {
+        return true;
+    }
 
 
+    public void getBeamUpdated() {
+        beamSections = new ArrayList<>();
+        for(int i=0; i<=level.getMaxBuildHeight(); i+=5) {
+            BeaconBeamSection beamSection = new BeaconBeamSection();
+            beamSection.setParams(DyeColor.byId(i%16).getTextureDiffuseColor(), 5);
+            beamSections.add(beamSection);
+        }
+        update=true;
+    }
 
+
+    private ArrayList<BeaconBeamSection> beamSections = new ArrayList<>();
+
+    public ArrayList<BeaconBeamSection> getBeamSections() {
+        if (beamSections.isEmpty()) {
+            getBeamUpdated();
+        }
+        return this.IsBeaconActive() ? this.beamSections: new ArrayList<>();
+    }
 
 }

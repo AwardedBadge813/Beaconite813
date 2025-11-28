@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 1600,
+  "experience": 200,
+  "group": "beaconite",
+  "ingredient":{
+    "item": "beaconite813:condensed_beaconite"
+  },
+  "result": {
+    "count": 36,
+    "id": "beaconite813:powdered_beaconite"
+  }
+}

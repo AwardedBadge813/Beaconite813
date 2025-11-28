@@ -24,7 +24,7 @@ public class RefineryMenu extends AbstractContainerMenu {
     }
 
     public RefineryMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(ModMenuTypes.CONSTRUCTOR_MENU.get(), pContainerId);
+        super(ModMenuTypes.REFINERY_MENU.get(), pContainerId);
         this.blockEntity = ((RefineryBlockEntity) entity);
         this.level = inv.player.level();
                 this.data=data;

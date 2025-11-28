@@ -1,6 +1,5 @@
 package net.awardedbadge813.beaconite813;
 
-import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +12,8 @@ public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue REFINERYCOOKTIME = BUILDER
-            .comment("The time it takes a refinery to craft an item.")
-            .defineInRange("refineryCookTime", 800, 0, Integer.MAX_VALUE);
+            .comment("The time it takes a refinery to craft an item. More layers below the refinery divide this time.")
+            .defineInRange("refineryCookTime", 100000, 0, Integer.MAX_VALUE);
 
 
 
@@ -27,8 +26,11 @@ public class Config {
     public static final ModConfigSpec.IntValue TIME_EXPLODE = BUILDER
             .comment("The time it takes unstable beacons to explode.")
             .defineInRange("timeToExplode", 400, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue MAX_EXPLODE_RADIUS = BUILDER
+            .comment("maximum explosion radius of all exploding events in the mod. recommended not to increase.")
+            .defineInRange("MaxExplodeRadius", 200, 0, Integer.MAX_VALUE);
     public static final ModConfigSpec.BooleanValue BOMBSDESTROYBLOCKS = BUILDER
-            .comment("Whether the unstable beacon will destroy block. recommended for servers.")
+            .comment("Whether the unstable beacon will destroy blocks. recommended for servers.")
             .define("BombsDestroyBlocks", true);
     public static final ModConfigSpec.IntValue EXPLOSION_RADIUS = BUILDER
             .comment("The range that unstable beacons and other explosions in this mod will inherit. WARNING: too high of a number may crash your game.")

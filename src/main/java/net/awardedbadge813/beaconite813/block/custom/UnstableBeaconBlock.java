@@ -3,7 +3,6 @@ package net.awardedbadge813.beaconite813.block.custom;
 import com.mojang.serialization.MapCodec;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.UnstableBeaconBlockEntity;
-import net.awardedbadge813.beaconite813.screen.custom.UnstableBeaconMenu;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -76,6 +75,8 @@ public class UnstableBeaconBlock extends BaseEntityBlock {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.unstable_beacon_block1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.unstable_beacon_block2.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.unstable_beacon_block3.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.unstable_beacon_block4.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.unstable_beacon_block5.tooltip"));
         } else {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
         }

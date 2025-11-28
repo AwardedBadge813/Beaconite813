@@ -24,6 +24,9 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.PUREBEACONITE);
                 output.accept(ModItems.BEACONPOWDER);
                 output.accept(ModItems.CATALYST);
+                output.accept(ModItems.BEACONITE_SEED);
+                output.accept(ModItems.BEACON_BEAM_SHARD);
+                output.accept(ModItems.BEACON_BEAM_ITEM);
                 output.accept(ModItems.QUARRY_TALISMAN);
 
                 output.accept(ModBlocks.BEACONITEBLOCK);
@@ -33,6 +36,12 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.REFINERY);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);
                 output.accept(ModBlocks.CONSTRUCTOR);
+                output.accept(ModBlocks.POLYMORPH_BEACONITE);
+                output.accept(ModBlocks.BASE_BEACON_BLOCK);
+                output.accept(ModBlocks.LIVING_BLOCK);
+                output.accept(ModBlocks.LIVING_BEACON);
+                //
+
 
 
 
