@@ -152,4 +152,17 @@ public class beaconite813 {
         // Do something when the server starts
         LOGGER.info("Loading Beaconite Mod-I'm Active!");
     }
+ /*
+    GENERAL CREDITS :
+
+    Credit to Kaupenjoe for most of the underlying codebase, thank you! extremely helpful resource for turning a bunch of funny words into code that works.
+    mostly used for registries & setup (the 1.21.1 modding tutorial), within which I modified the code to actually suit this mod instead of make bismuth.
+
+    Also credit to Kaupenjoe for the general GUI design, not sure where it came from but used the style of the pedestal GUI for all GUIs in the mod.
+    I believe this is also credit to mojang since that GUI is based on vanilla?
+
+    credit to Desieben for the ItemStackHandler QuickStack code, should be additionally credited whenever the code is used, but I also wanted to include it here for comprehensivity.
+
+
+ */
 }

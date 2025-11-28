@@ -3,6 +3,7 @@ package net.awardedbadge813.beaconite813.Datagen;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -154,7 +155,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .define('B', ModItems.BEACON_BEAM_SHARD.get())
                 .unlockedBy("has_beacon_shard", has(ModItems.BEACON_BEAM_SHARD)).save(recipeOutput);
-
 
 
 
