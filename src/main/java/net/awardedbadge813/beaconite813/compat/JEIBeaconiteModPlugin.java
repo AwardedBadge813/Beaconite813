@@ -8,12 +8,12 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
-import net.awardedbadge813.beaconite813.recipe.RefineryRecipeInput;
 import net.awardedbadge813.beaconite813.screen.custom.RefineryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
 public class JEIBeaconiteModPlugin implements IModPlugin {
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public @NotNull ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "jei_plugin");
     }
 
@@ -32,6 +32,7 @@ public class JEIBeaconiteModPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+        assert Minecraft.getInstance().level != null;
         RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
         List<RefineryRecipe> refineryRecipes = recipeManager
                 .getAllRecipesFor(ModRecipes.REFINERY_TYPE.get()).stream().map(RecipeHolder::value).toList();

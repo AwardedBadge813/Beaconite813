@@ -52,18 +52,18 @@ public class RefineryRecipeCategory implements IRecipeCategory<RefineryRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, RefineryRecipe recipe, @NotNull IFocusGroup focuses) {
-        int leftXpos = 65;
-        int lowYpos  =129;
+        int leftXPos = 65;
+        int lowYPos =129;
         Ingredient ingredient = recipe.getIngredients().getFirst();
-        builder.addSlot(RecipeIngredientRole.OUTPUT, leftXpos+53, lowYpos-48).addItemStack(recipe.getResultItem(null));
-        builder.addSlot(RecipeIngredientRole.INPUT, leftXpos, lowYpos-74).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+24, lowYpos-97).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+107, lowYpos-74).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+83, lowYpos-97).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+83, lowYpos).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+107, lowYpos-23).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos, lowYpos-23).addIngredients(ingredient);
-        builder.addSlot(RecipeIngredientRole.INPUT,  leftXpos+24, lowYpos).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, leftXPos +53, lowYPos -48).addItemStack(recipe.getResultItem(null));
+        builder.addSlot(RecipeIngredientRole.INPUT, leftXPos, lowYPos -74).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +24, lowYPos -97).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +107, lowYPos -74).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +83, lowYPos -97).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +83, lowYPos).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +107, lowYPos -23).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT, leftXPos, lowYPos -23).addIngredients(ingredient);
+        builder.addSlot(RecipeIngredientRole.INPUT,  leftXPos +24, lowYPos).addIngredients(ingredient);
     }
 
     @SuppressWarnings("removal")

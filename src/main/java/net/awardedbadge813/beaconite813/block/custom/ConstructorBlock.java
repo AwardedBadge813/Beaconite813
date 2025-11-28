@@ -94,6 +94,6 @@ public class ConstructorBlock extends BaseEntityBlock {
         }
 
         return createTickerHelper(blockEntityType, ModBlockEntities.CONSTRUCTOR_BE.get(),
-                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos));
     }
 }

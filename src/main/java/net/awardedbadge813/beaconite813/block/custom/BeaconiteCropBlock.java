@@ -18,11 +18,11 @@ public class BeaconiteCropBlock extends CropBlock {
     public static final IntegerProperty AGE = IntegerProperty.create("age", 0, 4);
     private static final VoxelShape[] SHAPE_BY_AGE =
             new VoxelShape[]{
-                    Block.box((double)0.0F, (double)0.0F, (double)0.0F, (double)16.0F, (double)2.0F, (double)16.0F),
-                    Block.box((double)0.0F, (double)0.0F, (double)0.0F, (double)16.0F, (double)4.0F, (double)16.0F),
-                    Block.box((double)0.0F, (double)0.0F, (double)0.0F, (double)16.0F, (double)6.0F, (double)16.0F),
-                    Block.box((double)0.0F, (double)0.0F, (double)0.0F, (double)16.0F, (double)16.0F, (double)16.0F),
-                    Block.box((double)0.0F, (double)0.0F, (double)0.0F, (double)16.0F, (double)16.0F, (double)16.0F)
+                    Block.box(0.0F, 0.0F, 0.0F, 16.0F, 2.0F, 16.0F),
+                    Block.box(0.0F, 0.0F, 0.0F, 16.0F, 4.0F, 16.0F),
+                    Block.box(0.0F, 0.0F, 0.0F, 16.0F, 6.0F, 16.0F),
+                    Block.box(0.0F, 0.0F, 0.0F, 16.0F, 16.0F, 16.0F),
+                    Block.box(0.0F, 0.0F, 0.0F, 16.0F, 16.0F, 16.0F)
     };
 
     @Override

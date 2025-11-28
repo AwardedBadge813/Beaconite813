@@ -17,12 +17,12 @@ public class ModCreativeModeTabs {
 
 
     public static final Supplier<CreativeModeTab> MODTAB = CREATIVE_MODE_TAB.register("beaconite_tab", () -> CreativeModeTab.builder()
-            .icon(() -> new ItemStack(ModItems.PUREBEACONITE.get())).title(Component.translatable("creativetab.awardedbadge813.beaconite_tab"))
+            .icon(() -> new ItemStack(ModItems.PURE_BEACONITE.get())).title(Component.translatable("creativetab.awardedbadge813.beaconite_tab"))
             .displayItems((itemDisplayParameters, output) -> {
                 output.accept(ModItems.BEACONITE);
-                output.accept(ModItems.REFINEDBEACONITE);
-                output.accept(ModItems.PUREBEACONITE);
-                output.accept(ModItems.BEACONPOWDER);
+                output.accept(ModItems.REFINED_BEACONITE);
+                output.accept(ModItems.PURE_BEACONITE);
+                output.accept(ModItems.BEACON_POWDER);
                 output.accept(ModItems.CATALYST);
                 output.accept(ModItems.BEACONITE_SEED);
                 output.accept(ModItems.BEACON_BEAM_SHARD);

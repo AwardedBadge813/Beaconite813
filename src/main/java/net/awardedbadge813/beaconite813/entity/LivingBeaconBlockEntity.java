@@ -31,17 +31,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Math.*;
 
 public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
 
-    private List<BeaconBeamSection> beamSections;
-    private ContainerData data;
+    private final ContainerData data;
     private int beaconLevels;
     private int canSeeSky;
     private int satiation;
@@ -66,7 +67,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
                         try {
                             return encodeEffect(effects.get(i-3).getDelegate());
                         }catch (Exception ignored) {
-                            //the amount of ContainerData slots is static so I have to just store 0 for all the extra ones.
+                            //the amount of ContainerData slots is static, so I have to just store 0 for all the extra ones.
                             return 0;
                         }
 
@@ -108,29 +109,30 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
 
     public final ItemStackHandler payment_slot = new ItemStackHandler(2) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
             return 64;
         }
 
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            assert level != null;
             if(!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            };
+            }
         }
     };
 
     @Override
-    public BlockEntityType<LivingBeaconBlockEntity> getType() {
+    public @NotNull BlockEntityType<LivingBeaconBlockEntity> getType() {
         return ModBlockEntities.LIVING_BEACON_BE.get();
     }
 
-    public Component getDisplayName() {
-        return null;
+    public @NotNull Component getDisplayName() {
+        return Component.literal("living_beacon_be");
     }
 
-    public void tick (Level level, BlockPos pos, BlockState blockstate) {
+    public void tick (Level level, BlockPos pos) {
         this.beaconLevels=getLayers(level, pos);
         this.canSeeSky=getSkyStatus(level, pos);
 
@@ -140,8 +142,8 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
                     satiation += 1000;
                 }
             } else {
-                applyEffects(level, pos, 1000, min(max(beaconLevels-6, 0), 9));
-                satiation-=(int) beaconLevels/5;
+                applyEffects(level, pos, satiation/10, min(max(beaconLevels-6, 0), 9));
+                satiation-= beaconLevels/5;
             }
             if(satiation <= 10000 && !payment_slot.getStackInSlot(0).isEmpty() && !effects.isEmpty()) {
                 tryFeed();
@@ -152,7 +154,8 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
 
 
     }
-    public void remove(BlockPos lPos) {
+    public void remove() {
+        assert level != null;
         level.removeBlockEntity(getBlockPos());
     }
 
@@ -162,14 +165,16 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
             inventory.setItem(i, payment_slot.getStackInSlot(i));
         }
 
+        assert this.level != null;
         Containers.dropContents(this.level, this.worldPosition, inventory);
-        this.remove(getBlockPos());
+        this.remove();
     }
     public void tryFeed() {
         try {
-            int saturation = (int) ((int) payment_slot.getStackInSlot(0).getFoodProperties(null).nutrition()+payment_slot.getStackInSlot(0).getFoodProperties(null).saturation());
+            int saturation = (int) (Objects.requireNonNull(payment_slot.getStackInSlot(0).getFoodProperties(null)).nutrition()+ Objects.requireNonNull(payment_slot.getStackInSlot(0).getFoodProperties(null)).saturation());
             satiation += (int) (saturation*100/pow(2, effects.size()));
             payment_slot.extractItem(0, 1, false);
+            assert level != null;
             level.playSound(null, getBlockPos(), SoundEvents.GENERIC_EAT, SoundSource.AMBIENT);
         } catch (Exception ignored) {
             //if the item has unsupported food effects, nothing will happen.
@@ -180,9 +185,9 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
         // takes effects from the food items and stores them in the form of mobEffects.
         // I believe this will also get effects like poison from pufferfish and hunger from rotten flesh, which would be terribly funny.
         this.effects= new ArrayList<>();
-        List<FoodProperties.PossibleEffect> storedPossibleEffects= NonNullList.create();
+        List<FoodProperties.PossibleEffect> storedPossibleEffects;
         try{
-            storedPossibleEffects = payment_slot.getStackInSlot(1).getFoodProperties(null).effects();
+            storedPossibleEffects = Objects.requireNonNull(payment_slot.getStackInSlot(1).getFoodProperties(null)).effects();
         } catch(Exception ignored) {
             //if the item has foodEffects that are unsupported, the list will be cleared since this is called when saturation is 0.
             storedPossibleEffects = NonNullList.create();
@@ -214,20 +219,16 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
     }
 
     @Override
-    public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+    public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new LivingBeaconMenu(i, inventory, this, this.data);
     }
     @Override
     public List<BeaconBeamSection> getBeamSections() {
-        BeaconBeamSection beamsection = new BeaconBeamSection();
-        beamsection.setParams(6192150, level.getMaxBuildHeight() - getBlockPos().getY());
-        this.beamSections=List.of(beamsection);
+        BeaconBeamSection beamSection = new BeaconBeamSection();
+        assert level != null;
+        beamSection.setParams(6192150, level.getMaxBuildHeight() - getBlockPos().getY());
 
-        return this.beamSections;
-    }
-    private int effectID (int i){
-        int encodedEffect = encodeEffect(this.effects.get(i).getDelegate());
-        return encodedEffect;
+        return List.of(beamSection);
     }
 
 
@@ -237,7 +238,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
     private void applyEffects(Level level, BlockPos pos, int range, int amplifier) {
         if (!level.isClientSide && (this.effects != null && !this.effects.isEmpty())) {
             int duration = 150;
-            AABB aabb = (new AABB(pos)).inflate(range).expandTowards((double)0.0F, (double)level.getHeight(), (double)0.0F);
+            AABB aabb = (new AABB(pos)).inflate(range).expandTowards(0.0F, level.getHeight(), 0.0F);
             List<Player> list = level.getEntitiesOfClass(Player.class, aabb);
 
             for(Player player : list) {
@@ -250,7 +251,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
 
     }
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveCustomAndMetadata(pRegistries);
     }
 
@@ -260,7 +261,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
     }
 
 
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         pTag.put("inventory", payment_slot.serializeNBT(pRegistries));
         pTag.putInt("beacon_levels", beaconLevels);
         pTag.putInt("can_see_sky", canSeeSky);
@@ -273,7 +274,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
         super.saveAdditional(pTag, pRegistries);
     }
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         payment_slot.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         beaconLevels = pTag.getInt("beacon_levels");
@@ -292,6 +293,6 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
 
     @javax.annotation.Nullable
     public static Holder<MobEffect> decodeEffect(int effectId) {
-        return effectId == 0 ? null : (Holder)BuiltInRegistries.MOB_EFFECT.asHolderIdMap().byId(effectId - 1);
+        return effectId == 0 ? null : BuiltInRegistries.MOB_EFFECT.asHolderIdMap().byId(effectId - 1);
     }
 }

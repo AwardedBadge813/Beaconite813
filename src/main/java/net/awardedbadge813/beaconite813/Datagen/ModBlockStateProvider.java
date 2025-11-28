@@ -35,6 +35,7 @@ public class ModBlockStateProvider  extends BlockStateProvider {
         simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
     }
 
+    //the warnings on this ae not a big deal. this can be used for more than just one type of crop, so I will not hardcode it.
     private void makeCrop(CropBlock block, String modelName, String textureName) {
         Function<BlockState, ConfiguredModel[]> function = state -> CropStates(state, block, modelName, textureName);
         getVariantBuilder(block).forAllStates(function);

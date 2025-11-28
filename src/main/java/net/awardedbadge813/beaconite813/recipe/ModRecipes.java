@@ -18,7 +18,7 @@ public class ModRecipes {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<RefineryRecipe>> REFINERY_SERIALIZER =
             SERIALIZERS.register("refinery", RefineryRecipe.Serializer::new);
     public static final DeferredHolder<RecipeType<?>, RecipeType<RefineryRecipe>> REFINERY_TYPE =
-            TYPES.register("refinery", () -> new RecipeType<RefineryRecipe>() {
+            TYPES.register("refinery", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
                     return "refinery";

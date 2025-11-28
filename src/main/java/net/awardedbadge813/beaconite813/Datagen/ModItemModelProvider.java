@@ -15,12 +15,12 @@ public class ModItemModelProvider  extends ItemModelProvider {
     @Override
     protected void registerModels() {
         basicItem(ModItems.CATALYST.get());
-        basicItem(ModItems.REFINEDBEACONITE.get());
+        basicItem(ModItems.REFINED_BEACONITE.get());
         basicItem(ModItems.BEACONITE.get());
-        basicItem(ModItems.PUREBEACONITE.get());
+        basicItem(ModItems.PURE_BEACONITE.get());
         basicItem(ModItems.QUARRY_TALISMAN.get());
         basicItem(ModBlocks.REFINERY.asItem());
-        basicItem(ModItems.BEACONPOWDER.get());
+        basicItem(ModItems.BEACON_POWDER.get());
         basicItem(ModItems.BEACONITE_SEED.get());
         basicItem(ModItems.BEACON_BEAM_SHARD.get());
         basicItem(ModItems.BEACON_BEAM_ITEM.get());

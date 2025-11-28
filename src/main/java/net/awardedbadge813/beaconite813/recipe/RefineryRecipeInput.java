@@ -2,10 +2,11 @@ package net.awardedbadge813.beaconite813.recipe;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
+import org.jetbrains.annotations.NotNull;
 
 public record RefineryRecipeInput (ItemStack input) implements RecipeInput {
     @Override
-    public ItemStack getItem(int i) {
+    public @NotNull ItemStack getItem(int i) {
         return input;
     }
 

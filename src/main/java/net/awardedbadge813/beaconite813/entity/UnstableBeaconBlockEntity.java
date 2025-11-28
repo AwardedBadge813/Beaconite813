@@ -26,12 +26,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -43,8 +41,6 @@ import static net.minecraft.world.item.Items.NETHER_STAR;
 import static net.minecraft.world.level.block.Blocks.*;
 
 public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
-
-    private static final Log log = LogFactory.getLog(UnstableBeaconBlockEntity.class);
 
     public UnstableBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.UNSTABLE_BEACON_BE.get(),
@@ -113,16 +109,17 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
             return 1;
         }
 
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            assert level != null;
             if(!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            };
+            }
         }
     };
     public void drops() {
@@ -131,32 +128,32 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
             inventory.setItem(i, itemHandler.getStackInSlot(i));
         }
 
-        Containers.dropContents(this.level, this.worldPosition, inventory);
-        this.remove(getBlockPos());
+        assert level != null;
+        Containers.dropContents(level, this.worldPosition, inventory);
+        this.remove();
     }
 
     @Override
-    public Component getDisplayName() {
-        return Component.translatable("block.beaconite813.unstable_beacon_be");
+    public @NotNull Component getDisplayName() {
+        return Component.literal("block.beaconite813.unstable_beacon_be");
     }
 
     @Override
-    public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+    public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new UnstableBeaconMenu(i, inventory, this, this.data);
     }
 
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
 
 
-    public void tick(Level level, BlockPos pos, BlockState state) {
+    public void tick(Level level, BlockPos pos) {
         int i = pos.getX();
         int j = pos.getY();
         int k = pos.getZ();
-        boolean foundBadBlock=false;
         beaconRings = this.updateLevel(new BlockPos (i, j, k));
         this.level=level;
         this.beaconActive = getSkyStatus(level, pos)==1 && beaconRings>4 ? 1:0;
@@ -177,11 +174,11 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
             this.explosionActive=0;
         }
         if(this.timeToExplode<=0) {
-            float radius = (float) min(Config.EXPLOSION_RADIUS.getAsInt()*(int)(min(beaconRings-4, 7)), Config.MAX_EXPLODE_RADIUS.getAsInt()) * 0.75f;
+            float radius = (float) min(Config.EXPLOSION_RADIUS.getAsInt()*(min(beaconRings-4, 7)), Config.MAX_EXPLODE_RADIUS.getAsInt()) * 0.75f;
 
             level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.NONE);
 
-            beaconBomb(pos, min(Config.EXPLOSION_RADIUS.getAsInt()*(int)(max((beaconRings-4), 1)), Config.MAX_EXPLODE_RADIUS.getAsInt()), 20);
+            beaconBomb(pos, min(Config.EXPLOSION_RADIUS.getAsInt()*(max((beaconRings-4), 1)), Config.MAX_EXPLODE_RADIUS.getAsInt()), 20);
 
             ArrayList<ItemStack> roll = getLootRoll();
             SimpleContainer inventory = new SimpleContainer(roll.size());
@@ -198,11 +195,9 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public ArrayList<ItemStack> getLootRoll() {
         int random = (int) (random()*50)*(beaconRings-4);
         ArrayList<ItemStack> roll = new ArrayList<>();
-        if(random<49) {
-            roll.add(new ItemStack(ModItems.PUREBEACONITE.get().asItem(), 16));
-        } else {
-            roll.add(new ItemStack(ModItems.PUREBEACONITE.get().asItem(), 16));
-            roll.add(new ItemStack(ModItems.PUREBEACONITE.get().asItem(), 16));
+        roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
+        if(random>49) {
+            roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
             roll.add(new ItemStack(ModItems.CATALYST.get().asItem(), 1));
         }
         return roll;
@@ -212,13 +207,9 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void remove(BlockPos lPos) {
-        level.removeBlockEntity(getBlockPos());
-    }
-    public void testBlock(BlockPos mPos) {
+    public void remove() {
         assert level != null;
-        level.setBlockAndUpdate(mPos, Blocks.DIRT.defaultBlockState());
-
+        level.removeBlockEntity(getBlockPos());
     }
 
 
@@ -237,13 +228,11 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     }
 
     private boolean checkBlockStateForBeaconBlock(BlockPos pPos) {
+        assert level != null;
         return level.getBlockState(pPos).is(BlockTags.BEACON_BASE_BLOCKS);
     }
-    private boolean checkBlockStateForBeaconPassable(BlockPos pos) {
-        return level.getBlockState(pos).is(AIR.defaultBlockState().getBlock())||level.getBlockState(pos).is(BEDROCK.defaultBlockState().getBlock());
-    }
     private int updateLevel(BlockPos pos) {
-        int i=1;
+        int i;
         int y=pos.getY()-1;
         for (i = 1; i<=MAX_LEVELS; i++){
             for (int x = getX(pos, i); x < getX(pos, i) + levelSize(i); x++) {
@@ -273,6 +262,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         int j=pos.getY();
         int k=pos.getZ();
         AABB damageRange = new AABB(pos).inflate(radius*1.1f);
+        assert level != null;
         List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, damageRange);
         for(LivingEntity entity: list) {
             float distance = getDist(pos, entity.getOnPos());
@@ -303,7 +293,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
             }
 
         }
-        level.playSound((Player)null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 3f, -10f);
+        level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 3f, -10f);
 
 
     }
@@ -313,7 +303,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
         pTag.putInt("explode_countdown", timeToExplode);
         pTag.putInt("active_rings", beaconRings);
@@ -323,7 +313,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         super.saveAdditional(pTag, pRegistries);
     }
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         timeToExplode = pTag.getInt("explode_countdown");
@@ -334,6 +324,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
     }
     public void tryBlowUpBlock(BlockPos pos) {
+        assert level != null;
         BlockState blockstate = level.getBlockState(pos);
         if(!blockstate.is(BlockTags.WITHER_IMMUNE) && Config.BOMBSDESTROYBLOCKS.getAsBoolean()) {
             level.setBlockAndUpdate(pos, AIR.defaultBlockState());
@@ -349,6 +340,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     @Override
     public List<BeaconBeamHolder.BeaconBeamSection> getBeamSections() {
         BeaconBeamHolder.BeaconBeamSection beamSection = new BeaconBeamHolder.BeaconBeamSection();
+        assert level != null;
         beamSection.setParams(11546150, level.getMaxBuildHeight() - getBlockPos().getY());
         this.beamSections=List.of(beamSection);
         return List.of(beamSection);

@@ -12,34 +12,36 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public record RefineryRecipe (Ingredient ingredient,
                               ItemStack output) implements Recipe<RefineryRecipeInput> {
     //RefineryRecipeInput=from BlockEntity inventory
     //ingredient, output read from JSON
-    //Don't @ me I didnt want to fuck with a non null list in the JSON
+    //Don't @ me I didn't want to fuck with a non-null list in the JSON
 
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(RefineryRecipeInput input) {
+    public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull RefineryRecipeInput input) {
         return Recipe.super.getRemainingItems(input);
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
+    public @NotNull NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> ing= NonNullList.create();
         ing.add(ingredient);
         return ing;
     }
 
     @Override
-    public boolean matches(RefineryRecipeInput refineryRecipeInput, Level level) {
+    public boolean matches(@NotNull RefineryRecipeInput refineryRecipeInput, Level level) {
         if (level.isClientSide) {
             return false;
         }
         int matches=0;
         NonNullList<ItemStack> itemInputs = NonNullList.create();
-        NonNullList<Ingredient> ingredients= NonNullList.create();
         boolean[] inputActive = new boolean[9];
         boolean[] ingredientActive = new boolean[9];
 
@@ -53,11 +55,11 @@ public record RefineryRecipe (Ingredient ingredient,
             ingredientActive[i] = true;
         }
 
-        // checks for both boolean indices if a match exists. if a match exists between iteminput and recipeinput,
+        // checks for both boolean indices if a match exists. if a match exists between item input and recipe input,
         // both indices are deactivated and the matching count increases by 1.
         // notably, inactive slots are not checked again.
         // this prevents multi-item recipes from fucking everything up.
-        // at least it would if the codecs didnt ruin everything so only 1 item as an ingredient now, keeping the framework though
+        // at least it would if the codecs didn't ruin everything so only 1 item as an ingredient now, keeping the framework though
         for(int indexIngredients = 0; indexIngredients <9; indexIngredients++) {
             for (int indexItems=0; indexItems<9; indexItems++) {
                 if(inputActive[indexItems]
@@ -72,22 +74,15 @@ public record RefineryRecipe (Ingredient ingredient,
 
         // now we know how many items match. we just need to figure out hoe many items we need.
         // this could probably be done easier, but I'm going to get 8 and deal with it.
-        int totalitems=8;
+        int totalItems=8;
         //in case some items are null ,add the number to matches
 
         // return true if you have enough items, dunno how you would get more than 8 but someone will find a way to
-        if (matches>=totalitems) {
-            return true;
-        }
-
-
-
-        //if other checks fail
-        return false;
+        return matches>=totalItems;
     }
 
     @Override
-    public ItemStack assemble(RefineryRecipeInput refineryRecipeInput, HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(@NotNull RefineryRecipeInput refineryRecipeInput, HolderLookup.@NotNull Provider provider) {
         return output.copy();
     }
 
@@ -97,17 +92,17 @@ public record RefineryRecipe (Ingredient ingredient,
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
+    public @NotNull ItemStack getResultItem(@Nullable HolderLookup.Provider provider) {
         return output;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return ModRecipes.REFINERY_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public @NotNull RecipeType<?> getType() {
         return ModRecipes.REFINERY_TYPE.get();
     }
 
@@ -115,7 +110,7 @@ public record RefineryRecipe (Ingredient ingredient,
 
 
     public static class Serializer implements RecipeSerializer<RefineryRecipe> {
-        //might make this not horrible later but it's my first mod cut me some slack lmao
+        //might make this not horrible later, but it's my first mod cut me some slack lmao
         //only 1 item because all the codecs break when more than 1 item is added fml
         public static final MapCodec<RefineryRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
                 Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(RefineryRecipe::ingredient),
@@ -131,12 +126,12 @@ public record RefineryRecipe (Ingredient ingredient,
                         RefineryRecipe::new);
         
         @Override
-        public MapCodec<RefineryRecipe> codec() {
+        public @NotNull MapCodec<RefineryRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> streamCodec() {
+        public @NotNull StreamCodec<RegistryFriendlyByteBuf, RefineryRecipe> streamCodec() {
             return STREAM_CODEC;
         }
     }

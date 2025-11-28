@@ -17,11 +17,11 @@ public class ModItems {
 
     public static final DeferredItem<Item> BEACONITE = ITEMS.register("beaconite",
             () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> REFINEDBEACONITE = ITEMS.register("refinedbeaconite",
+    public static final DeferredItem<Item> REFINED_BEACONITE = ITEMS.register("refined_beaconite",
             () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> PUREBEACONITE = ITEMS.register("purebeaconite",
+    public static final DeferredItem<Item> PURE_BEACONITE = ITEMS.register("purebeaconite",
             () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> BEACONPOWDER = ITEMS.register("powdered_beaconite",
+    public static final DeferredItem<Item> BEACON_POWDER = ITEMS.register("powdered_beaconite",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CATALYST = ITEMS.register("refinery_catalyst",
             () -> new Item(new Item.Properties()));

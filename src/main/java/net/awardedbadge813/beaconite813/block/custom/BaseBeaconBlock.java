@@ -69,6 +69,6 @@ public class BaseBeaconBlock extends BaseEntityBlock {
         }
 
         return createTickerHelper(blockEntityType, ModBlockEntities.BASE_BEACON_BLOCK_BE.get(),
-                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos));
     }
 }

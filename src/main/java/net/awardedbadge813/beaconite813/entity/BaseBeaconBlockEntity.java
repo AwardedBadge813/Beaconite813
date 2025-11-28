@@ -18,26 +18,25 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static java.lang.Thread.sleep;
 
 public class BaseBeaconBlockEntity extends BlockEntity {
-    private static final Log log = LogFactory.getLog(BaseBeaconBlockEntity.class);
 
     public BaseBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.BASE_BEACON_BLOCK_BE.get(), pos, blockState);
     }
     public void kill() {
+        assert getLevel() != null;
         getLevel().removeBlockEntity(getBlockPos());
     }
 
 
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
 
@@ -46,15 +45,16 @@ public class BaseBeaconBlockEntity extends BlockEntity {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
+    public void tick(Level level, BlockPos blockPos) {
         AABB aabb = new AABB(blockPos).inflate(1);
-        checkForInput(aabb, blockPos, ModBlocks.LIVING_BLOCK.get(), ModBlocks.LIVING_BEACON.get());
+        checkForInput(aabb, blockPos, ModBlocks.LIVING_BLOCK.get(), ModBlocks.LIVING_BEACON.get(), level);
 
     }
 
     //abstracted to support additional multiblock recipes. planing on adding more than just 1 beacon for the polymorphic beacon.
-    public void checkForInput(AABB aabb, BlockPos blockPos, Block inputBlock, Block outputBlock) {
+    public void checkForInput(AABB aabb, BlockPos blockPos, Block inputBlock, Block outputBlock, Level level) {
         int input = 0;
+        assert level != null;
         for (BlockState blockstate : level.getBlockStates(aabb).toList()) {
             if(blockstate.getBlock() == inputBlock) {
                 input++;

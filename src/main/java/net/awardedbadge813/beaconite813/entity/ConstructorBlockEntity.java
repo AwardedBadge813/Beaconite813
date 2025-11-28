@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -27,18 +26,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
-
-    public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
-
-    private static final Log log = LogFactory.getLog(net.awardedbadge813.beaconite813.entity.ConstructorBlockEntity.class);
 
 
     public ConstructorBlockEntity(BlockPos pos, BlockState blockState) {
@@ -124,9 +117,10 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
+            assert level != null;
             if (!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            };
+            }
         }
     };
 
@@ -142,7 +136,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     }
 
 
-    private void updateSelectedLevel() {
+    private void updateSelectedLevel(Level level) {
         int yLevel=0;
         for(int i=getBlockPos().getY()-1; i>level.getMinBuildHeight(); i--) {
             if(level.getBlockState(new BlockPos(getBlockPos().getX(), i, getBlockPos().getZ())).is(BlockTags.BEACON_BASE_BLOCKS)) {
@@ -167,7 +161,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
                 return false;
             }
         }
-            //itemstacks wil all have been distributed, so true.
+            //item stacks wil all have been distributed, so true.
         return true;
 
     }
@@ -188,9 +182,10 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
+                assert level != null;
                 if(!level.isClientSide()) {
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-                };
+                }
             }
 
         };
@@ -206,41 +201,38 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
                 inventory.setItem(i+ outputItemHandler.getSlots(), inputItemHandler.getStackInSlot(i));
             }
 
-            Containers.dropContents(this.level, this.worldPosition, inventory);
+            assert level != null;
+            Containers.dropContents(level, this.worldPosition, inventory);
             this.remove();
         }
 
         @Override
-        public Component getDisplayName() {
-            return Component.translatable("block.beaconite813.unstable_beacon_be");
+        public @NotNull Component getDisplayName() {
+            return Component.literal("block.beaconite813.unstable_beacon_be");
         }
 
         @Override
-        public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
             return new ConstructorMenu(i, inventory, this, this.data);
         }
 
 
         @Override
-        public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
+        public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
             return saveWithoutMetadata(pRegistries);
         }
 
         public boolean checkBeaconBase(Item item) {
-            Block block = Block.byItem(item);
-            if(block.defaultBlockState().is(BlockTags.BEACON_BASE_BLOCKS)) {
-                return true;
-            }
-            return false;
+            return Block.byItem(item).defaultBlockState().is(BlockTags.BEACON_BASE_BLOCKS);
         }
 
 
 
 
-    public void tick(Level level, BlockPos pos, BlockState state) {
+    public void tick(Level level, BlockPos pos) {
         BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
         this.updatedLevel=getLayers(level, pos);
-        updateSelectedLevel();
+        updateSelectedLevel(level);
         this.counter%=40;
         int lastCounter = counter;
         if (Dev) {
@@ -297,13 +289,13 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     private boolean isPlacing;
 
     private boolean testBlockItem(Block block, Item item) {
-            Block blockver=Block.byItem(item);
-            return block==blockver;
+            return block==Block.byItem(item);
     }
 
     private boolean BlockValidForDestruction(BlockPos blockPos) {
             //may change this later but is a decent 'should not destroy this block' placeholder for now
-            return !level.getBlockState(blockPos).is(BlockTags.WITHER_IMMUNE);
+        assert level != null;
+        return !level.getBlockState(blockPos).is(BlockTags.WITHER_IMMUNE);
 
     }
 
@@ -317,6 +309,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         int currentSize = y-yCurrent;
         BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
         //places the block
+        assert level != null;
         level.getBlockState(currentPos);
         if(isPlacing) {
             level.playSound(null, pos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundSource.BLOCKS);
@@ -347,6 +340,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
     }
     public void remove() {
+        assert level != null;
         level.removeBlockEntity(getBlockPos());
     }
 
@@ -362,7 +356,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
 
 
     @Override
-        protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
             pTag.put("input_inv", inputItemHandler.serializeNBT(pRegistries));
             pTag.put("output_inv", outputItemHandler.serializeNBT(pRegistries));
             pTag.putInt("selected_level", userSelectedLevel);
@@ -374,7 +368,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             super.saveAdditional(pTag, pRegistries);
         }
         @Override
-        protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
             super.loadAdditional(pTag, pRegistries);
             inputItemHandler.deserializeNBT(pRegistries, pTag.getCompound("input_inv"));
             outputItemHandler.deserializeNBT(pRegistries, pTag.getCompound("output_inv"));
@@ -386,7 +380,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
 
 
         }
-        private boolean Dev = true;
+        private final boolean Dev = true;
 
 
         protected final ContainerData data;
@@ -406,9 +400,10 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
 
     @Override
     public List<BeaconBeamHolder.BeaconBeamSection> getBeamSections() {
-        BeaconBeamHolder.BeaconBeamSection beamsection = new BeaconBeamHolder.BeaconBeamSection();
-        beamsection.setParams(16383998, level.getMaxBuildHeight() - getBlockPos().getY());
-        this.beamSections=List.of(beamsection);
+        BeaconBeamHolder.BeaconBeamSection beamSection = new BeaconBeamHolder.BeaconBeamSection();
+        assert level != null;
+        beamSection.setParams(16383998, level.getMaxBuildHeight() - getBlockPos().getY());
+        this.beamSections=List.of(beamSection);
 
         return this.beamSections;
     }
