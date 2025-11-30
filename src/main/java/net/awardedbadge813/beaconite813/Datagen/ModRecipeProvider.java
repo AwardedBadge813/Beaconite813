@@ -155,6 +155,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BBB")
                 .define('B', ModItems.BEACON_BEAM_SHARD.get())
                 .unlockedBy("has_beacon_shard", has(ModItems.BEACON_BEAM_SHARD)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ENGORGED_HEART.get(), 16)
+                .pattern("BBB")
+                .pattern("BCB")
+                .pattern("BBB")
+                .define('C', Items.CONDUIT.asItem())
+                .define('B', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
+                .save(recipeOutput);
 
 
 

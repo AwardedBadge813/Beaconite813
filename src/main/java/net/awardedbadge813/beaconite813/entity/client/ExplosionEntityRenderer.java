@@ -18,4 +18,5 @@ public class ExplosionEntityRenderer extends EntityRenderer<ExplosionEntity> {
     public @NotNull ResourceLocation getTextureLocation(@NotNull ExplosionEntity explosionEntity) {
         return ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/entity/boom/boom.png");
     }
+
 }

@@ -1,5 +1,6 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.item.ModItems;
@@ -295,7 +296,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     private boolean BlockValidForDestruction(BlockPos blockPos) {
             //may change this later but is a decent 'should not destroy this block' placeholder for now
         assert level != null;
-        return !level.getBlockState(blockPos).is(BlockTags.WITHER_IMMUNE);
+        return !level.getBlockState(blockPos).is(BlockTags.WITHER_IMMUNE) || level.getBlockState(blockPos).is(ModBlocks.ULTRA_DENSE_BEACONITE.get());
 
     }
 

@@ -9,16 +9,16 @@ public class Config {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.IntValue REFINERYCOOKTIME = BUILDER
+    public static final ModConfigSpec.IntValue REFINERY_COOK_TIME = BUILDER
             .comment("The time it takes a refinery to craft an item. More layers below the refinery divide this time.")
             .defineInRange("refineryCookTime", 100000, 0, Integer.MAX_VALUE);
 
 
 
-    public static final ModConfigSpec.IntValue MAXLEVELUNSTABLEBEACON = BUILDER
+    public static final ModConfigSpec.IntValue MAX_LEVEL_UNSTABLE_BEACON = BUILDER
             .comment("The amount of levels required to activate an unstable beacon. default is 5.")
             .defineInRange("maxLevelUnstableBeacon", 5, 0, Integer.MAX_VALUE);
-    public static final ModConfigSpec.BooleanValue UNSTABLEBEACOONSEESSKY = BUILDER
+    public static final ModConfigSpec.BooleanValue UNSTABLE_BEACON_SEES_SKY = BUILDER
             .comment("Whether the unstable beacon will require air block above to sky height in order to activate/accept tribute.")
             .define("unstableBeaconSeesSky", true);
     public static final ModConfigSpec.IntValue TIME_EXPLODE = BUILDER
@@ -27,7 +27,7 @@ public class Config {
     public static final ModConfigSpec.IntValue MAX_EXPLODE_RADIUS = BUILDER
             .comment("maximum explosion radius of all exploding events in the mod. recommended not to increase.")
             .defineInRange("MaxExplodeRadius", 200, 0, Integer.MAX_VALUE);
-    public static final ModConfigSpec.BooleanValue BOMBSDESTROYBLOCKS = BUILDER
+    public static final ModConfigSpec.BooleanValue BOMBS_DESTROY_BLOCKS = BUILDER
             .comment("Whether the unstable beacon will destroy blocks. recommended for servers.")
             .define("BombsDestroyBlocks", true);
     public static final ModConfigSpec.IntValue EXPLOSION_RADIUS = BUILDER

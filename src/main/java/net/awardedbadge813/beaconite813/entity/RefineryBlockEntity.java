@@ -158,7 +158,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         }
 
     }
-    private int maxProgress = Config.REFINERYCOOKTIME.getAsInt()/layers;
+    private int maxProgress = Config.REFINERY_COOK_TIME.getAsInt()/layers;
 
 
     private boolean hasCraftingFinished() {
@@ -184,7 +184,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
 
     private void resetProgress() {
         progress=0;
-        maxProgress = (Config.REFINERYCOOKTIME.getAsInt()/layers);
+        maxProgress = (Config.REFINERY_COOK_TIME.getAsInt()/layers);
     }
 
     public static int inventory_max=8; //hardcoded for now

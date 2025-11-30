@@ -73,6 +73,14 @@ public class ModBlocks {
                     () -> new
                             Block(BlockBehaviour.Properties.of()
                             .strength(8f)
+                            .sound(SoundType.METAL)
+                    )
+            );
+    public static final DeferredBlock<Block> ENGORGED_HEART =
+            registerBlock("engorged_heart",
+                    () -> new
+                            Block(BlockBehaviour.Properties.of()
+                            .strength(8f)
                             .sound(SoundType.MUD)
                     )
             );
@@ -103,6 +111,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> BEACONITE_CROP =BLOCKS.register("beaconite_crop",
             () -> new BeaconiteCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> AMORPH_BEACON_BLOCK =registerBlock("amorph_beacon",
+            () -> new AmorphousBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
 
 
 

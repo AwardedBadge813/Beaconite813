@@ -42,6 +42,10 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.POLYMORPH_BEACONITE.get());
         dropSelf(ModBlocks.REFINERY.get());
         dropSelf(ModBlocks.ULTRA_DENSE_BEACONITE.get());
+        dropSelf(ModBlocks.ENGORGED_HEART.get());
+        dropSelf(ModBlocks.AMORPH_BEACON_BLOCK.get());
+
+
         LootItemCondition.Builder lootItemConditionBuilder =
                 LootItemBlockStatePropertyCondition
                         .hasBlockStateProperties(ModBlocks.BEACONITE_CROP.get())
@@ -57,23 +61,22 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
     protected LootTable.Builder createBeaconCropDrops(Block cropBlock, Item grownCropItem, Item seedsItem, LootItemCondition.Builder dropGrownCropCondition) {
         HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-        return (LootTable.Builder)
-                this.applyExplosionDecay(cropBlock, LootTable.lootTable()
-                        .withPool(LootPool.lootPool()
-                                .add(((LootPoolSingletonContainer.Builder) LootItem
-                                .lootTableItem(grownCropItem).when(dropGrownCropCondition))
-                                        .otherwise(LootItem.lootTableItem(seedsItem))))
-                        .withPool(LootPool.lootPool()
-                                .when(dropGrownCropCondition)
-                                .add(LootItem.lootTableItem(seedsItem)
-                                        .apply(ApplyBonusCount
-                                                .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
-                                                        0.2714286F, 1))))
-                        .withPool(LootPool.lootPool()
-                                .when(dropGrownCropCondition)
-                                .add(LootItem.lootTableItem(grownCropItem)
-                                        .apply(ApplyBonusCount
-                                                .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
-                                                        0.5714286F, 3)))));
+        return this.applyExplosionDecay(cropBlock, LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .add(LootItem
+                        .lootTableItem(grownCropItem).when(dropGrownCropCondition)
+                                .otherwise(LootItem.lootTableItem(seedsItem))))
+                .withPool(LootPool.lootPool()
+                        .when(dropGrownCropCondition)
+                        .add(LootItem.lootTableItem(seedsItem)
+                                .apply(ApplyBonusCount
+                                        .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                                0.2714286F, 1))))
+                .withPool(LootPool.lootPool()
+                        .when(dropGrownCropCondition)
+                        .add(LootItem.lootTableItem(grownCropItem)
+                                .apply(ApplyBonusCount
+                                        .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                                0.5714286F, 3)))));
     }
 }

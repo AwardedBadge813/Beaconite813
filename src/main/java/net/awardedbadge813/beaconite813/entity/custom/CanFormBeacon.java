@@ -20,7 +20,7 @@ public interface CanFormBeacon {
                 foundBadBlock=true;
             }
         }
-        if (!foundBadBlock||!Config.UNSTABLEBEACOONSEESSKY.getAsBoolean()) {
+        if (!foundBadBlock||!Config.UNSTABLE_BEACON_SEES_SKY.getAsBoolean()) {
             canSeeSky = 1;
         }
         return canSeeSky;
@@ -45,7 +45,7 @@ public interface CanFormBeacon {
     }
 
     default int getLayers(Level level, BlockPos pos) {
-        int currentLayer =1;
+        int currentLayer;
         int y=pos.getY()-1;
         for (currentLayer = 1; currentLayer <=20; currentLayer++){
             for (int x = getX(pos, currentLayer); x < getX(pos, currentLayer) + levelSize(currentLayer); x++) {
@@ -57,8 +57,7 @@ public interface CanFormBeacon {
             }
             y--;
         }
-        int goodLayers = currentLayer-1;
-        return goodLayers;
+        return currentLayer-1;
     }
 
 }

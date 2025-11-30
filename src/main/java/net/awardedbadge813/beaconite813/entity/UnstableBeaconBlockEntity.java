@@ -276,7 +276,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
         for (int x=i-radius; x<=i+radius; x++) {
             try {
-                sleep(1);
+                sleep(50);
             } catch (Exception ignored) {}
             for (int y=j-radius; y<=j+radius; y++) {
                 for (int z=k-radius; z<=k+radius; z++) {
@@ -326,7 +326,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public void tryBlowUpBlock(BlockPos pos) {
         assert level != null;
         BlockState blockstate = level.getBlockState(pos);
-        if(!blockstate.is(BlockTags.WITHER_IMMUNE) && Config.BOMBSDESTROYBLOCKS.getAsBoolean()) {
+        if(!blockstate.is(BlockTags.WITHER_IMMUNE) && Config.BOMBS_DESTROY_BLOCKS.getAsBoolean()) {
             level.setBlockAndUpdate(pos, AIR.defaultBlockState());
         }
     }
@@ -350,7 +350,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
 
 //Config.MAXLEVELUNSTABLEBEACON.getAsInt();
-    private static final int MAX_LEVELS = Config.MAXLEVELUNSTABLEBEACON.getAsInt();
+    private static final int MAX_LEVELS = Config.MAX_LEVEL_UNSTABLE_BEACON.getAsInt();
     protected final ContainerData data;
     private int timeToExplode = Config.TIME_EXPLODE.getAsInt();
     private int beaconActive = 0;

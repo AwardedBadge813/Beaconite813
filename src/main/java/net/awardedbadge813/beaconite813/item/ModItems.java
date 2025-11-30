@@ -2,9 +2,11 @@ package net.awardedbadge813.beaconite813.item;
 
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.entity.ModEntities;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -33,6 +35,9 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> QUARRY_TALISMAN = ITEMS.register("quarry_talisman",
             () -> new Item(new Item.Properties()));
+
+    //public static final DeferredItem<Item> BUBBLE_WAND = ITEMS.register("bubble_wand",
+     //       () -> new DeferredSpawnEggItem(ModEntities.BUBBLE, 0x81DEF7, 0x60A7F9, new Item.Properties()));
 
 
 

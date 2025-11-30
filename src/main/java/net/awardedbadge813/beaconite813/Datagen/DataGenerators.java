@@ -38,5 +38,6 @@ public class DataGenerators {
         generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput, lookupProvider));
 
 
+
     }
 }

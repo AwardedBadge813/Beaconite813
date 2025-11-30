@@ -3,6 +3,7 @@ package net.awardedbadge813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ModEntities;
+import net.awardedbadge813.beaconite813.entity.client.BubbleRenderer;
 import net.awardedbadge813.beaconite813.entity.client.ExplosionEntityRenderer;
 import net.awardedbadge813.beaconite813.entity.custom.BasicBeaconRenderer;
 import net.awardedbadge813.beaconite813.item.ModCreativeModeTabs;
@@ -50,6 +51,7 @@ public class beaconite813 {
             @SubscribeEvent
             public static void onClientSetup(FMLClientSetupEvent event) {
                 EntityRenderers.register(ModEntities.EXPLOSION.get(), ExplosionEntityRenderer::new);
+                EntityRenderers.register(ModEntities.BUBBLE.get(), BubbleRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.LIVING_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.REFINERY_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.CONSTRUCTOR_BE.get(), BasicBeaconRenderer::new);

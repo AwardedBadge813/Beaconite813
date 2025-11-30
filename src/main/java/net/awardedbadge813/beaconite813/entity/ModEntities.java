@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.beaconite813;
+import net.awardedbadge813.beaconite813.entity.custom.BubbleEntity;
 import net.awardedbadge813.beaconite813.entity.custom.ExplosionEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
@@ -20,7 +21,12 @@ public class ModEntities {
     }
 
 
-    public static final Supplier<EntityType<ExplosionEntity>> EXPLOSION = ENTITY_TYPES.register("explosion", () -> EntityType.Builder.of(ExplosionEntity::new, MobCategory.MISC).build("explosion"));
+    public static final Supplier<EntityType<ExplosionEntity>> EXPLOSION =
+            ENTITY_TYPES.register("explosion", () -> EntityType.Builder.of
+                    (ExplosionEntity::new, MobCategory.MISC).build("explosion"));
+
+    public static final Supplier<EntityType<BubbleEntity>> BUBBLE =
+            ENTITY_TYPES.register("bubble", () -> EntityType.Builder.of(BubbleEntity::new, MobCategory.WATER_AMBIENT).build("bubble"));
 
 
 

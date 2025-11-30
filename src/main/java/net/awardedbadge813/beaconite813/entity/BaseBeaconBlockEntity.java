@@ -48,6 +48,7 @@ public class BaseBeaconBlockEntity extends BlockEntity {
     public void tick(Level level, BlockPos blockPos) {
         AABB aabb = new AABB(blockPos).inflate(1);
         checkForInput(aabb, blockPos, ModBlocks.LIVING_BLOCK.get(), ModBlocks.LIVING_BEACON.get(), level);
+        checkForInput(aabb, blockPos, ModBlocks.ENGORGED_HEART.get(), ModBlocks.AMORPH_BEACON_BLOCK.get(), level);
 
     }
 

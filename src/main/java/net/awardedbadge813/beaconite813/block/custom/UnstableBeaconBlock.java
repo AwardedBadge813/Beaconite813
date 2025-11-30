@@ -89,6 +89,6 @@ public class UnstableBeaconBlock extends BaseEntityBlock {
         }
 
         return createTickerHelper(blockEntityType, ModBlockEntities.UNSTABLE_BEACON_BE.get(),
-                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos));
     }
 }
