@@ -39,6 +39,11 @@ public class ModBlockEntities {
                             AmorphousBeaconBlockEntity::new, ModBlocks.AMORPH_BEACON_BLOCK.get())
                     .build(null));
 
+    public static final Supplier<BlockEntityType<IgneousBeaconBlockEntity>> IGNEOUS_BEACON_BE =
+            BLOCK_ENTITIES.register("igneous_beacon_be", () -> BlockEntityType.Builder.of(
+                            IgneousBeaconBlockEntity::new, ModBlocks.IGNEOUS_BEACON_BLOCK.get())
+                    .build(null));
+
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);
     }

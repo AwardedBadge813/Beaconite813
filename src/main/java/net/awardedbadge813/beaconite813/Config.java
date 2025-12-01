@@ -34,6 +34,10 @@ public class Config {
             .comment("The range that unstable beacons and other explosions in this mod will inherit. WARNING: too high of a number may crash your game.")
             .defineInRange("explosionRadius", 25, 0, Integer.MAX_VALUE);
 
+    public static final ModConfigSpec.IntValue MAX_LEVEL_BEACON = BUILDER
+            .comment("The max level of all beacon pyramids in the game. default is 20.")
+            .defineInRange("maxBeaconPyramidSize", 20, 0, Integer.MAX_VALUE);
+
 
 /*
     public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER

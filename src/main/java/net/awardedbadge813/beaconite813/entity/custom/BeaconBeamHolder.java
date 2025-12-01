@@ -29,10 +29,12 @@ public abstract class BeaconBeamHolder extends BlockEntity {
             return this.height;
         }
     }
-    public abstract boolean IsBeaconActive();
+    public boolean IsBeaconActive() {
+        return true;
+    };
     public List<BeaconBeamHolder.BeaconBeamSection> beamSections;
 
-    public List<BeaconBeamHolder.BeaconBeamSection> getBeamSections() {
+    public List<BeaconBeamSection> getBeamSections() {
         BeaconBeamHolder.BeaconBeamSection beamSection = new BeaconBeamHolder.BeaconBeamSection();
         beamSection.setParams(11546150, level.getMaxBuildHeight() - getBlockPos().getY());
         this.beamSections=List.of(beamSection);

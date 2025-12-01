@@ -1,8 +1,8 @@
 package net.awardedbadge813.beaconite813.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.awardedbadge813.beaconite813.entity.IgneousBeaconBlockEntity;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
-import net.awardedbadge813.beaconite813.entity.AmorphousBeaconBlockEntity;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -21,20 +21,20 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class AmorphousBeaconBlock extends BaseEntityBlock {
-    public AmorphousBeaconBlock(Properties properties) {
+public class IgneousBeaconBlock extends BaseEntityBlock {
+    public IgneousBeaconBlock(Properties properties) {
         super(properties);
     }
-    public static final MapCodec<AmorphousBeaconBlock> CODEC = simpleCodec(AmorphousBeaconBlock::new);
+    public static final MapCodec<IgneousBeaconBlock> CODEC = simpleCodec(IgneousBeaconBlock::new);
 
-    public @NotNull MapCodec<AmorphousBeaconBlock> codec() {
+    public @NotNull MapCodec<IgneousBeaconBlock> codec() {
         return CODEC;
     }
 
 
 
     public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return new AmorphousBeaconBlockEntity(pos, state);
+        return new IgneousBeaconBlockEntity(pos, state);
     }
 
     @Override
@@ -48,9 +48,8 @@ public class AmorphousBeaconBlock extends BaseEntityBlock {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         if(Screen.hasShiftDown()){
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.amorph_beacon1.tooltip"));
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.amorph_beacon2.tooltip"));
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.amorph_beacon3.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon2.tooltip"));
         } else {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
         }
@@ -63,7 +62,7 @@ public class AmorphousBeaconBlock extends BaseEntityBlock {
             return null;
         }
 
-        return createTickerHelper(blockEntityType, ModBlockEntities.AMORPH_BEACON_BE.get(),
+        return createTickerHelper(blockEntityType, ModBlockEntities.IGNEOUS_BEACON_BE.get(),
                 (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
 
     }

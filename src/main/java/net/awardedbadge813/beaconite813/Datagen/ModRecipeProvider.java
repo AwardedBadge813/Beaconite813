@@ -163,6 +163,14 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('B', ModItems.BEACON_BEAM_ITEM.get())
                 .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
                 .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BLAZING_MAGMA.get(), 4)
+                .pattern("BBB")
+                .pattern("BCB")
+                .pattern("BBB")
+                .define('C', Items.MAGMA_BLOCK.asItem())
+                .define('B', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
+                .save(recipeOutput);
 
 
 

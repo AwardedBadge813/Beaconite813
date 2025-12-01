@@ -35,6 +35,9 @@
   "tooltip.beaconite813.amorph_beacon2.tooltip": "§9§oMinimum levels is 8, max is 17 (level X effects)",
   "tooltip.beaconite813.amorph_beacon3.tooltip": "§9§oHigher levels shrink the range of bubble spawning, but make the bubbles give less time.",
 
+  "tooltip.beaconite813.igneous_beacon1.tooltip": "§9§oGives Speed, Strength, and Jump Boost in exchange for fire damage.",
+  "tooltip.beaconite813.igneous_beacon2.tooltip": "§9§oMake sure you have some water handy...",
+
   "tooltip.beaconite813.base_beacon_block1.tooltip": "§9§oThis block is used to form all other special beacons.",
   "tooltip.beaconite813.base_beacon_block2.tooltip": "§9§oPlace this beacon in the center of a 3x3 cube of a fitting material.",
   "tooltip.beaconite813.base_beacon_block3.tooltip": "§9§oBlocks made using encapsulated light can all be used, and will create different special beacons.",
@@ -51,11 +54,12 @@
   "block.beaconite813.living_block": "Overgrown Moss",
   "block.beaconite813.beaconite_crop": "Luminous Bulb",
   "block.beaconite813.engorged_heart": "Engorged Heart",
+  "block.beaconite813.blazing_magma": "Blazing Magma",
 
   "block.beaconite813.base_beacon_block": "Polymorphic Beacon",
 
   "block.beaconite813.wrath_beacon": "Vengeant Beacon",
-  "block.beaconite813.lava_beacon": "Igneous Beacon",
+  "block.beaconite813.igneous_beacon": "Igneous Beacon",
   "block.beaconite813.solar_beacon": "Solar Beacon",
   "block.beaconite813.living_beacon": "Living Beacon",
   "block.beaconite813.amorph_beacon": "Amorphous Beacon",

@@ -56,6 +56,8 @@ public class beaconite813 {
                 BlockEntityRenderers.register(ModBlockEntities.REFINERY_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.CONSTRUCTOR_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.UNSTABLE_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.IGNEOUS_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.AMORPH_BEACON_BE.get(), BasicBeaconRenderer::new);
 
             }
 

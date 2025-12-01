@@ -38,9 +38,11 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.CONSTRUCTOR);
                 output.accept(ModBlocks.POLYMORPH_BEACONITE);
                 output.accept(ModBlocks.BASE_BEACON_BLOCK);
+                output.accept(ModBlocks.BLAZING_MAGMA);
                 output.accept(ModBlocks.LIVING_BLOCK);
-                output.accept(ModBlocks.LIVING_BEACON);
                 output.accept(ModBlocks.ENGORGED_HEART);
+                output.accept(ModBlocks.IGNEOUS_BEACON_BLOCK);
+                output.accept(ModBlocks.LIVING_BEACON);
                 output.accept(ModBlocks.AMORPH_BEACON_BLOCK);
                 //
 

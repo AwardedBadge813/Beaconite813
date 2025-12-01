@@ -10,8 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.lang.Math.*;
 import static java.lang.Thread.sleep;
@@ -52,7 +50,7 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
         this.beaconLevels=getLayers(level, pos);
         this.canSeeSky=getSkyStatus(level, pos)==1;
 
-        if(beaconLevels>8 && canSeeSky) {
+        if(beaconLevels>7 && canSeeSky) {
             int radius = restrict(80-5*beaconLevels, 20, 60);
             AABB range = new AABB(pos).inflate(radius).expandTowards(0, 300,0 );
             List<BubbleEntity> inRangeBubbles = new ArrayList<>(level.getEntitiesOfClass(BubbleEntity.class, range));
@@ -97,17 +95,18 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
     }
 
     @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
+        return saveWithoutMetadata(pRegistries);
+    }
+
+
+    @Override
     public List<BeaconBeamSection> getBeamSections() {
         BeaconBeamSection beamSection = new BeaconBeamSection();
         assert level != null;
-        beamSection.setParams(3949738, level.getMaxBuildHeight() - getBlockPos().getY());
+        beamSection.setParams(DyeColor.BLUE.getTextureDiffuseColor(), level.getMaxBuildHeight() - getBlockPos().getY());
 
         return List.of(beamSection);
-    }
-
-    @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
     }
 
     @Override

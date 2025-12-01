@@ -60,7 +60,7 @@ public interface CanFormBeacon {
             }
             y--;
         }
-        return min(currentLayer-1, Config.MAX_LEVEL_UNSTABLE_BEACON.getAsInt());
+        return min(currentLayer-1, Config.MAX_LEVEL_BEACON.getAsInt());
     }
 
 }

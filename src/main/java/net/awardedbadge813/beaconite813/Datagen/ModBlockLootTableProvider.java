@@ -44,6 +44,8 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ULTRA_DENSE_BEACONITE.get());
         dropSelf(ModBlocks.ENGORGED_HEART.get());
         dropSelf(ModBlocks.AMORPH_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.BLAZING_MAGMA.get());
+        dropSelf(ModBlocks.IGNEOUS_BEACON_BLOCK.get());
 
 
         LootItemCondition.Builder lootItemConditionBuilder =

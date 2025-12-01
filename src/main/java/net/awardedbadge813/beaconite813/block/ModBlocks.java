@@ -84,6 +84,14 @@ public class ModBlocks {
                             .sound(SoundType.MUD)
                     )
             );
+    public static final DeferredBlock<Block> BLAZING_MAGMA =
+            registerBlock("blazing_magma",
+                    () -> new
+                            Block(BlockBehaviour.Properties.of()
+                            .strength(8f)
+                            .sound(SoundType.NETHERRACK)
+                    )
+            );
 
 
 
@@ -114,6 +122,10 @@ public class ModBlocks {
     public static final DeferredBlock<Block> AMORPH_BEACON_BLOCK =registerBlock("amorph_beacon",
             () -> new AmorphousBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
 
+
+
+    public static final DeferredBlock<Block> IGNEOUS_BEACON_BLOCK =registerBlock("igneous_beacon",
+            () -> new IgneousBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.MUD).noOcclusion().requiresCorrectToolForDrops()));
 
 
 
