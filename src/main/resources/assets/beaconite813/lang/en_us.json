@@ -23,12 +23,18 @@
   "tooltip.beaconite813.constructor2.tooltip": "§9§oYou can get a max of 20 levels by default, changeable in the config.",
   "tooltip.beaconite813.constructor3.tooltip": "§9§oThe quarry talisman, if placed in the input, will make the constructor break blocks...",
   "tooltip.beaconite813.constructor4.tooltip": "§9§oBut you still need the beacon base blocks beneath!",
+
   "tooltip.beaconite813.living_beacon1.tooltip": "§9§oConsumes foods in the yellow slot and applies the food effects to nearby players.",
   "tooltip.beaconite813.living_beacon2.tooltip": "§9§oAdd extra food in the red slot to increase duration.",
   "tooltip.beaconite813.living_beacon3.tooltip": "§9§oMore effects mean that filling the beacon will be harder.",
   "tooltip.beaconite813.living_beacon4.tooltip": "§9§oMinimum beacon level is 6, maximum level is 15(Level X effects)",
   "tooltip.beaconite813.living_beacon5.tooltip": "§9§oWhen satiation runs out, all effects will be reset... Feed it regularly!",
   "tooltip.beaconite813.living_beacon6.tooltip": "§9§oAlso: Don't feed this a pufferfish. It will work and you will probably die.",
+
+  "tooltip.beaconite813.amorph_beacon1.tooltip": "§9§oForms Bubbles around the beacon that grant conduit power.",
+  "tooltip.beaconite813.amorph_beacon2.tooltip": "§9§oMinimum levels is 8, max is 17 (level X effects)",
+  "tooltip.beaconite813.amorph_beacon3.tooltip": "§9§oHigher levels shrink the range of bubble spawning, but make the bubbles give less time.",
+
   "tooltip.beaconite813.base_beacon_block1.tooltip": "§9§oThis block is used to form all other special beacons.",
   "tooltip.beaconite813.base_beacon_block2.tooltip": "§9§oPlace this beacon in the center of a 3x3 cube of a fitting material.",
   "tooltip.beaconite813.base_beacon_block3.tooltip": "§9§oBlocks made using encapsulated light can all be used, and will create different special beacons.",
@@ -39,11 +45,22 @@
   "block.beaconite813.reinforced_glass": "Reinforced Glass",
   "block.beaconite813.constructor": "Bea-Constructor",
   "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",
-  "block.beaconite813.living_beacon": "Living Beacon",
+
   "block.beaconite813.polymorph_block": "Polymorphic Beaconite Block",
-  "block.beaconite813.base_beacon_block": "Polymorphic Beacon",
-  "block.beaconite813.living_block": "Overgrown Block",
+
+  "block.beaconite813.living_block": "Overgrown Moss",
   "block.beaconite813.beaconite_crop": "Luminous Bulb",
+  "block.beaconite813.engorged_heart": "Engorged Heart",
+
+  "block.beaconite813.base_beacon_block": "Polymorphic Beacon",
+
+  "block.beaconite813.wrath_beacon": "Vengeant Beacon",
+  "block.beaconite813.lava_beacon": "Igneous Beacon",
+  "block.beaconite813.solar_beacon": "Solar Beacon",
+  "block.beaconite813.living_beacon": "Living Beacon",
+  "block.beaconite813.amorph_beacon": "Amorphous Beacon",
+  "block.beaconite813.regal_beacon": "Regal Beacon",
+  "block.beaconite813.ethereal_beacon": "Ethereal Beacon",
 
   "creativetab.awardedbadge813.beaconite_tab": "Beaconite"
 
