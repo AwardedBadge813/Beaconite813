@@ -196,9 +196,13 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         int random = (int) (random()*50)*(beaconRings-4);
         ArrayList<ItemStack> roll = new ArrayList<>();
         roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
-        if(random>49) {
+        if(random>40) {
             roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
             roll.add(new ItemStack(ModItems.CATALYST.get().asItem(), 1));
+        }
+        if(random>49) {
+            roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
+            roll.add(new ItemStack(ModItems.BEACONITE_SEED.get().asItem(), 3));
         }
         return roll;
     }

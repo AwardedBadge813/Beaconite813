@@ -6,6 +6,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
+import static java.lang.Math.min;
+
+
 public interface CanFormBeacon {
 
     default int getSkyStatus(Level level, BlockPos pos) {
@@ -57,7 +60,7 @@ public interface CanFormBeacon {
             }
             y--;
         }
-        return currentLayer-1;
+        return min(currentLayer-1, Config.MAX_LEVEL_UNSTABLE_BEACON.getAsInt());
     }
 
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.Math.*;
+import static java.lang.Thread.sleep;
 
 public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
     private int beaconLevels;
@@ -59,18 +60,28 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
             for (BubbleEntity bubble : inRangeBubbles) {
                 bubble.setPowerLevel(restrict(beaconLevels-8, 0, 9));
             }
+
+
             if(bubbleCount<=beaconLevels) {
                 int xPosStart = pos.getX()-radius;
                 int zPosStart = pos.getZ()-radius;
+
                 while (xPosStart <= (pos.getX() + radius)) {
                     while (zPosStart <= (pos.getZ() + radius)) {
+
                         if(random()< (double) 1 /(2*pow(radius, 2))) {
+                            try {
+                                sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             int yPos = level.getHeight(Heightmap.Types.WORLD_SURFACE, xPosStart, zPosStart);
                             BubbleEntity bubble = new BubbleEntity(ModEntities.BUBBLE.get(), level);
                             bubble.setAttributes(xPosStart, yPos+(int)(random()*5)+1, zPosStart, restrict(beaconLevels-8, 0, 9));
                             level.addFreshEntity(bubble);
                             bubbleCount++;
                         }
+
                         zPosStart++;
                     }
                     xPosStart++;
