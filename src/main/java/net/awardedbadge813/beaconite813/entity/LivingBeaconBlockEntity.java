@@ -1,5 +1,6 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.screen.custom.LivingBeaconMenu;
@@ -25,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -70,7 +72,6 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
                             //the amount of ContainerData slots is static, so I have to just store 0 for all the extra ones.
                             return 0;
                         }
-
                     }
                 }
             }
@@ -132,7 +133,10 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
         return Component.literal("living_beacon_be");
     }
 
-    public void tick (Level level, BlockPos pos) {
+    public void tick (Level level, BlockPos pos, BlockState blockState) {
+        if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
+            return;
+        }
         this.beaconLevels=getLayers(level, pos);
         this.canSeeSky=getSkyStatus(level, pos);
 
@@ -213,10 +217,6 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
         return false;
     }
 
-    @Override
-    public boolean IsBeaconActive() {
-        return true;
-    }
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
@@ -224,11 +224,18 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
     }
     @Override
     public List<BeaconBeamSection> getBeamSections() {
-        BeaconBeamSection beamSection = new BeaconBeamSection();
-        assert level != null;
-        beamSection.setParams(6192150, level.getMaxBuildHeight() - getBlockPos().getY());
+        BeaconBeamSection beamSection = null;
+        if(isBeaconActive(getLevel(), getBlockPos())) {
+            beamSection = new BeaconBeamSection();
+            assert level != null;
+            beamSection.setParams(DyeColor.GREEN.getTextureDiffuseColor(), level.getMaxBuildHeight() - getBlockPos().getY());
+            this.beamSections=List.of(beamSection);
+        }
+        return beamSection==null ? List.of(): List.of(beamSection);
+    }
 
-        return List.of(beamSection);
+    private boolean isBeaconActive(Level level, BlockPos pos) {
+        return getLayers(level, pos)>7 && getSkyStatus(level, pos)==1;
     }
 
 

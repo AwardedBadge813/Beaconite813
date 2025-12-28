@@ -28,6 +28,14 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.BEACON_BEAM_SHARD);
                 output.accept(ModItems.BEACON_BEAM_ITEM);
                 output.accept(ModItems.QUARRY_TALISMAN);
+                output.accept(ModItems.INVERT_TALISMAN);
+                output.accept(ModItems.ETHER_FILTER);
+                output.accept(ModItems.AURA_MODULE);
+                output.accept(ModItems.DIFFUSE_MODULE);
+                output.accept(ModItems.TRANSMUTE_MODULE);
+                output.accept(ModItems.INFUSE_MODULE);
+                output.accept(ModItems.BOTTOMLESS_BOTTLE);
+
 
                 output.accept(ModBlocks.BEACONITE_BLOCK);
                 output.accept(ModBlocks.BEACONITE_GLASS);
@@ -38,18 +46,37 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.CONSTRUCTOR);
                 output.accept(ModBlocks.POLYMORPH_BEACONITE);
                 output.accept(ModBlocks.BASE_BEACON_BLOCK);
+                output.accept(ModBlocks.WRATHFUL_FLESH);
                 output.accept(ModBlocks.BLAZING_MAGMA);
+                output.accept(ModBlocks.COINS_BLOCK);
                 output.accept(ModBlocks.LIVING_BLOCK);
+                output.accept(ModBlocks.ANTIMATTER_BLOCK);
                 output.accept(ModBlocks.ENGORGED_HEART);
+                output.accept(ModBlocks.INFUSED_OBSIDIAN);
+
+                output.accept(ModBlocks.VENGEANT_BEACON_BLOCK);
                 output.accept(ModBlocks.IGNEOUS_BEACON_BLOCK);
+                output.accept(ModBlocks.REGAL_BEACON_BLOCK);
                 output.accept(ModBlocks.LIVING_BEACON);
+                output.accept(ModBlocks.NEGATIVE_BEACON_BLOCK);
                 output.accept(ModBlocks.AMORPH_BEACON_BLOCK);
-                //
-
-
+                output.accept(ModBlocks.ETHER_BEACON_BLOCK);
 
 
             }).build());
+
+    //this allows the icons for effects to be visible in JEI.
+    public static final Supplier<CreativeModeTab> ICONS_TAB = CREATIVE_MODE_TAB.register("icons_tab", () -> CreativeModeTab.builder()
+            .icon(() -> new ItemStack(ModItems.AURIC_INTERFERENCE_ICON.get())).title(Component.translatable("creativetab.awardedbadge813.icons_tab"))
+            .displayItems((itemDisplayParameters, output) -> {
+                output.accept(ModItems.AURIC_INTERFERENCE_ICON);
+                output.accept(ModItems.WRATH_ICON);
+                output.accept(ModItems.CAPSAICIN_ICON);
+                output.accept(ModItems.MIDAS_ROT_ICON);
+                output.accept(ModItems.HYPERTROPHY_ICON);
+
+            }).build());
+
 
 
     public static void register(IEventBus eventbus) {

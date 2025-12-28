@@ -76,7 +76,7 @@ public class LivingBeaconBlock  extends BaseEntityBlock {
         }
 
         return createTickerHelper(blockEntityType, ModBlockEntities.LIVING_BEACON_BE.get(),
-                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos));
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
 
     }
 

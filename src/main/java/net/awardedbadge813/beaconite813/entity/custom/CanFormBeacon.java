@@ -2,9 +2,13 @@ package net.awardedbadge813.beaconite813.entity.custom;
 
 import net.awardedbadge813.beaconite813.Config;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BlockTypes;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
 import static java.lang.Math.min;
 
@@ -12,7 +16,6 @@ import static java.lang.Math.min;
 public interface CanFormBeacon {
 
     default int getSkyStatus(Level level, BlockPos pos) {
-        int canSeeSky = 0;
         int i = pos.getX();
         int j = pos.getY();
         int k = pos.getZ();
@@ -23,28 +26,25 @@ public interface CanFormBeacon {
                 foundBadBlock=true;
             }
         }
-        if (!foundBadBlock||!Config.UNSTABLE_BEACON_SEES_SKY.getAsBoolean()) {
-            canSeeSky = 1;
-        }
-        return canSeeSky;
+        return foundBadBlock? 0:1;
     }
 
-    private int getX(BlockPos pos, int n) {
+    default int getX(BlockPos pos, int n) {
         return pos.getX()-n;
     }
-    private int getZ(BlockPos pos, int n) {
+    default int getZ(BlockPos pos, int n) {
         return pos.getZ()-n;
     }
 
-    private int levelSize(int n) {
+    default int levelSize(int n) {
         return 1+2*n;
     }
 
-    private boolean checkBlockStateForBeaconBlock(Level level, BlockPos pPos) {
+    default boolean checkBlockStateForBeaconBlock(Level level, BlockPos pPos) {
         return level.getBlockState(pPos).is(BlockTags.BEACON_BASE_BLOCKS);
     }
-    private boolean checkBlockStateForBeaconPassable(Level level, BlockPos pos) {
-        return level.getBlockState(pos).is(Blocks.AIR.defaultBlockState().getBlock())||level.getBlockState(pos).is(Blocks.BEDROCK.defaultBlockState().getBlock())||level.getBlockState(pos).is(Blocks.GLASS.defaultBlockState().getBlock());
+    default boolean checkBlockStateForBeaconPassable(Level level, BlockPos pos) {
+        return level.getBlockState(pos).is(Blocks.AIR.defaultBlockState().getBlock())||level.getBlockState(pos).is(Blocks.BEDROCK.defaultBlockState().getBlock())||level.getBlockState(pos).propagatesSkylightDown(level, pos);
     }
 
     default int getLayers(Level level, BlockPos pos) {

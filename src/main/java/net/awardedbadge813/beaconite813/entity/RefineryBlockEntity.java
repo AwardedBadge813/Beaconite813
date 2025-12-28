@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
+import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
@@ -137,16 +139,17 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-    private boolean update=false;
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        this.layers = getLayers(level, blockPos)+1;
-        if (!update) {
-            getBeamUpdated();
+        if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
+            return;
         }
+        this.layers = getLayers(level, blockPos);
         if(hasRecipe() && getSkyStatus(level, blockPos)==1) {
             progress++;
-            setChanged(level, blockPos, blockState);
+            if((int)level.getGameTime()%80==0) {
+                requestModelDataUpdate();
+            }
             if(hasCraftingFinished()) {
                 craftItem();
                 resetProgress();
@@ -185,7 +188,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
 
     private void resetProgress() {
         progress=0;
-        maxProgress = (Config.REFINERY_COOK_TIME.getAsInt()/layers);
+        maxProgress = (Config.REFINERY_COOK_TIME.getAsInt()/(layers+1));
     }
 
     public static int inventory_max=8; //hardcoded for now
@@ -224,30 +227,20 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
 
 
     @Override
-    public boolean IsBeaconActive() {
-        return true;
+    public List<BeaconBeamSection> getBeamSections() {
+        BeaconBeamSection beamSection = null;
+        if(isBeaconActive(getLevel(), getBlockPos())) {
+            beamSection = new BeaconBeamSection();
+            assert getLevel() != null;
+            beamSection.setParams(DyeColor.MAGENTA.getTextureDiffuseColor(), getLevel().getMaxBuildHeight() - getBlockPos().getY());
+            this.beamSections=List.of(beamSection);
+        }
+        return beamSection==null ? List.of(): List.of(beamSection);
     }
 
-
-    public void getBeamUpdated() {
-        beamSections = new ArrayList<>();
-        assert level!=null;
-        for(int i=0; i<=level.getMaxBuildHeight(); i+=5) {
-            BeaconBeamSection beamSection = new BeaconBeamSection();
-            beamSection.setParams(DyeColor.byId(i%16).getTextureDiffuseColor(), 5);
-            beamSections.add(beamSection);
-        }
-        update=true;
-    }
-
-
-    private ArrayList<BeaconBeamSection> beamSections = new ArrayList<>();
-
-    public ArrayList<BeaconBeamSection> getBeamSections() {
-        if (beamSections.isEmpty()) {
-            getBeamUpdated();
-        }
-        return this.IsBeaconActive() ? this.beamSections: new ArrayList<>();
+    private boolean isBeaconActive(Level level, BlockPos pos) {
+        //I legitimately have no idea why this works. But it does. This only returns true when the data is >0.
+        return getSkyStatus(level, pos)==1;
     }
 
 }

@@ -24,5 +24,17 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.BEACONITE_SEED.get());
         basicItem(ModItems.BEACON_BEAM_SHARD.get());
         basicItem(ModItems.BEACON_BEAM_ITEM.get());
+        basicItem(ModItems.AURA_MODULE.get());
+        basicItem(ModItems.DIFFUSE_MODULE.get());
+        basicItem(ModItems.TRANSMUTE_MODULE.get());
+        basicItem(ModItems.INFUSE_MODULE.get());
+        basicItem(ModItems.ETHER_FILTER.get());
+        basicItem(ModItems.BOTTOMLESS_BOTTLE.get());
+        basicItem(ModItems.DORMANT_BOTTLE.get());
+        basicItem(ModItems.AURIC_INTERFERENCE_ICON.get());
+        basicItem(ModItems.WRATH_ICON.get());
+        basicItem(ModItems.CAPSAICIN_ICON.get());
+        basicItem(ModItems.MIDAS_ROT_ICON.get());
+        basicItem(ModItems.HYPERTROPHY_ICON.get());
     }
 }

@@ -1,0 +1,12 @@
+GENERAL CREDITS :
+
+    Credit to Kaupenjoe for most of the underlying codebase, thank you! extremely helpful resource for turning a bunch of funny words into code that works.
+    mostly used for registries & setup (the 1.21.1 modding tutorial), within which I modified the code to actually suit this mod instead of make bismuth, etc.
+
+    Also credit to Kaupenjoe for the general GUI style (background color and player inventory slot texture), not sure where it came from but used the style of the pedestal GUI for all GUIs in the mod.
+    I believe this is also credit to mojang since that GUI is based on vanilla?
+
+    credit to diesieben07 | https://github.com/diesieben07/SevenCommons for the ItemStackHandler QuickMoveStack code, should be additionally credited whenever the code is used, but I also wanted to include it here for comprehensivity.
+    Some QuickMoveStacks were changed around to better suit the inventory they were used for, but the underlying framework was made by diesieben07.
+
+    Obviously Credit to mojang for the game code available for reference, but most importantly the beacon models and renderers are heavily inspired by vanilla mechanics so I thought it would make sense to mention that here.

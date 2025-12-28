@@ -24,8 +24,12 @@ public class ModMenuTypes {
             registerMenuType("unstable_beacon_menu", UnstableBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<ConstructorMenu>> CONSTRUCTOR_MENU =
             registerMenuType("constructor_menu", ConstructorMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<RegalBeaconMenu>> REGAL_BEACON_MENU =
+            registerMenuType("regal_beacon_menu", RegalBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<LivingBeaconMenu>> LIVING_BEACON_MENU =
             registerMenuType("living_beacon_menu", LivingBeaconMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<EtherealBeaconMenu>> ETHER_BEACON_MENU =
+            registerMenuType("ether_beacon_menu", EtherealBeaconMenu::new);
 
 
 

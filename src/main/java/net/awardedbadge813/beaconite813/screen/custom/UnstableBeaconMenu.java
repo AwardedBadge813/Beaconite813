@@ -32,10 +32,6 @@ public class UnstableBeaconMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
         int leftXpos = 25;
         int lowYpos  =84;
-        int timeToExplode =this.data.get(0);
-        int beaconRings = this.data.get(1);
-        int beaconActive = this.data.get(2);
-        int explosionActive = this.data.get(3);
 
 
         this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 0, leftXpos+84, lowYpos));

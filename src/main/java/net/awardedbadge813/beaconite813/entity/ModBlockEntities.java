@@ -25,13 +25,33 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("constructor_be", () -> BlockEntityType.Builder.of(
                             ConstructorBlockEntity::new, ModBlocks.CONSTRUCTOR.get())
                     .build(null));
+    public static final Supplier<BlockEntityType<BaseBeaconBlockEntity>> BASE_BEACON_BLOCK_BE =
+            BLOCK_ENTITIES.register("base_beacon_block_be", () -> BlockEntityType.Builder.of(
+                            BaseBeaconBlockEntity::new, ModBlocks.BASE_BEACON_BLOCK.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<VengeantBeaconBlockEntity>> VENGEANT_BEACON_BE =
+            BLOCK_ENTITIES.register("vengeant_beacon_be", () -> BlockEntityType.Builder.of(
+                            VengeantBeaconBlockEntity::new, ModBlocks.VENGEANT_BEACON_BLOCK.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<IgneousBeaconBlockEntity>> IGNEOUS_BEACON_BE =
+            BLOCK_ENTITIES.register("igneous_beacon_be", () -> BlockEntityType.Builder.of(
+                            IgneousBeaconBlockEntity::new, ModBlocks.IGNEOUS_BEACON_BLOCK.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<RegalBeaconBlockEntity>> REGAL_BEACON_BE =
+            BLOCK_ENTITIES.register("regal_beacon_be", () -> BlockEntityType.Builder.of(
+                            RegalBeaconBlockEntity::new, ModBlocks.REGAL_BEACON_BLOCK.get())
+                    .build(null));
     public static final Supplier<BlockEntityType<LivingBeaconBlockEntity>> LIVING_BEACON_BE =
             BLOCK_ENTITIES.register("living_beacon_be", () -> BlockEntityType.Builder.of(
                             LivingBeaconBlockEntity::new, ModBlocks.LIVING_BEACON.get())
                     .build(null));
-    public static final Supplier<BlockEntityType<BaseBeaconBlockEntity>> BASE_BEACON_BLOCK_BE =
-            BLOCK_ENTITIES.register("base_beacon_block_be", () -> BlockEntityType.Builder.of(
-                            BaseBeaconBlockEntity::new, ModBlocks.BASE_BEACON_BLOCK.get())
+
+    public static final Supplier<BlockEntityType<NegativeBeaconBlockEntity>> NEGATIVE_BEACON_BE =
+            BLOCK_ENTITIES.register("negative_beacon_be", () -> BlockEntityType.Builder.of(
+                            NegativeBeaconBlockEntity::new, ModBlocks.NEGATIVE_BEACON_BLOCK.get())
                     .build(null));
 
     public static final Supplier<BlockEntityType<AmorphousBeaconBlockEntity>> AMORPH_BEACON_BE =
@@ -39,10 +59,13 @@ public class ModBlockEntities {
                             AmorphousBeaconBlockEntity::new, ModBlocks.AMORPH_BEACON_BLOCK.get())
                     .build(null));
 
-    public static final Supplier<BlockEntityType<IgneousBeaconBlockEntity>> IGNEOUS_BEACON_BE =
-            BLOCK_ENTITIES.register("igneous_beacon_be", () -> BlockEntityType.Builder.of(
-                            IgneousBeaconBlockEntity::new, ModBlocks.IGNEOUS_BEACON_BLOCK.get())
+    public static final Supplier<BlockEntityType<EtherealBeaconBlockEntity>> ETHER_BEACON_BE =
+            BLOCK_ENTITIES.register("ethereal_beacon_be", () -> BlockEntityType.Builder.of(
+                            EtherealBeaconBlockEntity::new, ModBlocks.ETHER_BEACON_BLOCK.get())
                     .build(null));
+
+
+
 
     public static void register(IEventBus eventBus){
         BLOCK_ENTITIES.register(eventBus);

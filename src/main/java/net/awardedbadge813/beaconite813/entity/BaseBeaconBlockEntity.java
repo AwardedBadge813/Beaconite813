@@ -1,6 +1,8 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
+import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -44,17 +46,32 @@ public class BaseBeaconBlockEntity extends BlockEntity {
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
+    public boolean isDisabled(ToggleableBlockItem blockItem) {
+        return blockItem.isDisabled();
+    }
 
-    public void tick(Level level, BlockPos blockPos) {
-        AABB aabb = new AABB(blockPos).inflate(1);
-        checkForInput(aabb, blockPos, ModBlocks.LIVING_BLOCK.get(), ModBlocks.LIVING_BEACON.get(), level);
-        checkForInput(aabb, blockPos, ModBlocks.ENGORGED_HEART.get(), ModBlocks.AMORPH_BEACON_BLOCK.get(), level);
-        checkForInput(aabb, blockPos, ModBlocks.BLAZING_MAGMA.get(), ModBlocks.IGNEOUS_BEACON_BLOCK.get(), level);
+    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
+        if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
+            return;
+        }
+        AABB aabb = new AABB(blockPos).inflate(0.5);
+        checkForInput(aabb, blockPos, ModBlocks.WRATHFUL_FLESH.get(), ModBlocks.VENGEANT_BEACON_BLOCK.get(), level, -1);
+        checkForInput(aabb, blockPos, ModBlocks.BLAZING_MAGMA.get(), ModBlocks.IGNEOUS_BEACON_BLOCK.get(), level, -1);
+        checkForInput(aabb, blockPos, ModBlocks.COINS_BLOCK.get(), ModBlocks.REGAL_BEACON_BLOCK.get(), level, -1);
+        checkForInput(aabb, blockPos, ModBlocks.LIVING_BLOCK.get(), ModBlocks.LIVING_BEACON.get(), level, -1);
+        checkForInput(aabb, blockPos, ModBlocks.ANTIMATTER_BLOCK.get(), ModBlocks.NEGATIVE_BEACON_BLOCK.get(), level, 1);
+        checkForInput(aabb, blockPos, ModBlocks.ENGORGED_HEART.get(), ModBlocks.AMORPH_BEACON_BLOCK.get(), level, -1);
+        checkForInput(aabb, blockPos, ModBlocks.INFUSED_OBSIDIAN.get(), ModBlocks.ETHER_BEACON_BLOCK.get(), level, -1);
+
+
 
     }
 
-    //abstracted to support additional multiblock recipes. planing on adding more than just 1 beacon for the polymorphic beacon.
-    public void checkForInput(AABB aabb, BlockPos blockPos, Block inputBlock, Block outputBlock, Level level) {
+    //abstracted to support additional multiblock recipes. note that this ONLY works for a complete 3x3 cube.
+    public void checkForInput(AABB aabb, BlockPos blockPos, Block inputBlock, Block outputBlock, Level level, Integer offsetY) {
+        if (outputBlock.asItem() instanceof ToggleableBlockItem &&  isDisabled((ToggleableBlockItem) outputBlock.asItem())) {
+            return;
+        }
         int input = 0;
         assert level != null;
         for (BlockState blockstate : level.getBlockStates(aabb).toList()) {
@@ -72,9 +89,9 @@ public class BaseBeaconBlockEntity extends BlockEntity {
                         BlockPos pos1 = new BlockPos(xVal, yVal, zVal);
                         level.setBlockAndUpdate(pos1, Blocks.AIR.defaultBlockState());
                     }
-                    }
+                }
             }
-            level.setBlockAndUpdate(new BlockPos(blockPos.getX(), blockPos.getY()-1, blockPos.getZ()), outputBlock.defaultBlockState());
+            level.setBlockAndUpdate(new BlockPos(blockPos.getX(), blockPos.getY()+ offsetY, blockPos.getZ()), outputBlock.defaultBlockState());
             EntityType.LIGHTNING_BOLT.spawn((ServerLevel) level, blockPos, MobSpawnType.EVENT);
             level.playSound(null, blockPos, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.AMBIENT);
         }

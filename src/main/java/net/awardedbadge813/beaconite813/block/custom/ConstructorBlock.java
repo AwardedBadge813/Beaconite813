@@ -15,11 +15,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +33,12 @@ public class ConstructorBlock extends BaseEntityBlock {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor_joke.tooltip"));
         if(Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor2.tooltip"));
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor3.tooltip"));
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor4.tooltip"));
         }else {
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.constructor_joke.tooltip"));
+
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
         }
 
@@ -50,6 +52,11 @@ public class ConstructorBlock extends BaseEntityBlock {
 
     public ConstructorBlock(Properties properties) {
         super(properties);
+    }
+    public static final BooleanProperty BASE_DOWN = BooleanProperty.create("base_down");
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BASE_DOWN);
     }
 
     @Override
@@ -94,6 +101,6 @@ public class ConstructorBlock extends BaseEntityBlock {
         }
 
         return createTickerHelper(blockEntityType, ModBlockEntities.CONSTRUCTOR_BE.get(),
-                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos));
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
     }
 }

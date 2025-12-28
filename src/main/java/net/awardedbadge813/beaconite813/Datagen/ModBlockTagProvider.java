@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813.Datagen;
 
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.util.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
@@ -35,7 +36,13 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ENGORGED_HEART.get())
                 .add(ModBlocks.AMORPH_BEACON_BLOCK.get())
                 .add(ModBlocks.BLAZING_MAGMA.get())
-                .add(ModBlocks.IGNEOUS_BEACON_BLOCK.get());
+                .add(ModBlocks.IGNEOUS_BEACON_BLOCK.get())
+                .add(ModBlocks.INFUSED_OBSIDIAN.get())
+                .add(ModBlocks.ETHER_BEACON_BLOCK.get())
+                .add(ModBlocks.NEGATIVE_BEACON_BLOCK.get())
+                .add(ModBlocks.ANTIMATTER_BLOCK.get())
+                .add(ModBlocks.DORMANT_EGG.get());
+
 
 
         tag(BlockTags.MINEABLE_WITH_SHOVEL)
@@ -45,6 +52,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BEACONITE_GLASS.get())
                 .add(ModBlocks.BEACONITE_BLOCK.get())
                 .add(ModBlocks.CONDENSED_BEACONITE.get())
+                .add(ModBlocks.INFUSED_OBSIDIAN.get())
                 .add(ModBlocks.ULTRA_DENSE_BEACONITE.get());
 
         tag(BlockTags.BEACON_BASE_BLOCKS)
@@ -54,6 +62,10 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.ULTRA_DENSE_BEACONITE.get())
                 .add(ModBlocks.BEACONITE_BLOCK.get())
                 .add(ModBlocks.CONDENSED_BEACONITE.get());
+        tag(BlockTags.NEEDS_DIAMOND_TOOL)
+            .add(ModBlocks.INFUSED_OBSIDIAN.get());
+
+
 
 
 

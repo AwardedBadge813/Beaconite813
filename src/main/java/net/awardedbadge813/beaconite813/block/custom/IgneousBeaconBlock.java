@@ -44,14 +44,26 @@ public class IgneousBeaconBlock extends BaseEntityBlock {
         }
 
     }
-//
+
+    // this beacon is not called the infernal beacon because it just sounds better.
+    // I see no reason to refactor everything just to change the name, everything in the code checks out.
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon_joke.tooltip"));
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon_joke2.tooltip"));
         if(Screen.hasShiftDown()){
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon1.tooltip"));
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.igneous_beacon2.tooltip"));
-        } else {
+        }
+        if (Screen.hasControlDown()){
+            tooltipComponents.add(Component.translatable("item.beaconite813.capsaicin_effect_icon"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.capsaicin_effect.tooltip"));
+        }
+        if(!Screen.hasShiftDown()) {
             tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+        }
+        if(!Screen.hasControlDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.ctrl.tooltip"));
         }
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }

@@ -1,17 +1,20 @@
 package net.awardedbadge813.beaconite813;
 
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.effect.ModEffects;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ModEntities;
 import net.awardedbadge813.beaconite813.entity.client.BubbleRenderer;
 import net.awardedbadge813.beaconite813.entity.client.ExplosionEntityRenderer;
-import net.awardedbadge813.beaconite813.entity.custom.BasicBeaconRenderer;
+import net.awardedbadge813.beaconite813.entity.client.BasicBeaconRenderer;
 import net.awardedbadge813.beaconite813.item.ModCreativeModeTabs;
 import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.potion.ModPotions;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.awardedbadge813.beaconite813.screen.custom.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -27,6 +30,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(beaconite813.MOD_ID)
@@ -45,57 +50,35 @@ public class beaconite813 {
                 event.register(ModMenuTypes.REFINERY_MENU.get(), RefineryScreen::new);
                 event.register(ModMenuTypes.UNSTABLE_BEACON_MENU.get(), UnstableBeaconScreen::new);
                 event.register(ModMenuTypes.CONSTRUCTOR_MENU.get(), ConstructorScreen::new);
+                event.register(ModMenuTypes.REGAL_BEACON_MENU.get(), RegalBeaconScreen::new);
                 event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
+                event.register(ModMenuTypes.ETHER_BEACON_MENU.get(), EtherealBeaconScreen::new);
             }
 
             @SubscribeEvent
             public static void onClientSetup(FMLClientSetupEvent event) {
                 EntityRenderers.register(ModEntities.EXPLOSION.get(), ExplosionEntityRenderer::new);
                 EntityRenderers.register(ModEntities.BUBBLE.get(), BubbleRenderer::new);
-                BlockEntityRenderers.register(ModBlockEntities.LIVING_BEACON_BE.get(), BasicBeaconRenderer::new);
+
                 BlockEntityRenderers.register(ModBlockEntities.REFINERY_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.CONSTRUCTOR_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.UNSTABLE_BEACON_BE.get(), BasicBeaconRenderer::new);
+
+                BlockEntityRenderers.register(ModBlockEntities.VENGEANT_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.IGNEOUS_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.REGAL_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.LIVING_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.NEGATIVE_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.AMORPH_BEACON_BE.get(), BasicBeaconRenderer::new);
+                BlockEntityRenderers.register(ModBlockEntities.ETHER_BEACON_BE.get(), BasicBeaconRenderer::new);
+
+
 
             }
 
 
         }
 
-
-
-    /*
-    // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
-
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
-    // Create a Deferred Register to hold Items which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
-
-    // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
-    // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
-
-    // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.beaconite813")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
-    */
-
-    // The constructor for the mod class is the first code that is run when your mod is loaded.
-    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public beaconite813(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -108,6 +91,8 @@ public class beaconite813 {
         ModBlockEntities.register(modEventBus);
         ModEntities.register(modEventBus);
         ModRecipes.register(modEventBus);
+        ModPotions.register(modEventBus);
+        ModEffects.register(modEventBus);
 
 
 
@@ -160,13 +145,15 @@ public class beaconite813 {
     GENERAL CREDITS :
 
     Credit to Kaupenjoe for most of the underlying codebase, thank you! extremely helpful resource for turning a bunch of funny words into code that works.
-    mostly used for registries & setup (the 1.21.1 modding tutorial), within which I modified the code to actually suit this mod instead of make bismuth.
+    mostly used for registries & setup (the 1.21.1 modding tutorial), within which I modified the code to actually suit this mod instead of make bismuth, etc.
 
-    Also credit to Kaupenjoe for the general GUI design, not sure where it came from but used the style of the pedestal GUI for all GUIs in the mod.
+    Also credit to Kaupenjoe for the general GUI style (background color and player inventory slot texture), not sure where it came from but used the style of the pedestal GUI for all GUIs in the mod.
     I believe this is also credit to mojang since that GUI is based on vanilla?
 
-    credit to Desieben for the ItemStackHandler QuickStack code, should be additionally credited whenever the code is used, but I also wanted to include it here for comprehensivity.
+    credit to diesieben07 | https://github.com/diesieben07/SevenCommons for the ItemStackHandler QuickMoveStack code, should be additionally credited whenever the code is used, but I also wanted to include it here for comprehensivity.
+    Some QuickMoveStacks were changed around to better suit the inventory they were used for, but the underlying framework was made by diesieben07.
 
+    Obviously Credit to mojang for the game code available for reference, but most importantly the beacon models and renderers are heavily inspired by vanilla mechanics so I thought it would make sense to mention that here.
 
  */
 }

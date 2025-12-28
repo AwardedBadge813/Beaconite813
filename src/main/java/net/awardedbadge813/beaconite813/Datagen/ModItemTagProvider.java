@@ -1,6 +1,9 @@
 package net.awardedbadge813.beaconite813.Datagen;
 
 import net.awardedbadge813.beaconite813.beaconite813;
+import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.util.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -18,5 +21,14 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
+        tag(ModTags.Items.ETHEREAL_MODULES)
+                .add(ModItems.AURA_MODULE.get())
+                .add(ModItems.DIFFUSE_MODULE.get())
+                .add(ModItems.TRANSMUTE_MODULE.get())
+                .add(ModItems.INFUSE_MODULE.get())
+                .add(ModItems.BOTTOMLESS_BOTTLE.get());
+        tag(ModTags.Items.ETHEREAL_INFUSIBLE)
+                .add(ModBlocks.DORMANT_EGG.get().asItem())
+                .add(ModItems.DORMANT_BOTTLE.get());
     }
 }

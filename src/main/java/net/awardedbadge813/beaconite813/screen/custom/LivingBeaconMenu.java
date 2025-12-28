@@ -6,6 +6,7 @@ package net.awardedbadge813.beaconite813.screen.custom;
 //
 
 import net.awardedbadge813.beaconite813.entity.LivingBeaconBlockEntity;
+import net.awardedbadge813.beaconite813.entity.RegalBeaconBlockEntity;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;

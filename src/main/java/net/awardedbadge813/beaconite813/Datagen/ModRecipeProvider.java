@@ -7,6 +7,10 @@ import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.nbt.TagTypes;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.EmptyMapItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
@@ -32,7 +36,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_beaconite", has(ModItems.BEACONITE)).save(recipeOutput);
 
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BEACONITE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BEACONITE.get(), 4)
                 .pattern("BCB")
                 .pattern("CDC")
                 .pattern("BCB")
@@ -46,7 +50,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BCB")
                 .pattern("CDC")
                 .pattern("BCB")
-                .define('B', ModBlocks.ULTRA_DENSE_BEACONITE.get())
+                .define('B', ModItems.PURE_BEACONITE.get())
                 .define('C', Items.NETHERITE_PICKAXE.asItem())
                 .define('D', ModItems.CATALYST.asItem())
                 .unlockedBy("has_pure_beaconite", has(ModItems.PURE_BEACONITE))
@@ -171,6 +175,98 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('B', ModItems.BEACON_BEAM_ITEM.get())
                 .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
                 .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.INFUSED_OBSIDIAN.get(), 64)
+                .pattern("BBB")
+                .pattern("BCB")
+                .pattern("BBB")
+                .define('C', Items.DRAGON_EGG.asItem())
+                .define('B', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.AURA_MODULE.get(), 1)
+                .pattern("EAE")
+                .pattern("ACA")
+                .pattern("EAE")
+                .define('A', Items.HOPPER.asItem())
+                .define('C', ModItems.ETHER_FILTER.get())
+                .define('E', ModItems.PURE_BEACONITE.get())
+                .unlockedBy("has_ether_filter", has(ModItems.ETHER_FILTER))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DIFFUSE_MODULE.get(), 1)
+                .pattern("EAE")
+                .pattern("ACA")
+                .pattern("EAE")
+                .define('A', Items.DISPENSER.asItem())
+                .define('C', ModItems.ETHER_FILTER.get())
+                .define('E', ModItems.PURE_BEACONITE.get())
+                .unlockedBy("has_ether_filter", has(ModItems.ETHER_FILTER))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TRANSMUTE_MODULE.get(), 1)
+                .pattern("EAE")
+                .pattern("ACA")
+                .pattern("EAE")
+                .define('A', ModItems.CATALYST.get())
+                .define('C', ModItems.ETHER_FILTER.get())
+                .define('E', ModItems.PURE_BEACONITE.get())
+                .unlockedBy("has_ether_filter", has(ModItems.ETHER_FILTER))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.INFUSE_MODULE.get(), 1)
+                .pattern("EAE")
+                .pattern("ACA")
+                .pattern("EAE")
+                .define('A', Items.DRAGON_HEAD.asItem())
+                .define('C', ModItems.ETHER_FILTER.get())
+                .define('E', ModItems.PURE_BEACONITE.get())
+                .unlockedBy("has_ether_filter", has(ModItems.ETHER_FILTER))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.ETHER_FILTER.get(), 4)
+                .pattern("CAC")
+                .pattern("ABA")
+                .pattern("CAC")
+                .define('A', Items.PAPER.asItem())
+                .define('B', ModItems.BEACON_POWDER.get())
+                .define('C', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.DORMANT_EGG.get(), 1)
+                .pattern(" A ")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A', Blocks.CRYING_OBSIDIAN.asItem())
+                .define('B', ModBlocks.ULTRA_DENSE_BEACONITE.get())
+                .unlockedBy("has_infusion_module", has(ModItems.INFUSE_MODULE))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DORMANT_BOTTLE.get(), 1)
+                .pattern("EEE")
+                .pattern("CAC")
+                .pattern("CCC")
+                .define('A', ModItems.CATALYST.get())
+                .define('C', Items.GLASS.asItem())
+                .define('E', ItemTags.WOODEN_SLABS)
+                .unlockedBy("has_ether_filter", has(ModItems.ETHER_FILTER))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ANTIMATTER_BLOCK.get(), 4)
+                .pattern("BBB")
+                .pattern("BCB")
+                .pattern("BBB")
+                .define('C', Items.BEACON.asItem())
+                .define('B', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM))
+                .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.INVERT_TALISMAN.get(), 1)
+                .pattern("BDB")
+                .pattern("DCD")
+                .pattern("BDB")
+                .define('C', ModItems.CATALYST.get())
+                .define('B', ModItems.PURE_BEACONITE.get())
+                .define('D', ModBlocks.ANTIMATTER_BLOCK.get())
+                .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.WRATHFUL_FLESH.get(), 1)
+                .requires(Items.ROTTEN_FLESH)
+                .requires(ModItems.BEACON_BEAM_ITEM)
+                .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM)).save(recipeOutput);
 
 
 
@@ -186,6 +282,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PURE_BEACONITE.get(), 9)
                 .requires(ModBlocks.ULTRA_DENSE_BEACONITE)
                 .unlockedBy("has_pure_beaconite_block", has(ModBlocks.ULTRA_DENSE_BEACONITE)).save(recipeOutput, "pb_from_block");
+
+
 
 
         //this can only be used to smelt single items, and the mod has no single-item smelting, but I would like to keep the compatibility in case anything new is added later.

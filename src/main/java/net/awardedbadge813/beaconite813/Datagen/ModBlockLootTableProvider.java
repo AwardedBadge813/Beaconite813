@@ -33,6 +33,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.LIVING_BLOCK.get());
         dropSelf(ModBlocks.BASE_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.REGAL_BEACON_BLOCK.get());
         dropSelf(ModBlocks.LIVING_BEACON.get());
         dropSelf(ModBlocks.CONSTRUCTOR.get());
         dropSelf(ModBlocks.UNSTABLE_BEACON.get());
@@ -44,8 +45,16 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.ULTRA_DENSE_BEACONITE.get());
         dropSelf(ModBlocks.ENGORGED_HEART.get());
         dropSelf(ModBlocks.AMORPH_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.WRATHFUL_FLESH.get());
         dropSelf(ModBlocks.BLAZING_MAGMA.get());
+        dropSelf(ModBlocks.COINS_BLOCK.get());
         dropSelf(ModBlocks.IGNEOUS_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.ETHER_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.INFUSED_OBSIDIAN.get());
+        dropSelf(ModBlocks.DORMANT_EGG.get());
+        dropSelf(ModBlocks.ANTIMATTER_BLOCK.get());
+        dropSelf(ModBlocks.NEGATIVE_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.VENGEANT_BEACON_BLOCK.get());
 
 
         LootItemCondition.Builder lootItemConditionBuilder =

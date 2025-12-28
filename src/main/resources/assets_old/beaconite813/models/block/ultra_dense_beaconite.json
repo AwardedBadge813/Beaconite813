@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures":  {
-    "all": "beaconite813:block/ultra_dense_beaconite"
-  }
-}

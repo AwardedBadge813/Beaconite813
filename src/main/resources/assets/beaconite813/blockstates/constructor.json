@@ -1,8 +1,11 @@
 
 {
   "variants": {
-    "": {
+    "base_down=true": {
       "model": "beaconite813:block/constructor"
+    },
+    "base_down=false": {
+      "model": "beaconite813:block/constructor_invert"
     }
   }
 }
