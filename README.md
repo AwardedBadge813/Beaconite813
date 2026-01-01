@@ -1,16 +1,15 @@
 
-Installation information
+AwardedBadge813's Beaconite Mod
 =======
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+This mod adds custom items, blocks, and effects to spice up the endgame beacon making process. 
+Some notable additions include more usages for nether stars, the ability to condense and collect potion effects, and the ability to increase loot drops using diamonds and similar materials.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
-
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+If you have an issue with this mod, consider making a report! I'm likely going to stay active on this, so feel free to reach out to me and I'll try to make it right.
+also: this is my first mod, so if I have made something wrong or unconventional, I would love to hear any criticisms you have about the code or mechanics!
+This mod is made with the MIT license, so you are free to use/decompile/modify the code to see how I did things or get inspired.
+This is also made with standard mapping names, the info for that is preserved for the ModDevGradle README below.
+Thanks for reading, and I hope you enjoy my mod!
 
 Mapping Names:
 ============
