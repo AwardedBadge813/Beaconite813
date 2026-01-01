@@ -118,6 +118,8 @@ public class Config {
             .comment("Disabling an effect icon will disable the corresponding effect i.e. it will not be applied through normal circumstances and will immediately remove itself if applied.")
             .defineListAllowEmpty("enabledItemsMaster",
                     List.of(
+                            "beaconite813:dormant_bottle",
+                            "beaconite813:dormant_egg",
                             "beaconite813:beaconite",
                             "beaconite813:refined_beaconite",
                             "beaconite813:pure_beaconite",

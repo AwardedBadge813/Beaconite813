@@ -35,6 +35,8 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.TRANSMUTE_MODULE);
                 output.accept(ModItems.INFUSE_MODULE);
                 output.accept(ModItems.BOTTOMLESS_BOTTLE);
+                output.accept(ModItems.DORMANT_BOTTLE);
+                output.accept(ModBlocks.DORMANT_EGG);
 
 
                 output.accept(ModBlocks.BEACONITE_BLOCK);

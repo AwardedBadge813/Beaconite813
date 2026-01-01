@@ -335,17 +335,19 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
                     }
                     isPlacing = true;
                     nextBlockLocation();
-                } else if (userSelectedLevel != updatedLevel) {
+                } else if (userSelectedLevel != updatedLevel && extractFirstUsableItem(inputItemHandler, true)!=ItemStack.EMPTY) {
                     nextBlockLocation();
                 } else {
                     isPlacing = false;
+                    break;
                 }
             }
-            if (isPlacing) {
-                counter++;
-            } else {
-                this.counter=0;
-            }
+
+        }
+        if (isPlacing) {
+            counter++;
+        } else {
+            this.counter=0;
         }
     }
 
