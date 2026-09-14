@@ -30,6 +30,9 @@ public class ModMenuTypes {
             registerMenuType("living_beacon_menu", LivingBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<EtherealBeaconMenu>> ETHER_BEACON_MENU =
             registerMenuType("ether_beacon_menu", EtherealBeaconMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<StorageBeaconMenu>> STORAGE_BEACON_MENU =
+            registerMenuType("storage_beacon_menu", StorageBeaconMenu::new);
+
 
 
 

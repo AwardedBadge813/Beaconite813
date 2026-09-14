@@ -19,6 +19,7 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.BEACONITE.get());
         basicItem(ModItems.PURE_BEACONITE.get());
         basicItem(ModItems.QUARRY_TALISMAN.get());
+        basicItem(ModItems.DIM_LATTICE.get());
         basicItem(ModBlocks.REFINERY.asItem());
         basicItem(ModItems.BEACON_POWDER.get());
         basicItem(ModItems.BEACONITE_SEED.get());

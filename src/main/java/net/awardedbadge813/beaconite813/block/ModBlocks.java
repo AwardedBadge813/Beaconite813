@@ -174,6 +174,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> CONSTRUCTOR =registerBlock("constructor",
             () -> new ConstructorBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
 
+    public static final DeferredBlock<Block> STORAGE_BEACON_BLOCK =registerBlock("storage_beacon",
+            () -> new StorageBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion()));
+
     public static final DeferredBlock<Block> BASE_BEACON_BLOCK =registerBlock("base_beacon_block",
             () -> new BaseBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.MUD).noOcclusion().requiresCorrectToolForDrops()));
 

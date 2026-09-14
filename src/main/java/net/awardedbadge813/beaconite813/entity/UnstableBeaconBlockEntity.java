@@ -316,7 +316,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     @Override
     public List<BeaconBeamSection> getBeamSections() {
         BeaconBeamSection beamSection = null;
-        if(isBeaconActive(getLevel(), getBlockPos())) {
+        if(isActive()) {
             beamSection = new BeaconBeamSection();
             assert level != null;
             beamSection.setParams(DyeColor.BLACK.getTextureDiffuseColor(), level.getMaxBuildHeight() - getBlockPos().getY());
@@ -325,7 +325,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         return beamSection==null ? List.of(): List.of(beamSection);
     }
 
-    private boolean isBeaconActive(Level level, BlockPos blockPos) {
+    private boolean isActive() {
         return explosionActive==1;
     }
 

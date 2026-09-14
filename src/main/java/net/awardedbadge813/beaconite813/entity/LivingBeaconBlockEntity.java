@@ -146,7 +146,7 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
                     satiation += 1000;
                 }
             } else {
-                applyEffects(level, pos, satiation/10, min(max(beaconLevels-6, 0), 9));
+                applyEffects(level, pos, satiation/10, Math.clamp(beaconLevels - 6, 0, 9));
                 satiation-= beaconLevels/5;
             }
             if(satiation <= 10000 && !payment_slot.getStackInSlot(0).isEmpty() && !effects.isEmpty()) {

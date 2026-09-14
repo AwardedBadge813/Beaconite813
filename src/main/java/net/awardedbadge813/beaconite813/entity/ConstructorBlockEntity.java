@@ -10,9 +10,11 @@ import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.awardedbadge813.beaconite813.screen.custom.ConstructorMenu;
 import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,8 +32,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,9 +45,9 @@ import java.util.List;
 
 import static java.lang.Math.min;
 import static net.awardedbadge813.beaconite813.block.custom.ConstructorBlock.BASE_DOWN;
+import static net.neoforged.neoforge.capabilities.BlockCapability.createVoid;
 
-public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
-
+public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon, IBlockCapabilityProvider {
 
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
@@ -137,7 +143,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
 
         @Override
-        public ItemStack getStackInSlot(int slot) {
+        public @NotNull ItemStack getStackInSlot(int slot) {
             this.validateSlotIndex(slot);
             if (this.stacks.get(slot).getItem() instanceof ToggleableItem && ((ToggleableItem) this.stacks.get(slot).getItem()).isDisabled()) {
                 return ItemStack.EMPTY;
@@ -145,6 +151,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             return this.stacks.get(slot);
         }
     };
+
 
     public void placeItemsInContainer(ItemStackHandler itemHandler, List<ItemStack> itemStacks) {
         for (ItemStack itemstack : itemStacks) {
@@ -158,8 +165,10 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     }
     public boolean compareSelectedHeight(int height) {
         if(!isInverted()) {
+            assert getLevel() != null;
             return height>getLevel().getMinBuildHeight();
         } else {
+            assert getLevel() != null;
             return height<getLevel().getMaxBuildHeight();
         }
     }
@@ -264,9 +273,6 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     public Block extractFirstUsableBlock(ItemStackHandler itemHandler, boolean simulate) {
         return Block.byItem(extractFirstUsableItem(itemHandler, simulate).getItem());
     }
-    public int extractFirstUsableQuantity(ItemStackHandler itemHandler, boolean simulate) {
-        return extractFirstUsableItem(itemHandler, simulate).getCount();
-    }
 
     @Override
     public int getLayers(Level level, BlockPos pos) {
@@ -360,17 +366,13 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
 
     private boolean isPlacing;
 
-    private boolean testBlockItem(Block block, Item item) {
-            return block==Block.byItem(item);
-    }
-
     private boolean BlockValidForDestruction(BlockState blockState) {
             //may change this later but is a decent 'should not destroy this block' placeholder for now
         assert level != null;
         return !blockState.is(BlockTags.WITHER_IMMUNE) || blockState.is(ModBlocks.ULTRA_DENSE_BEACONITE.get());
 
     }
-    public BlockPos nextBlockLocation(){
+    public void nextBlockLocation(){
         BlockPos pos = getBlockPos();
         int x=pos.getX();
         int y=pos.getY();
@@ -390,7 +392,6 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             xCurrent=getX(pos, currentSize+1);
             zCurrent=getZ(pos, currentSize+1);
         }
-        return new BlockPos(xCurrent, yCurrent, zCurrent);
     }
 
     //if the block is inverted, the constructor should place up instead of down.
@@ -480,8 +481,20 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
         private final boolean Dev = Config.DEV_MODE.get();
 
+    public ItemStackHandler getinputItemHandler() {
+        return this.inputItemHandler;
+    }
+    public ItemStackHandler getoutputItemHandler() {
+        return this.outputItemHandler;
+    }
 
-        protected final ContainerData data;
+    public ItemStackHandler getCapabilityHandler(ConstructorBlockEntity be, Direction side) {
+        if (side == Direction.DOWN) {
+            return be.getoutputItemHandler();
+        } else return be.getinputItemHandler();
+    }
+
+    protected final ContainerData data;
         private int userSelectedLevel=0;
         private int xCurrent = getBlockPos().getX()-1;
         private int yCurrent= getBlockPos().getY()-1;
@@ -507,4 +520,8 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         return beamSection==null ? List.of(): List.of(beamSection);
     }
 
+    @Override
+    public @Nullable Object getCapability(Level level, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, Object o) {
+        return inputItemHandler;
+    }
 }

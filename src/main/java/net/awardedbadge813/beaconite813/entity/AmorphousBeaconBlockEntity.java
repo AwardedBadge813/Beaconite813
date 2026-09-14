@@ -30,8 +30,6 @@ import static java.lang.Thread.sleep;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
-    private int beaconLayers;
-    private boolean canSeeSky;
     public AmorphousBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.AMORPH_BEACON_BE.get(), pos, blockState);
     }
@@ -42,6 +40,7 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
     }
 
 
+
     public @NotNull Component getDisplayName() {
         return Component.literal("amorph_beacon_be");
     }
@@ -50,8 +49,7 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        this.beaconLayers=getLayers(level, pos);
-        this.canSeeSky=getSkyStatus(level, pos)==1;
+        int beaconLayers = getLayers(level, pos);
 
         if(isBeaconActive(level, pos)) {
             int radius = restrict(80-5* beaconLayers, 20, 60);
@@ -136,7 +134,6 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
         }
         return 0;
     }
-
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

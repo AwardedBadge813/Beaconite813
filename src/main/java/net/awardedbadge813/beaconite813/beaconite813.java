@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813;
 
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.effect.ModEffects;
+import net.awardedbadge813.beaconite813.entity.ConstructorBlockEntity;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ModEntities;
 import net.awardedbadge813.beaconite813.entity.client.BubbleRenderer;
@@ -18,7 +19,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -50,6 +54,7 @@ public class beaconite813 {
                 event.register(ModMenuTypes.REFINERY_MENU.get(), RefineryScreen::new);
                 event.register(ModMenuTypes.UNSTABLE_BEACON_MENU.get(), UnstableBeaconScreen::new);
                 event.register(ModMenuTypes.CONSTRUCTOR_MENU.get(), ConstructorScreen::new);
+                event.register(ModMenuTypes.STORAGE_BEACON_MENU.get(), StorageBeaconScreen::new);
                 event.register(ModMenuTypes.REGAL_BEACON_MENU.get(), RegalBeaconScreen::new);
                 event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
                 event.register(ModMenuTypes.ETHER_BEACON_MENU.get(), EtherealBeaconScreen::new);
@@ -77,6 +82,7 @@ public class beaconite813 {
             }
 
 
+
         }
 
     public beaconite813(IEventBus modEventBus, ModContainer modContainer) {
@@ -94,6 +100,15 @@ public class beaconite813 {
         ModPotions.register(modEventBus);
         ModEffects.register(modEventBus);
 
+
+        //shoutout to Ishrit Madan https://discord.com/channels/313125603924639766/1249305774987939900/1287989964092739656
+        //this saved my life oml
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, event -> {
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.CONSTRUCTOR_BE.get(),
+                        (be, side) -> be.getCapabilityHandler(be,side));
+        });
 
 
 

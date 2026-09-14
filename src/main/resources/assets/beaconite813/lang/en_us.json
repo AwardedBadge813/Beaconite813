@@ -16,6 +16,7 @@
   "item.beaconite813.ether_filter": "Ether Filter",
   "item.beaconite813.dormant_bottle": "Dormant Bottle",
   "item.beaconite813.bottomless_bottle": "Bottomless Bottle",
+  "item.beaconite813.dimensional_lattice": "Dimensional Lattice",
 
   "item.beaconite813.auric_interference_icon": "§bEffect: Auric Interference",
   "item.beaconite813.wrath_effect_icon": "§bEffect: Wrath",
@@ -59,6 +60,9 @@
   "tooltip.beaconite813.constructor2.tooltip": "§9You can get a max of §520§9 levels by default, changeable in the config.",
   "tooltip.beaconite813.quarry_talisman.tooltip": "§9If placed in the constructor's input, will make the constructor destroy blocks instead of placing them.",
 
+
+  "tooltip.beaconite813.storage_joke.tooltip": "§5§oYou'll never guess what this is.",
+
   "tooltip.beaconite813.vengeant_beacon1.tooltip": "§9Gives the §5wrath§9 effect to all players in the area.",
   "tooltip.beaconite813.vengeant_beacon2.tooltip": "§9Requires 10 skulls (placed on or above the  beacon base blocks) to activate, and 10 times more skulls for each level.",
   "tooltip.beaconite813.vengeant_beacon3.tooltip": "§9Minimum level §58§9, max level §515§9(level §5VIII§9 effects).",
@@ -97,6 +101,7 @@
   "block.beaconite813.condensed_beaconite": "Condensed Beaconite",
   "block.beaconite813.refinery": "Refinery",
   "block.beaconite813.unstable_beacon": "Unstable Beacon",
+  "block.beaconite813.storage_beacon": "Beacon With a Chest In It (WIP)",
   "block.beaconite813.reinforced_glass": "Reinforced Glass",
   "block.beaconite813.constructor": "Bea-Constructor",
   "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",

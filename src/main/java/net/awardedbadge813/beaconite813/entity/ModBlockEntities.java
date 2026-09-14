@@ -2,9 +2,12 @@ package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -64,7 +67,10 @@ public class ModBlockEntities {
                             EtherealBeaconBlockEntity::new, ModBlocks.ETHER_BEACON_BLOCK.get())
                     .build(null));
 
-
+    public static final Supplier<BlockEntityType<StorageBeaconBlockEntity>> STORAGE_BEACON_BE =
+            BLOCK_ENTITIES.register("storage_beacon_be", () -> BlockEntityType.Builder.of(
+                            StorageBeaconBlockEntity::new, ModBlocks.STORAGE_BEACON_BLOCK.get())
+                    .build(null));
 
 
     public static void register(IEventBus eventBus){

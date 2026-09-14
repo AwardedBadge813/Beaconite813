@@ -36,7 +36,7 @@ import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
     private int beaconLayers;
-    private boolean canSeeSky;
+
     public VengeantBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.VENGEANT_BEACON_BE.get(), pos, blockState);
     }
@@ -58,7 +58,6 @@ public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFo
             return;
         }
         this.beaconLayers =getLayers(level, pos);
-        this.canSeeSky=getSkyStatus(level, pos)==1;
         int vengeanceModifier = getVengeanceModifier(pos, level, beaconLayers);
 
         if(isBeaconActive(level, pos)) {
@@ -78,7 +77,7 @@ public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFo
         AABB checkerRange = new AABB(pos).inflate(beaconLayers);
         for (BlockState blockState : level.getBlockStates(checkerRange).toList()) {
             //skulls is an item tag, not a block tag (even though it shows up as a blockTag in jei?)
-            if (Item.byBlock(blockState.getBlock()).getDefaultInstance().is(ItemTags.SKULLS)) {
+            if (Item.BY_BLOCK.equals(blockState.getBlock())) {
                 updateSkulls+=1;
             }
         }

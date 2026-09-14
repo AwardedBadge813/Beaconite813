@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.*;
-import static java.lang.Thread.sleep;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class IgneousBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {

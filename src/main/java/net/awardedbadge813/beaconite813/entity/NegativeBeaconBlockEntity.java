@@ -27,15 +27,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
-    private final int effectRadius = 20;
     public static final List<MobEffect> effects = DefineEffects();
     public static final List<MobEffect> posEffects = getPositiveEffects();
     public static final List<MobEffect> negEffects = getNegativeEffects();
-    public static final List<MobEffect> neutEffects = getNeutralEffects();
     public NegativeBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.NEGATIVE_BEACON_BE.get(), pos, blockState);
     }
@@ -50,6 +47,7 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
     }
 
     private AABB getEffectArea(Level level, BlockPos pos) {
+        int effectRadius = Config.NEGATIVE_BEACON_RADIUS.getAsInt();
         return new AABB(pos).inflate(effectRadius).expandTowards(pos.getX(), level.getMinBuildHeight(), pos.getZ());
     }
 
@@ -82,9 +80,6 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
                         MobEffect effectToAdd=posEffects.get((int) Math.floor(Math.random()*posEffects.size()));
                         player.removeEffect(effectInstance.getEffect());
                         player.addEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effectToAdd), effectInstance.getDuration(), min(effectInstance.getAmplifier(), maxAmplifier), true, true));
-                    }
-                    case MobEffectCategory.NEUTRAL -> {
-
                     }
                     default -> {
 
@@ -119,15 +114,6 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
         ArrayList<MobEffect> returnable = new ArrayList<>();
         for(MobEffect effect: effects) {
             if(effect.getCategory().equals(MobEffectCategory.HARMFUL)) {
-                returnable.add(effect);
-            }
-        }
-        return returnable;
-    }
-    public static List<MobEffect>getNeutralEffects (){
-        ArrayList<MobEffect> returnable = new ArrayList<>();
-        for(MobEffect effect: effects) {
-            if(effect.getCategory().equals(MobEffectCategory.NEUTRAL)) {
                 returnable.add(effect);
             }
         }
@@ -172,8 +158,8 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
         int j = pos.getY();
         int k = pos.getZ();
         boolean foundBadBlock=false;
-        for (int heightclear = -1; j+heightclear > level.getMinBuildHeight(); heightclear--) {
-            BlockPos pPos = new BlockPos(i, (j+heightclear), k);
+        for (int heightClear = -1; j+heightClear > level.getMinBuildHeight(); heightClear--) {
+            BlockPos pPos = new BlockPos(i, (j+heightClear), k);
             if(!checkBlockStateForBeaconPassable(level, pPos)) {
                 foundBadBlock=true;
             }

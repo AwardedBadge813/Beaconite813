@@ -26,7 +26,9 @@ public class Config {
             .comment("The time it takes a refinery to craft an item. More layers below the refinery divide this time.")
             .defineInRange("refineryCookTime", 10000, 0, Integer.MAX_VALUE);
 
-
+    public static final ModConfigSpec.IntValue NEGATIVE_BEACON_RADIUS = BUILDER
+            .comment("The radius of the negative beacon's inversion effect in blocks.")
+            .defineInRange("negativeBeaconRadius", 20, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue MAX_LEVEL_UNSTABLE_BEACON = BUILDER
             .comment("The amount of levels required to activate an unstable beacon. default is 5.")
@@ -113,7 +115,7 @@ public class Config {
             .define("extraRolls", true);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> ENABLED_ITEMS = BUILDER
-            .comment("Removing an item from this list disables it, marking it in red and disabling all interactions. THIS DOES NOT REMOVE RECIPES! MAKE SURE TO REMOVE THEIR JSONS OR GET A MOD TO DO IT FOR YOU.")
+            .comment("Removing an item from this list disables it, marking it in red and disabling all interactions. THIS DOES NOT REMOVE RECIPES! Make sure to remove jsons or get a mod (like kubejs) to do it for you.")
             .comment("Disabling a beacon will disable its recipe in the polymorph beacon. Disabling the polymorph beacon will disable all polymorph recipes.")
             .comment("Disabling an effect icon will disable the corresponding effect i.e. it will not be applied through normal circumstances and will immediately remove itself if applied.")
             .defineListAllowEmpty("enabledItemsMaster",
@@ -130,6 +132,7 @@ public class Config {
                             "beaconite813:encapsulated_beam",
                             "beaconite813:quarry_talisman",
                             "beaconite813:inversion_talisman",
+                            "beaconite813:dimensional_lattice",
                             "beaconite813:ether_filter",
                             "beaconite813:aura_module",
                             "beaconite813:diffuse_module",
@@ -140,6 +143,7 @@ public class Config {
                             "beaconite813:reinforced_glass",
                             "beaconite813:condensed_beaconite",
                             "beaconite813:unstable_beacon",
+                            "beaconite813:storage_beacon",
                             "beaconite813:refinery",
                             "beaconite813:ultra_dense_beaconite",
                             "beaconite813:constructor",

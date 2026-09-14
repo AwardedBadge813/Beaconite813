@@ -51,6 +51,8 @@ public class ModItems {
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }
             });
+    public static final DeferredItem<Item> DIM_LATTICE = ITEMS.register("dimensional_lattice",
+            () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
 

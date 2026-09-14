@@ -39,9 +39,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
-
-import static java.lang.Math.*;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.*;
 
 public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
@@ -250,19 +247,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
 
 
 
-    //vanilla beacon code, credit to mojang
-    private void applyEffect(Level level, BlockPos pos, int range, MobEffectInstance mobEffect) {
-        int duration = 150;
-        AABB aabb = (new AABB(pos)).inflate(range).expandTowards(0.0F, level.getMaxBuildHeight(), 0.0F);
-        List<Player> list = level.getEntitiesOfClass(Player.class, aabb);
-        for(Player player : list) {
-            if (!player.hasEffect(mobEffect.getEffect()) || Objects.requireNonNull(player.getEffect(mobEffect.getEffect())).getDuration()<=max(mobEffect.getDuration()*0.25, 2)) {
-                player.addEffect(mobEffect);
-            }
 
-        }
-
-    }
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveCustomAndMetadata(pRegistries);
