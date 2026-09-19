@@ -29,6 +29,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.BEACON_BEAM_ITEM);
                 output.accept(ModItems.QUARRY_TALISMAN);
                 output.accept(ModItems.INVERT_TALISMAN);
+                output.accept(ModItems.DIM_LATTICE);
                 output.accept(ModItems.ETHER_FILTER);
                 output.accept(ModItems.AURA_MODULE);
                 output.accept(ModItems.DIFFUSE_MODULE);
@@ -46,6 +47,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.REFINERY);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);
                 output.accept(ModBlocks.CONSTRUCTOR);
+                output.accept(ModBlocks.STORAGE_BEACON_BLOCK);
                 output.accept(ModBlocks.POLYMORPH_BEACONITE);
                 output.accept(ModBlocks.BASE_BEACON_BLOCK);
                 output.accept(ModBlocks.WRATHFUL_FLESH);

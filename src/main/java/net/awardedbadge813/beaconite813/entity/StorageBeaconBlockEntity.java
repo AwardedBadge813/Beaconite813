@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -126,6 +127,42 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
 
         @Override
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+            ListTag nbtTagList = new ListTag();
+
+            for(int i = 0; i < this.stacks.size(); ++i) {
+                if (!((ItemStack)this.stacks.get(i)).isEmpty()) {
+                    CompoundTag itemTag = new CompoundTag();
+                    itemTag.putInt("Slot", i);
+                    itemTag.putInt("Count", this.stacks.get(i).getCount());
+                    nbtTagList.add(new ItemStack(this.stacks.get(i).getItem(), 1).save(provider, itemTag));
+                }
+            }
+
+
+            CompoundTag nbt = new CompoundTag();
+            nbt.put("Items", nbtTagList);
+            nbt.putInt("Size", this.stacks.size());
+            return nbt;
+        }
+        @Override
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+            this.setSize(nbt.contains("Size", 4) ? nbt.getInt("Size") : this.stacks.size());
+            ListTag tagList = nbt.getList("Items", 10);
+
+            for(int i = 0; i < tagList.size(); ++i) {
+                CompoundTag itemTags = tagList.getCompound(i);
+                int slot = itemTags.getInt("Slot");
+                int count = itemTags.getInt("Count");
+                if (slot >= 0 && slot < this.stacks.size()) {
+                    ItemStack.parse(provider, itemTags).ifPresent((stack) -> this.stacks.set(slot, new ItemStack(stack.getItem(), count)));
+                }
+            }
+
+            this.onLoad();
+        }
+
+        @Override
         public @NotNull ItemStack getStackInSlot(int slot) {
             this.validateSlotIndex(slot);
             if (this.stacks.get(slot).getItem() instanceof ToggleableItem && ((ToggleableItem) this.stacks.get(slot).getItem()).isDisabled()) {
@@ -166,6 +203,41 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                 return ItemStack.EMPTY;
             }
             return this.stacks.get(slot);
+        }
+        @Override
+        public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+            ListTag nbtTagList = new ListTag();
+
+            for(int i = 0; i < this.stacks.size(); ++i) {
+                if (!((ItemStack)this.stacks.get(i)).isEmpty()) {
+                    CompoundTag itemTag = new CompoundTag();
+                    itemTag.putInt("Slot", i);
+                    itemTag.putInt("Count", this.stacks.get(i).getCount());
+                    nbtTagList.add(new ItemStack(this.stacks.get(i).getItem(), 1).save(provider, itemTag));
+                }
+            }
+
+
+            CompoundTag nbt = new CompoundTag();
+            nbt.put("Items", nbtTagList);
+            nbt.putInt("Size", this.stacks.size());
+            return nbt;
+        }
+        @Override
+        public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+            this.setSize(nbt.contains("Size", 4) ? nbt.getInt("Size") : this.stacks.size());
+            ListTag tagList = nbt.getList("Items", 10);
+
+            for(int i = 0; i < tagList.size(); ++i) {
+                CompoundTag itemTags = tagList.getCompound(i);
+                int slot = itemTags.getInt("Slot");
+                int count = itemTags.getInt("Count");
+                if (slot >= 0 && slot < this.stacks.size()) {
+                    ItemStack.parse(provider, itemTags).ifPresent((stack) -> this.stacks.set(slot, new ItemStack(stack.getItem(), count)));
+                }
+            }
+
+            this.onLoad();
         }
     };
 

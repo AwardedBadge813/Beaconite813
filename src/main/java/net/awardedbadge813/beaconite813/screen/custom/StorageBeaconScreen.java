@@ -122,7 +122,7 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         guiGraphics.blit(GUI_TEXTURE, x-116, y-237, 0, 0, 512, 512, 512, 512);
         addInventory(10, 6, x+38, y+52, guiGraphics);
         addInventory(1, 1, x-30, y+30, guiGraphics, CHIP_SLOT, 30, 30);
-        guiGraphics.blit(CHEST_ICON, x, y+40, 0, 0, 20, 20, 20, 20);
+        guiGraphics.blit(CHEST_ICON, x-5, y+30, 0, 0, 15, 15, 15, 15);
         guiGraphics.drawString(this.font, new StringBuilder().append("Stack Size: ").append(stackSize).append("/").append(Config.MAX_STORAGE_SIZE.getAsInt()).toString(),
                 x+30, y+13, 4210752, false);
     }
