@@ -1,5 +1,6 @@
 package net.awardedbadge813.beaconite813.screen.custom;
 
+import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.entity.StorageBeaconBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,9 +30,19 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
                 this.data=data;
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        addInventory(blockEntity.itemStorage, 10, 6, -40, -40);
-        int leftXpos = 25;
-        int lowYpos  =84;
+        this.addSlot(new SlotItemHandler(blockEntity.chipSlot, 0, -63, -8) {
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return Config.MAX_STORAGE_SIZE.getAsInt();
+            }
+            @Override
+            public int getMaxStackSize() {
+                return Config.MAX_STORAGE_SIZE.getAsInt();
+            }
+        });
+        addInventory(blockEntity.itemStorage, 10, 6, -1, 8);
+
+
 
 
 
@@ -55,7 +66,7 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 60;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 61;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
@@ -67,7 +78,7 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
         if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
             if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                    + TE_INVENTORY_SLOT_COUNT-1, false)) {
                 return ItemStack.EMPTY;  // EMPTY_ITEM
             }
         } else if (pIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
@@ -91,25 +102,21 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
     private void addInventory(ItemStackHandler itemHandler, int width, int height, int x, int y){
         for (int i=0; i<height; ++i){
             for (int l=0; l<width; ++l){
-                this.addSlot(new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18));
+                this.addSlot(new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18) {
+                    @Override
+                    public int getMaxStackSize(ItemStack stack) {
+                        return blockEntity.getStackSize();
+                    }
+                    @Override
+                    public int getMaxStackSize() {
+                        return blockEntity.getStackSize();
+                    }
+                });
 
             }
         }
     }
 
-    public int getScaledArrowProgress(int arrowPixelSize) {
-        int progress = this.data.get(6);
-        int maxProgress = 40;
-        if (!isPlacing()) {
-            return 0;
-        } else {
-            return progress * arrowPixelSize/maxProgress;
-        }
-    }
-    public boolean isPlacing() {
-        return this.data.get(6)>0;
-
-    }
 
 
 

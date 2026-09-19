@@ -108,6 +108,10 @@ public class beaconite813 {
                         Capabilities.ItemHandler.BLOCK,
                         ModBlockEntities.CONSTRUCTOR_BE.get(),
                         (be, side) -> be.getCapabilityHandler(be,side));
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.STORAGE_BEACON_BE.get(),
+                        (be, side) -> be.getCapabilityHandler(be,side));
         });
 
 

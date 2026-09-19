@@ -8,14 +8,12 @@ import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.awardedbadge813.beaconite813.screen.custom.StorageBeaconMenu;
-import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -31,24 +29,29 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.*;
 
-public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
-
+public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon, ICapabilityProvider {
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
     private boolean configoffset = true;
     private int activeSlots = 1;
-    private int stackSize = 16;
+    private int stackSize = 0;
     public StorageBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.STORAGE_BEACON_BE.get(),
                 pos,
@@ -66,6 +69,9 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                     case 2 -> {
                         return activeSlots;
                     }
+                    case 3 -> {
+                        return stackSize;
+                    }
                     default -> {
                         return 0;
                     }
@@ -81,8 +87,11 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                     case 1 -> {
                         counter = i1;
                     }
-                    case 3 -> {
+                    case 2 -> {
                         activeSlots = i1;
+                    }
+                    case 3 -> {
+                        stackSize=i1;
                     }
                 }
 
@@ -90,18 +99,21 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
             @Override
             public int getCount() {
-                return 3;
+                return 4;
             }
 
         };
+    }
+    public int getStackSize() {
+        return stackSize+16;
     }
 
 
 
     public final ItemStackHandler itemStorage = new ItemStackHandler(60) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
-            return stack.getMaxStackSize();
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+            return 16+stackSize;
         }
 
         @Override
@@ -111,6 +123,40 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             if (!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            this.validateSlotIndex(slot);
+            if (this.stacks.get(slot).getItem() instanceof ToggleableItem && ((ToggleableItem) this.stacks.get(slot).getItem()).isDisabled()) {
+                return ItemStack.EMPTY;
+            }
+            return this.stacks.get(slot);
+        }
+    };
+    public final ItemStackHandler chipSlot = new ItemStackHandler(1) {
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            int returnValue = Config.MAX_STORAGE_SIZE.getAsInt();
+            if (returnValue==0) {
+                return Integer.MAX_VALUE-16;
+            }
+
+            return max(returnValue-16, 0);
+        }
+
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            assert level != null;
+            if (!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return stack.is(ModItems.DIM_LATTICE);
         }
 
         @Override
@@ -133,15 +179,44 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
         return itemStack;
     }
+    public List<ItemStack> getStacks(ItemStackHandler itemHandler) {
+        List<ItemStack> itemStacks = new ArrayList<>();
+        for (int i=0; i<itemHandler.getSlots(); i++) {
+            itemStacks.add(itemHandler.getStackInSlot(i));
+        }
+        return itemStacks;
+    }
+    public SimpleContainer prepareStackForDisposal(ItemStack stack) {
+        int Remainder = stack.getCount()%64;
+        int stacks = max((stack.getCount()-Remainder)/64, 1);
+        SimpleContainer container = new SimpleContainer(stacks);
+        for (int i = 0; i<stacks-1; i++) {
+            container.setItem(i, new ItemStack(stack.getItem(), 64));
+        }
+        container.setItem(stacks-1, new ItemStack(stack.getItem(), Remainder));
+        return container;
+    }
+    public List<SimpleContainer> getDropContainers (ItemStackHandler handler) {
+        List<SimpleContainer> containers = new ArrayList<>();
+        for (ItemStack stack : getStacks(handler)) {
+            SimpleContainer inventory = prepareStackForDisposal(stack);
+            containers.add(inventory);
+        }
+        return containers;
 
+    }
     public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemStorage.getSlots());
-        for (int i = 0; i< itemStorage.getSlots(); i++) {
-            inventory.setItem(i, itemStorage.getStackInSlot(i));
+        List<SimpleContainer> container1 =  getDropContainers(itemStorage);
+        List<SimpleContainer> container2 =  getDropContainers(chipSlot);
+        for (SimpleContainer container : container1 ) {
+            Containers.dropContents(level, this.worldPosition, container);
+
+        }
+        for (SimpleContainer container : container2 ) {
+            Containers.dropContents(level, this.worldPosition, container);
+
         }
 
-        assert level != null;
-        Containers.dropContents(level, this.worldPosition, inventory);
         this.remove();
     }
     @Override
@@ -208,6 +283,12 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         counter=max(counter+1, 0); //in case the value gets extremely negative this resets it
         //hopefully this prevents lag spikes by making it so the collections are both approximately 1 second and also offset from other operations.
 
+
+        //dimensional lattice update logic
+        if (true) {
+            stackSize=chipSlot.getStackInSlot(0).getCount();
+        }
+
     }
 
     private void collectItems(BlockPos pos) {
@@ -271,6 +352,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     @Override
         protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
             pTag.put("store_inv", itemStorage.serializeNBT(pRegistries));
+            pTag.put("chip_inv", chipSlot.serializeNBT(pRegistries));
             pTag.putInt("current_level", updatedLevel);
             pTag.putInt("x_current", xCurrent);
             pTag.putInt("y_current", yCurrent);
@@ -282,6 +364,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
             super.loadAdditional(pTag, pRegistries);
             itemStorage.deserializeNBT(pRegistries, pTag.getCompound("store_inv"));
+            chipSlot.deserializeNBT(pRegistries, pTag.getCompound("chip_inv"));
             userSelectedLevel = pTag.getInt("selected_level");
             updatedLevel = pTag.getInt("current_level");
             xCurrent = pTag.getInt("x_current");
@@ -322,4 +405,29 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         return beamSection==null ? List.of(): List.of(beamSection);
     }
 
+    @Override
+    public void onLoad() {
+        // Later, for example in `onLoad` for a block entity:
+        if (level instanceof ServerLevel serverLevel) {
+            this.capCache = BlockCapabilityCache.create(
+                    Capabilities.ItemHandler.BLOCK, // capability to cache
+                    serverLevel, // level
+                    getBlockPos(), // target position
+                    Direction.NORTH // context
+            );
+        }
+        super.onLoad();
+    }
+    public ItemStackHandler getCapabilityHandler(BlockEntity be, Direction side) {
+        if (side == Direction.DOWN) {
+            return ((ConstructorBlockEntity)be).getoutputItemHandler();
+        } else return ((ConstructorBlockEntity)be).getinputItemHandler();
+    }
+
+    @Override
+    public @Nullable ItemStackHandler getCapability(Object entity, Object direction) {
+        StorageBeaconBlockEntity be = entity instanceof StorageBeaconBlockEntity casted? casted:null;
+        Direction dir = direction instanceof Direction casted?casted:null;
+        return getCapabilityHandler(be, dir);
+    }
 }

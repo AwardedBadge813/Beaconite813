@@ -34,8 +34,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +51,7 @@ import static net.awardedbadge813.beaconite813.block.custom.ConstructorBlock.BAS
 import static net.neoforged.neoforge.capabilities.BlockCapability.createVoid;
 
 public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon, IBlockCapabilityProvider {
-
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
 
@@ -123,9 +126,22 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             }
 
         };
+
     }
 
-
+    @Override
+    public void onLoad() {
+        // Later, for example in `onLoad` for a block entity:
+        if (level instanceof ServerLevel serverLevel) {
+            this.capCache = BlockCapabilityCache.create(
+                    Capabilities.ItemHandler.BLOCK, // capability to cache
+                    serverLevel, // level
+                    getBlockPos(), // target position
+                    Direction.NORTH // context
+            );
+        }
+        super.onLoad();
+    }
 
     public final ItemStackHandler inputItemHandler = new ItemStackHandler(15) {
         @Override
@@ -488,10 +504,10 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         return this.outputItemHandler;
     }
 
-    public ItemStackHandler getCapabilityHandler(ConstructorBlockEntity be, Direction side) {
+    public ItemStackHandler getCapabilityHandler(BlockEntity be, Direction side) {
         if (side == Direction.DOWN) {
-            return be.getoutputItemHandler();
-        } else return be.getinputItemHandler();
+            return ((ConstructorBlockEntity)be).getoutputItemHandler();
+        } else return ((ConstructorBlockEntity)be).getinputItemHandler();
     }
 
     protected final ContainerData data;
@@ -520,8 +536,16 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         return beamSection==null ? List.of(): List.of(beamSection);
     }
 
+
+
+
+
+    private void onCapInvalidate() {
+        invalidateCapabilities();
+    }
+
     @Override
     public @Nullable Object getCapability(Level level, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, Object o) {
-        return inputItemHandler;
+        return getCapabilityHandler(blockEntity, o instanceof Direction direction? direction:Direction.UP);
     }
 }

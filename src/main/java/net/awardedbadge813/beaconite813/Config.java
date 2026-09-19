@@ -20,6 +20,8 @@ import java.util.Map;
 // Demonstrates how to use Neo's config APIs
 public class Config {
 
+
+
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue REFINERY_COOK_TIME = BUILDER
@@ -87,6 +89,9 @@ public class Config {
     public static final ModConfigSpec.BooleanValue MASTER_DESTROY_TOGGLE = BUILDER
             .comment("stops all block destruction in the mod, except for BlockState updates. may break some things like constructors.")
             .define("masterDestroyToggle", false);
+    public static final ModConfigSpec.IntValue MAX_STORAGE_SIZE = BUILDER
+            .comment("The upper limit for the storage beacon, or Beacon with a chest in it, or whatever I end up calling it. 8192 by default, 0 sets the value to infinite.")
+            .defineInRange("MaxStorageBeaconSize", 8192, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> GOLD_TRANSFORMATIONS = BUILDER
             .comment("The amount of gold time each gold-based item gives. default are vanilla items and golden apples.")
