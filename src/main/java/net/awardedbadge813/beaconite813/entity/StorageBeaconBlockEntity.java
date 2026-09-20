@@ -16,6 +16,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.datafix.fixes.ChunkPalettedStorageFix;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -30,9 +31,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
@@ -41,18 +44,27 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.*;
+import static net.awardedbadge813.beaconite813.block.custom.StorageBeaconBlock.FACING;
+import static net.awardedbadge813.beaconite813.util.BeaconiteLib.getClockwise;
 
-public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon, ICapabilityProvider {
+public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
     private boolean configoffset = true;
     private int activeSlots = 1;
     private int stackSize = 0;
+    private boolean exemptChipSpace = true; //whether space directly adjacent to chip face gets overlooked for extraction, since it might get sent to the wrong inventory.
+    private Direction facing=getBlockState().getValue(FACING);
+    public final HashMap<Direction, Direction> getChip = getClockwise();
+    private StorageMode storageMode = StorageMode.NONE;
+    private SafeCollect collectTarget = SafeCollect.PICKUP;
+    private BlockEntity focusTarget;
+    public HashMap<StorageMode, String> storageModeMap = getModeNames();
+    public HashMap<SafeCollect, String> safeCollectMap = getCollectNames();
     public StorageBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.STORAGE_BEACON_BE.get(),
                 pos,
@@ -126,6 +138,8 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             }
         }
 
+        //these have to be overridden to do some voodoo magic with itemstacks. if this is removes and the normal version used, the game will crash as 99 is the limit for itemstacks.
+        //of course, nobody cares if you just give a single item a new 'count' variable and decode it later >:)
         @Override
         public CompoundTag serializeNBT(HolderLookup.Provider provider) {
             ListTag nbtTagList = new ListTag();
@@ -260,7 +274,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
     public SimpleContainer prepareStackForDisposal(ItemStack stack) {
         int Remainder = stack.getCount()%64;
-        int stacks = max((stack.getCount()-Remainder)/64, 1);
+        int stacks = max((stack.getCount()-Remainder)/64+1, 1);
         SimpleContainer container = new SimpleContainer(stacks);
         for (int i = 0; i<stacks-1; i++) {
             container.setItem(i, new ItemStack(stack.getItem(), 64));
@@ -288,18 +302,19 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             Containers.dropContents(level, this.worldPosition, container);
 
         }
-
+        invalidateCapabilities();
         this.remove();
     }
     @Override
     public @NotNull Component getDisplayName() {
-        return Component.literal("block.beaconite813.unstable_beacon_be");
+        return Component.literal("block.beaconite813.storage_beacon_be");
     }
 
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
         return new StorageBeaconMenu(i, inventory, this, this.data);
     }
+
 
 
     @Override
@@ -340,6 +355,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
         return min(currentLayer-1, Config.MAX_LEVEL_BEACON.getAsInt());
     }
+    private int checkDirection = 20;
 
     private float collectRange = 10;
 
@@ -350,17 +366,43 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         updatedLevel=getLayers(level, pos);
         if (counter>20&&(random()*2<=1||configoffset)) {
             collectItems(pos);
+            getFocusTarget(level, pos);
+            if (focusTarget!=null) {
+                IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, focusTarget.getBlockPos(), facing.getOpposite());
+                if (handler != null) {
+                    itemStorage.insertItem(0,
+                            handler.insertItem(0, itemStorage.extractItem(0, 64, false), false), false);
+                    //this is goofy so I'll annotate. removes 64 of an item from slot, then adds it to focused block, then adds remainder back to slot.
+                }
+            }
             counter=0;
         }
         counter=max(counter+1, 0); //in case the value gets extremely negative this resets it
         //hopefully this prevents lag spikes by making it so the collections are both approximately 1 second and also offset from other operations.
 
 
-        //dimensional lattice update logic
-        if (true) {
-            stackSize=chipSlot.getStackInSlot(0).getCount();
-        }
 
+
+
+        //update chipslot data
+        stackSize=chipSlot.getStackInSlot(0).getCount();
+        //determine which blocks are exempt from the requested operation
+
+        //collect items from bottom face logic (move this to separate function when context determined)
+
+
+    }
+    //determine which block is being 'focused' on. should deposit in the face the beacon is 'looking' at.
+    public void getFocusTarget(Level level, BlockPos pos) {
+        for (int i=0; i<checkDirection; i++) {
+            pos=pos.relative(facing, 1);
+            IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, facing.getOpposite());
+            if (maybeHandler!=null) {
+                focusTarget = level.getBlockEntity(pos);
+                itemStorage.setStackInSlot(1, new ItemStack(focusTarget.getBlockState().getBlock().asItem(), 1));
+                return;
+            }
+        }
     }
 
     private void collectItems(BlockPos pos) {
@@ -378,6 +420,11 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
             }
         }
+    }
+
+    //mother function that sends the tick to the right function given the block states and enums. there's a lot here...
+    private void Redirect(Level level, BlockPos pos, BlockState blockState) {
+
     }
 
     private boolean ShouldDeposit(ItemStackHandler itemHandler, ItemStack itemStack) {
@@ -447,9 +494,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
         private final boolean Dev = Config.DEV_MODE.get();
 
-    public ItemStackHandler getCapabilityHandler(StorageBeaconBlockEntity be, Direction side) {
-        return be.itemStorage;
-    }
+
 
     protected final ContainerData data;
         private int userSelectedLevel=0;
@@ -490,16 +535,63 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
         super.onLoad();
     }
-    public ItemStackHandler getCapabilityHandler(BlockEntity be, Direction side) {
-        if (side == Direction.DOWN) {
-            return ((ConstructorBlockEntity)be).getoutputItemHandler();
-        } else return ((ConstructorBlockEntity)be).getinputItemHandler();
-    }
 
-    @Override
-    public @Nullable ItemStackHandler getCapability(Object entity, Object direction) {
+
+    public @Nullable ItemStackHandler getCapability(BlockEntity entity, @Nullable Direction direction) {
+        //when cap is being made sends 1 to force the check to fail
         StorageBeaconBlockEntity be = entity instanceof StorageBeaconBlockEntity casted? casted:null;
         Direction dir = direction instanceof Direction casted?casted:null;
-        return getCapabilityHandler(be, dir);
+        //only expose the chip slot if the proper face is being accessed, which is directly clockwise to the facing direction.
+        if (dir == null) {
+            return be==null?null:be.itemStorage;
+        }
+        if (dir==getChip.get(facing)) {
+            return chipSlot;
+        }
+        return be.itemStorage;
+    }
+
+    public BlockEntity getFocus() {
+        return focusTarget;
+    }
+
+    //StorageMode defines what the beacon is doing, safecollect defines what it's doing it to. focus mode is slightly different since it always outputs to a block,
+    // and the focus target is always omitted from extraction.
+    public enum StorageMode {
+        NONE,
+        COLLECT,
+        DEPOSIT,
+        FOCUS,
+        DISTRIBUTE
+    }
+    public enum SafeCollect {
+        PICKUP,
+        BLOCKDOWN,
+        ALLDOWN,
+        ALL
+        //ALLDOWN means pickup and the bottom of blocks. ALL means ALL faces of blocks. note the exceptions for NOCHIP and FOCUS target if applicable.
+    }
+    public HashMap<StorageMode, String> getModeNames() {
+        HashMap<StorageMode, String> map = new HashMap<>();
+        map.put(StorageMode.NONE, "None");
+        map.put(StorageMode.COLLECT, "Collect");
+        map.put(StorageMode.DEPOSIT, "Deposit");
+        map.put(StorageMode.FOCUS, "Focus");
+        map.put(StorageMode.DISTRIBUTE, "Distribute");
+        return map;
+    }
+    public HashMap<SafeCollect, String> getCollectNames() {
+        HashMap<SafeCollect, String> map = new HashMap<>();
+        map.put(SafeCollect.PICKUP, "Pickup");
+        map.put(SafeCollect.BLOCKDOWN, "Bottom of Blocks");
+        map.put(SafeCollect.ALLDOWN, "Pickup & Bottom of Blocks");
+        map.put(SafeCollect.ALL, "EVERYTHING!");
+
+
+        return map;
+    }
+
+    public StorageMode getMode() {
+        return storageMode;
     }
 }

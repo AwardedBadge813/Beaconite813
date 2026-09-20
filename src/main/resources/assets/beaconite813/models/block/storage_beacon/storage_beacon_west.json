@@ -5,9 +5,10 @@
   "textures": {
     "particle": "beaconite813:block/reinforced_glass",
     "glass": "minecraft:block/glass",
-    "obsidian": "minecraft:block/obsidian",
+    "obsidian": "beaconite813:block/condensed_beaconite",
     "beacon": "beaconite813:block/littlechest",
-    "front": "beaconite813:block/littlechest_front"
+    "front": "beaconite813:block/littlechest_front",
+    "chip": "beaconite813:block/little_chips"
   },
   "elements": [
     {   "__comment": "Glass shell",
@@ -40,9 +41,9 @@
       "faces": {
         "down":  { "uv": [ 3, 3, 13, 13 ], "texture": "#beacon" },
         "up":    { "uv": [ 3, 3, 13, 13 ], "texture": "#beacon" },
-        "north": { "uv": [ 3, 2, 13, 13 ], "texture": "#front" },
+        "north": { "uv": [ 3, 2, 13, 13 ], "texture": "#chip" },
         "south": { "uv": [ 3, 2, 13, 13 ], "texture": "#beacon" },
-        "west":  { "uv": [ 3, 2, 13, 13 ], "texture": "#beacon" },
+        "west":  { "uv": [ 3, 2, 13, 13 ], "texture": "#front" },
         "east":  { "uv": [ 3, 2, 13, 13 ], "texture": "#beacon" }
       }
     }

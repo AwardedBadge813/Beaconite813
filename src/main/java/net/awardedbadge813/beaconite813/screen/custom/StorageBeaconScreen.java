@@ -125,6 +125,8 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         guiGraphics.blit(CHEST_ICON, x-5, y+30, 0, 0, 15, 15, 15, 15);
         guiGraphics.drawString(this.font, new StringBuilder().append("Stack Size: ").append(stackSize).append("/").append(Config.MAX_STORAGE_SIZE.getAsInt()).toString(),
                 x+30, y+13, 4210752, false);
+        guiGraphics.drawString(this.font, new StringBuilder().append("Mode: ").append(menu.blockEntity.getMode()).append(menu.blockEntity.getFocus()==null?"NULL":menu.blockEntity.getFocus().toString()).append(Config.MAX_STORAGE_SIZE.getAsInt()).toString(),
+                x+30, y+28, 4210752, false);
     }
 
 }

@@ -5,6 +5,7 @@ import net.awardedbadge813.beaconite813.effect.ModEffects;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -101,6 +102,14 @@ public class BeaconiteLib {
             }
         }
         return false;
+    }
+    public static HashMap<Direction, Direction> getClockwise() {
+        HashMap<Direction, Direction> map = new HashMap<>();
+        map.put(Direction.NORTH, Direction.EAST);
+        map.put(Direction.EAST, Direction.SOUTH);
+        map.put(Direction.SOUTH, Direction.WEST);
+        map.put(Direction.WEST, Direction.NORTH);
+        return map;
     }
 
 

@@ -1,8 +1,17 @@
 
 {
   "variants": {
-    "": {
-      "model": "beaconite813:block/storage_beacon"
+    "facing=north": {
+      "model": "beaconite813:block/storage_beacon/storage_beacon_north"
+    },
+    "facing=south": {
+      "model": "beaconite813:block/storage_beacon/storage_beacon_south"
+    },
+    "facing=east": {
+      "model": "beaconite813:block/storage_beacon/storage_beacon_east"
+    },
+    "facing=west": {
+      "model": "beaconite813:block/storage_beacon/storage_beacon_west"
     }
   }
 }
