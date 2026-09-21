@@ -172,7 +172,17 @@ public class Config {
                             "beaconite813:wrath_effect_icon",
                             "beaconite813:capsaicin_effect_icon",
                             "beaconite813:midas_rot_effect_icon",
-                            "beaconite813:hypertrophy_effect_icon"
+                            "beaconite813:hypertrophy_effect_icon",
+                            "beaconite813:storage_focus_collect",
+                            "beaconite813:storage_focus_deposit",
+                            "beaconite813:storage_focus_conc",
+                            "beaconite813:storage_focus_distribute",
+                            "beaconite813:storage_trim_pu",
+                            "beaconite813:storage_trim_bdown",
+                            "beaconite813:storage_trim_bup",
+                            "beaconite813:storage_trim_adown",
+                            "beaconite813:storage_trim_aup",
+                            "beaconite813:storage_trim_all"
 
 
                     ), () -> "", Config::validateItemOrBlock);

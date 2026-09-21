@@ -37,5 +37,16 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.CAPSAICIN_ICON.get());
         basicItem(ModItems.MIDAS_ROT_ICON.get());
         basicItem(ModItems.HYPERTROPHY_ICON.get());
+
+        basicItem(ModItems.STORAGE_FOCUS_COLLECT.get());
+        basicItem(ModItems.STORAGE_FOCUS_CONC.get());
+        basicItem(ModItems.STORAGE_FOCUS_DEPOSIT.get());
+        basicItem(ModItems.STORAGE_FOCUS_DISTRIBUTE.get());
+        basicItem(ModItems.STORAGE_TRIM_ADOWN.get());
+        basicItem(ModItems.STORAGE_TRIM_AUP.get());
+        basicItem(ModItems.STORAGE_TRIM_ALL.get());
+        basicItem(ModItems.STORAGE_TRIM_BDOWN.get());
+        basicItem(ModItems.STORAGE_TRIM_BUP.get());
+        basicItem(ModItems.STORAGE_TRIM_PU.get());
     }
 }

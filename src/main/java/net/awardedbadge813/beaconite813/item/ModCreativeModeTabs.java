@@ -39,6 +39,21 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.DORMANT_BOTTLE);
                 output.accept(ModBlocks.DORMANT_EGG);
 
+                output.accept(ModItems.STORAGE_FOCUS_COLLECT);
+                output.accept(ModItems.STORAGE_FOCUS_DEPOSIT);
+                output.accept(ModItems.STORAGE_FOCUS_CONC);
+                output.accept(ModItems.STORAGE_FOCUS_DISTRIBUTE);
+                output.accept(ModItems.STORAGE_TRIM_PU);
+                output.accept(ModItems.STORAGE_TRIM_BUP);
+                output.accept(ModItems.STORAGE_TRIM_BDOWN);
+                output.accept(ModItems.STORAGE_TRIM_AUP);
+                output.accept(ModItems.STORAGE_TRIM_ADOWN);
+                output.accept(ModItems.STORAGE_TRIM_ALL);
+
+
+
+
+
 
                 output.accept(ModBlocks.BEACONITE_BLOCK);
                 output.accept(ModBlocks.BEACONITE_GLASS);

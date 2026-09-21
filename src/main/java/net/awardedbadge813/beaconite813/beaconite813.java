@@ -47,7 +47,7 @@ public class beaconite813 {
     //Since I am a hoarder I have kept the example code used to make block/items, which is what you see below.
     // Feel free to ignore anything inside the /*  */.
 
-    @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = MOD_ID)
         public static class ClientModEvents {
             @SubscribeEvent
             public static void registerScreens(RegisterMenuScreensEvent event) {

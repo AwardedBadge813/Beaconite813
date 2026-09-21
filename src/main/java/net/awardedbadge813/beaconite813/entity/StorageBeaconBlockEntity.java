@@ -1,7 +1,6 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
-import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
@@ -16,7 +15,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.datafix.fixes.ChunkPalettedStorageFix;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -31,16 +29,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,20 +48,22 @@ import static net.awardedbadge813.beaconite813.block.custom.StorageBeaconBlock.F
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.getClockwise;
 
 public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
+    private static final Log log = LogFactory.getLog(StorageBeaconBlockEntity.class);
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
     private boolean configoffset = true;
     private int activeSlots = 1;
     private int stackSize = 0;
-    private boolean exemptChipSpace = true; //whether space directly adjacent to chip face gets overlooked for extraction, since it might get sent to the wrong inventory.
     private Direction facing=getBlockState().getValue(FACING);
     public final HashMap<Direction, Direction> getChip = getClockwise();
     private StorageMode storageMode = StorageMode.NONE;
     private SafeCollect collectTarget = SafeCollect.PICKUP;
     private BlockEntity focusTarget;
-    public HashMap<StorageMode, String> storageModeMap = getModeNames();
-    public HashMap<SafeCollect, String> safeCollectMap = getCollectNames();
+    public static HashMap<StorageMode, String> storageModeNames = getModeNames();
+    public static HashMap<SafeCollect, String> safeCollectNames = getCollectNames();
+    public static HashMap<Item, StorageMode> modeMap = getModeMap();
+    public static HashMap<Item, SafeCollect> collectMap = getCollectMap();
     public StorageBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.STORAGE_BEACON_BE.get(),
                 pos,
@@ -185,15 +184,22 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             return this.stacks.get(slot);
         }
     };
-    public final ItemStackHandler chipSlot = new ItemStackHandler(1) {
+    public final ItemStackHandler chipSlot = new ItemStackHandler(3) {
+        //slot 0 defines the dimensional lattice, which increases storage size of the block.
+        //slot 1 defines the foci slot, which defines the behaviour of the beacon.
+        //slot 2 defines the trim slot, which defines whether the beacon can pickup items
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            int returnValue = Config.MAX_STORAGE_SIZE.getAsInt();
-            if (returnValue==0) {
-                return Integer.MAX_VALUE-16;
+            if (slot==0) {
+                int returnValue = Config.MAX_STORAGE_SIZE.getAsInt();
+                if (returnValue==-1) {
+                    return Integer.MAX_VALUE-16;
+                }
+                return max(returnValue-16, 0);
+            } else {
+                return 1;
             }
 
-            return max(returnValue-16, 0);
         }
 
         @Override
@@ -207,7 +213,28 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(ModItems.DIM_LATTICE);
+            switch (slot) {
+                case 0 -> {
+                    return stack.is(ModItems.DIM_LATTICE);
+                }
+                case 1 -> {
+                    return stack.is(ModItems.STORAGE_FOCUS_COLLECT)
+                            ||stack.is(ModItems.STORAGE_FOCUS_DEPOSIT)
+                            ||stack.is(ModItems.STORAGE_FOCUS_CONC)
+                            ||stack.is(ModItems.STORAGE_FOCUS_DISTRIBUTE);
+                }
+                case 2 -> {
+                    return stack.is(ModItems.STORAGE_TRIM_ADOWN)
+                            ||stack.is(ModItems.STORAGE_TRIM_AUP)
+                            ||stack.is(ModItems.STORAGE_TRIM_ALL)
+                            ||stack.is(ModItems.STORAGE_TRIM_BDOWN)
+                            ||stack.is(ModItems.STORAGE_TRIM_BUP)
+                            ||stack.is(ModItems.STORAGE_TRIM_PU);
+                }
+                default -> {
+                    return false;
+                }
+            }
         }
 
         @Override
@@ -364,23 +391,16 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             return;
         }
         updatedLevel=getLayers(level, pos);
-        if (counter>20&&(random()*2<=1||configoffset)) {
-            collectItems(pos);
-            getFocusTarget(level, pos);
-            if (focusTarget!=null) {
-                IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, focusTarget.getBlockPos(), facing.getOpposite());
-                if (handler != null) {
-                    itemStorage.insertItem(0,
-                            handler.insertItem(0, itemStorage.extractItem(0, 64, false), false), false);
-                    //this is goofy so I'll annotate. removes 64 of an item from slot, then adds it to focused block, then adds remainder back to slot.
-                }
-            }
-            counter=0;
-        }
+        int blockRadius = updatedLevel; //just for easier notation
+
+
+
         counter=max(counter+1, 0); //in case the value gets extremely negative this resets it
         //hopefully this prevents lag spikes by making it so the collections are both approximately 1 second and also offset from other operations.
 
-
+        //update settings 2 and 3
+        storageMode = modeMap.get(chipSlot.getStackInSlot(1).getItem());
+        collectTarget = collectMap.get(chipSlot.getStackInSlot(2).getItem());
 
 
 
@@ -388,21 +408,74 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         stackSize=chipSlot.getStackInSlot(0).getCount();
         //determine which blocks are exempt from the requested operation
 
-        //collect items from bottom face logic (move this to separate function when context determined)
+        //beacon actions, must be done last since it requires updated data
+        if (counter>20&&(random()*2<=1||configoffset)) {
+            getFocusTarget(level, pos);
+            counter=0;
+            RedirectTick(level, pos, blockState);
+        }
 
 
     }
+
+    private void ConcentrateHelper(Level level) {
+        if (focusTarget!=null) {
+            IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, focusTarget.getBlockPos(), facing.getOpposite());
+            if (handler != null) {
+                int handlerSize = handler.getSlots();
+                int storageSize = itemStorage.getSlots();
+
+                for (int i=0; i<storageSize;i++) { //handler
+                    ItemStack collected = itemStorage.extractItem(i,itemStorage.getSlotLimit(i),false);
+                    for (int j=0;j<handlerSize;j++) {//itemStorage
+                        collected = handler.insertItem(j,collected,false);
+                        if (collected == ItemStack.EMPTY) {
+                            break;
+                        }
+                    }
+                    if (collected!=ItemStack.EMPTY) {
+                        itemStorage.insertItem(i,collected,false);
+                    }
+                }
+                //this is goofy so I'll annotate. removes 64 of an item from slot, then adds it to focused block (on the specified face!), then adds remainder back to slot.
+            }
+        }
+    }
+    private void RedirectHelper(Level level) {
+        if (focusTarget!=null) {
+            IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, focusTarget.getBlockPos(), facing.getOpposite());
+            if (handler != null) {
+                int handlerSize = handler.getSlots(); //i
+                int storageSize = itemStorage.getSlots();//j
+                for (int i=0; i<storageSize;i++) { //itemStorage
+                    ItemStack collected = itemStorage.extractItem(i,itemStorage.getSlotLimit(i),false);
+                    for (int j=0;j<handlerSize;j++) {//handler
+                        collected = handler.insertItem(j,collected,false);
+                        if (collected == ItemStack.EMPTY) {
+                            break;
+                        }
+                    }
+                    if (collected!=ItemStack.EMPTY) {
+                        itemStorage.insertItem(i,collected,false);
+                    }
+                }
+                //reversed version of ConcentrateHelper. goofy ahh function.
+            }
+        }
+    }
+
     //determine which block is being 'focused' on. should deposit in the face the beacon is 'looking' at.
-    public void getFocusTarget(Level level, BlockPos pos) {
+    public @Nullable BlockEntity getFocusTarget(Level level, BlockPos pos) {
         for (int i=0; i<checkDirection; i++) {
             pos=pos.relative(facing, 1);
             IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, facing.getOpposite());
             if (maybeHandler!=null) {
-                focusTarget = level.getBlockEntity(pos);
-                itemStorage.setStackInSlot(1, new ItemStack(focusTarget.getBlockState().getBlock().asItem(), 1));
-                return;
+                BlockEntity focus=level.getBlockEntity(pos);
+                focusTarget = focus;
+                return focus;
             }
         }
+        return null;
     }
 
     private void collectItems(BlockPos pos) {
@@ -423,9 +496,179 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
 
     //mother function that sends the tick to the right function given the block states and enums. there's a lot here...
-    private void Redirect(Level level, BlockPos pos, BlockState blockState) {
+    private void RedirectTick(Level level, BlockPos pos, BlockState blockState) {
+        boolean extract = storageMode==StorageMode.COLLECT||storageMode==StorageMode.FOCUS;
+        boolean insert = storageMode==StorageMode.DEPOSIT||storageMode==StorageMode.REDIRECT;
+
+        List<Direction> validFaces;
+        boolean pickup = false;
+        switch (collectTarget) {
+            case SafeCollect.ALL -> {
+                validFaces = List.of(
+                        Direction.DOWN,
+                        Direction.UP,
+                        Direction.NORTH,
+                        Direction.SOUTH,
+                        Direction.EAST,
+                        Direction.WEST);
+                pickup = true;
+            }
+            case SafeCollect.ALL_UP -> {
+                validFaces = List.of(
+                        Direction.UP);
+                pickup = true;
+
+            }
+            case SafeCollect.BLOCK_UP -> {
+                validFaces = List.of(
+                        Direction.UP);
+                pickup = false;
+
+            }
+            case SafeCollect.ALL_DOWN -> {
+                validFaces = List.of(
+                        Direction.DOWN);
+                pickup = true;
+            }
+            case SafeCollect.BLOCK_DOWN ->{
+                validFaces = List.of(
+                        Direction.DOWN);
+                pickup = false;
+            }
+            case SafeCollect.PICKUP ->{
+                validFaces = List.of();
+                pickup = true; //counterintuitive but this means it won't immediately pickup items it drops
+            }
+            default -> {
+                validFaces = List.of();
+            }
+        }
+        if (pickup && (storageMode != StorageMode.DEPOSIT)) {
+            collectItems(pos);
+        } else if ((collectTarget == SafeCollect.PICKUP)&&(storageMode == StorageMode.DEPOSIT)) {
+            List<SimpleContainer> container1 =  getDropContainers(itemStorage);
+            for (int i=0;i<itemStorage.getSlots();i++) {
+                itemStorage.setStackInSlot(i, ItemStack.EMPTY);
+            }
+            for (SimpleContainer container : container1 ) {
+                Containers.dropContents(level, this.worldPosition.above(1), container);
+            }
+        }
+        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, 5, validFaces, focusTarget);
+        log.debug(operableHandlers.toString());
+
+        //the main function to determine what the beacon is ACTUALLY doing. most of the previous stuff is just prep for this.
+        switch (storageMode) {
+            case StorageMode.COLLECT ->  {
+                //code to collect from block faces
+                for (IItemHandler handler : operableHandlers) {
+                    int handlerSize = handler.getSlots(); //i
+                    int storageSize = itemStorage.getSlots();//j
+                    for (int i=0; i<handlerSize;i++) { //handler
+                        ItemStack collected = handler.extractItem(i,handler.getSlotLimit(i),false);
+                        for (int j=0;j<storageSize;j++) {//itemStorage
+                            collected = itemStorage.insertItem(j,collected,false);
+                            if (collected == ItemStack.EMPTY) {
+                                break;
+                            }
+                        }
+                        if (collected!=ItemStack.EMPTY) {
+                            handler.insertItem(i,collected,false);
+                        }
+                    }
+                }
+            }
+            case StorageMode.DEPOSIT ->  {
+                //code to deposit to block faces
+                for (IItemHandler handler : operableHandlers) {
+                    int handlerSize = handler.getSlots(); //i
+                    int storageSize = itemStorage.getSlots();//j
+                    for (int i=0; i<storageSize;i++) { //handler
+                        ItemStack collected = itemStorage.extractItem(i,itemStorage.getSlotLimit(i),false);
+                        for (int j=0;j<handlerSize;j++) {//itemStorage
+                            collected = handler.insertItem(j,collected,false);
+                            if (collected == ItemStack.EMPTY) {
+                                break;
+                            }
+                        }
+                        if (collected!=ItemStack.EMPTY) {
+                            itemStorage.insertItem(i,collected,false);
+                        }
+                    }
+                }
+            }
+            case StorageMode.FOCUS ->  {
+                //code to collect from block faces
+                for (IItemHandler handler : operableHandlers) {
+                    int handlerSize = handler.getSlots(); //i
+                    int storageSize = itemStorage.getSlots();//j
+                    for (int i=0; i<handlerSize;i++) { //handler
+                        ItemStack collected = handler.extractItem(i,handler.getSlotLimit(i),false);
+                        for (int j=0;j<storageSize;j++) {//itemStorage
+                            collected = itemStorage.insertItem(j,collected,false);
+                            if (collected == ItemStack.EMPTY) {
+                                break;
+                            }
+                        }
+                        if (collected!=ItemStack.EMPTY) {
+                            handler.insertItem(i,collected,false);
+                        }
+                    }
+                }
+                ConcentrateHelper(level);
+            }
+            case StorageMode.REDIRECT ->  {
+                //code to deposit to block faces
+                for (IItemHandler handler : operableHandlers) {
+                    int handlerSize = handler.getSlots(); //i
+                    int storageSize = itemStorage.getSlots();//j
+                    for (int i=0; i<storageSize;i++) { //handler
+                        ItemStack collected = itemStorage.extractItem(i,itemStorage.getSlotLimit(i),false);
+                        for (int j=0;j<handlerSize;j++) {//itemStorage
+                            collected = handler.insertItem(j,collected,false);
+                            if (collected == ItemStack.EMPTY) {
+                                break;
+                            }
+                        }
+                        if (collected!=ItemStack.EMPTY) {
+                            itemStorage.insertItem(i,collected,false);
+                        }
+                    }
+                }
+
+                RedirectHelper(level);
+            }
+        }
+
+
 
     }
+
+    private ArrayList<IItemHandler> getListOfIItemHandlers(Level level, BlockPos pos, int updatedLevel, List<Direction> validFaces, BlockEntity focusTarget) {
+        List<BlockPos> reject = List.of(focusTarget==null?pos:focusTarget.getBlockPos(), pos);
+        ArrayList<IItemHandler> list = new ArrayList<>();
+        for (int x = -updatedLevel; x<=updatedLevel;x++) {
+            for (int y = -updatedLevel; y<=updatedLevel;y++) {
+                for (int z = -updatedLevel; z<=updatedLevel;z++) {
+                    //inside this is the block logic code, outside just identifies the loop through a radius of the beacon level.
+
+                    BlockPos here = pos.offset(x,y,z);
+                    if (!reject.contains(here)) {
+                        for (Direction dir : validFaces) {
+                            IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, here, dir);
+                            if ((maybeHandler!=null) && (!list.contains(maybeHandler))) {
+                                list.add(maybeHandler);
+                                //theoretically if the handlers are iterated over, it shouldn't matter if there are duplicates, but it doesn't sound very optimized.
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+        //this feels very resource-hungry.
+    }
+
 
     private boolean ShouldDeposit(ItemStackHandler itemHandler, ItemStack itemStack) {
         int beginCount = itemStack.getCount();
@@ -436,16 +679,6 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         }
         //item stacks will all have been distributed, so true.
         return true;
-    }
-
-
-    private boolean isPlacing;
-
-    private boolean BlockValidForDestruction(BlockState blockState) {
-            //may change this later but is a decent 'should not destroy this block' placeholder for now
-        assert level != null;
-        return !blockState.is(BlockTags.WITHER_IMMUNE) || blockState.is(ModBlocks.ULTRA_DENSE_BEACONITE.get());
-
     }
 
     //if there is an inversion talisman anywhere in the constructor, the constructor should become inverted.
@@ -507,13 +740,13 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
     @Override
     public boolean IsBeaconActive() {
-        return isPlacing;
+        return true;
     }
 
     @Override
     public List<BeaconBeamSection> getBeamSections() {
         BeaconBeamSection beamSection = null;
-        if(isPlacing) {
+        if(IsBeaconActive()) {
             beamSection = new BeaconBeamSection();
             assert getLevel() != null;
             beamSection.setParams(DyeColor.WHITE.getTextureDiffuseColor(), getLevel().getMaxBuildHeight() - getBlockPos().getY());
@@ -562,30 +795,62 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         COLLECT,
         DEPOSIT,
         FOCUS,
-        DISTRIBUTE
+        REDIRECT
     }
     public enum SafeCollect {
+        NONE,
         PICKUP,
-        BLOCKDOWN,
-        ALLDOWN,
+        BLOCK_DOWN,
+        BLOCK_UP,
+        ALL_DOWN,
+        ALL_UP,
         ALL
-        //ALLDOWN means pickup and the bottom of blocks. ALL means ALL faces of blocks. note the exceptions for NOCHIP and FOCUS target if applicable.
+        //ALL_DOWN means pickup and the bottom of blocks. ALL means ALL faces of blocks and pickup. note the exception for FOCUS target if applicable.
     }
-    public HashMap<StorageMode, String> getModeNames() {
+    //slot 1 of chipSlot determines what mode the beacon is in.
+    public static HashMap<StorageMode, String> getModeNames() {
         HashMap<StorageMode, String> map = new HashMap<>();
         map.put(StorageMode.NONE, "None");
         map.put(StorageMode.COLLECT, "Collect");
         map.put(StorageMode.DEPOSIT, "Deposit");
-        map.put(StorageMode.FOCUS, "Focus");
-        map.put(StorageMode.DISTRIBUTE, "Distribute");
+        map.put(StorageMode.FOCUS, "Concentrate");
+        map.put(StorageMode.REDIRECT, "Redirect");
         return map;
     }
-    public HashMap<SafeCollect, String> getCollectNames() {
+    //slot 1 of chipSlot determines what mode the beacon is in.
+    public static HashMap<Item, StorageMode> getModeMap() {
+        HashMap<Item, StorageMode> map = new HashMap<>();
+        map.put(ItemStack.EMPTY.getItem(), StorageMode.NONE);
+        map.put(ModItems.STORAGE_FOCUS_COLLECT.get(), StorageMode.COLLECT);
+        map.put(ModItems.STORAGE_FOCUS_DEPOSIT.get(), StorageMode.DEPOSIT);
+        map.put(ModItems.STORAGE_FOCUS_CONC.get(), StorageMode.FOCUS);
+        map.put(ModItems.STORAGE_FOCUS_DISTRIBUTE.get(), StorageMode.REDIRECT);
+        return map;
+    }
+    //slot 2 of chipSlot determines what the beacon collects.
+    public static HashMap<SafeCollect, String> getCollectNames() {
         HashMap<SafeCollect, String> map = new HashMap<>();
-        map.put(SafeCollect.PICKUP, "Pickup");
-        map.put(SafeCollect.BLOCKDOWN, "Bottom of Blocks");
-        map.put(SafeCollect.ALLDOWN, "Pickup & Bottom of Blocks");
+        map.put(SafeCollect.NONE, "None");
+        map.put(SafeCollect.PICKUP, "Pickup (Can Drop Items!)");
+        map.put(SafeCollect.BLOCK_DOWN, "Bottom of Blocks");
+        map.put(SafeCollect.BLOCK_UP, "Top of Blocks");
+        map.put(SafeCollect.ALL_DOWN, "Pickup & Bottom of Blocks");
+        map.put(SafeCollect.ALL_UP, "Pickup & Top of Blocks");
         map.put(SafeCollect.ALL, "EVERYTHING!");
+
+
+        return map;
+    }
+
+    public static HashMap<Item, SafeCollect> getCollectMap() {
+        HashMap<Item, SafeCollect> map = new HashMap<>();
+        map.put(ItemStack.EMPTY.getItem(), SafeCollect.NONE);
+        map.put(ModItems.STORAGE_TRIM_PU.get(), SafeCollect.PICKUP);
+        map.put(ModItems.STORAGE_TRIM_BDOWN.get(),SafeCollect.BLOCK_DOWN);
+        map.put(ModItems.STORAGE_TRIM_BUP.get(),SafeCollect.BLOCK_UP);
+        map.put(ModItems.STORAGE_TRIM_ADOWN.get(),SafeCollect.ALL_DOWN);
+        map.put(ModItems.STORAGE_TRIM_AUP.get(),SafeCollect.ALL_UP);
+        map.put(ModItems.STORAGE_TRIM_ALL.get(),SafeCollect.ALL);
 
 
         return map;

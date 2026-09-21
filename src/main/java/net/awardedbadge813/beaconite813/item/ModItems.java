@@ -53,8 +53,29 @@ public class ModItems {
             });
     public static final DeferredItem<Item> DIM_LATTICE = ITEMS.register("dimensional_lattice",
             () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_FOCUS_COLLECT = ITEMS.register("storage_focus_collect",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_FOCUS_DEPOSIT = ITEMS.register("storage_focus_deposit",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_FOCUS_CONC = ITEMS.register("storage_focus_conc",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_FOCUS_DISTRIBUTE = ITEMS.register("storage_focus_distribute",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_PU = ITEMS.register("storage_trim_pu",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_BDOWN = ITEMS.register("storage_trim_bdown",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_BUP = ITEMS.register("storage_trim_bup",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_ADOWN = ITEMS.register("storage_trim_adown",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_AUP = ITEMS.register("storage_trim_aup",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_ALL = ITEMS.register("storage_trim_all",
+            () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
+//
 
 
     public static final DeferredItem<Item> AURA_MODULE = ITEMS.register("aura_module",

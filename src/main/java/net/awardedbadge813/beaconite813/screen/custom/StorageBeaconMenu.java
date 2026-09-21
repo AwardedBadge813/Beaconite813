@@ -40,6 +40,26 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
                 return Config.MAX_STORAGE_SIZE.getAsInt();
             }
         });
+        this.addSlot(new SlotItemHandler(blockEntity.chipSlot, 1, -63, 28) {
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return 1;
+            }
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
+        this.addSlot(new SlotItemHandler(blockEntity.chipSlot, 2, -63, 58) {
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return 1;
+            }
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
         addInventory(blockEntity.itemStorage, 10, 6, -1, 8);
 
 
@@ -66,7 +86,7 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 61;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 63;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
