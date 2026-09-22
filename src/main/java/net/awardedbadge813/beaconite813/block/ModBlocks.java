@@ -203,6 +203,8 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> ETHER_BEACON_BLOCK =registerBlock("ethereal_beacon",
             () -> new EtherealBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DISTILLERY_BLOCK =registerBlock("distillery",
+            () -> new DistilleryBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
 
 
 

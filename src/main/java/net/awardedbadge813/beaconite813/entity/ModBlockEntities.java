@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.entity.custom.DistilleryBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -70,6 +71,10 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<StorageBeaconBlockEntity>> STORAGE_BEACON_BE =
             BLOCK_ENTITIES.register("storage_beacon_be", () -> BlockEntityType.Builder.of(
                             StorageBeaconBlockEntity::new, ModBlocks.STORAGE_BEACON_BLOCK.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<DistilleryBlockEntity>> DISTILLERY_BE =
+            BLOCK_ENTITIES.register("distillery_be", () -> BlockEntityType.Builder.of(
+                            DistilleryBlockEntity::new, ModBlocks.DISTILLERY_BLOCK.get())
                     .build(null));
 
 

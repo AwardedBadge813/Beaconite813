@@ -554,7 +554,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                 Containers.dropContents(level, this.worldPosition.above(1), container);
             }
         }
-        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, 5, validFaces, focusTarget);
+        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, updatedLevel, validFaces, focusTarget);
         log.debug(operableHandlers.toString());
 
         //the main function to determine what the beacon is ACTUALLY doing. most of the previous stuff is just prep for this.
