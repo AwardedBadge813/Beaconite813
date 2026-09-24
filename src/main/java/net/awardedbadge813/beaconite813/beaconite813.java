@@ -104,45 +104,45 @@ public class beaconite813 {
                 BlockEntityRenderers.register(ModBlockEntities.NEGATIVE_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.AMORPH_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.ETHER_BEACON_BE.get(), BasicBeaconRenderer::new);
-                ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_ZWOOP.get(), RenderType.TRANSLUCENT);
-                ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_ZWOOP.get(), RenderType.TRANSLUCENT);
+                //ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_ZWOOP.get(), RenderType.TRANSLUCENT);
+                //ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_ZWOOP.get(), RenderType.TRANSLUCENT);
 
 
 
 
             }
-            //@SubscribeEvent
-            /*private static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+            @SubscribeEvent
+            private static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
 
                     @Override
                     public ResourceLocation getStillTexture() {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getStillTexture();
+                        return ModFluidTypes.WATER_STILL_RL;
                     }
 
                     @Override
                     public ResourceLocation getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getStillTexture();
+                        return ModFluidTypes.WATER_STILL_RL;
                     }
 
                     @Override
                     public ResourceLocation getStillTexture(FluidStack stack) {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getStillTexture();
+                        return ModFluidTypes.WATER_STILL_RL;
                     }
 
                     @Override
                     public ResourceLocation getFlowingTexture() {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getFlowingTexture();
+                        return ModFluidTypes.WATER_FLOW_RL;
                     }
 
                     @Override
                     public ResourceLocation getFlowingTexture(FluidStack stack) {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getFlowingTexture();
+                        return ModFluidTypes.WATER_FLOW_RL;
                     }
 
                     @Override
                     public ResourceLocation getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
-                        return ModFluidTypes.ZWOOP_TYPE.get().getFlowingTexture();
+                        return ModFluidTypes.WATER_FLOW_RL;
                     }
 
                     @Override
@@ -150,11 +150,15 @@ public class beaconite813 {
                         return ModFluidTypes.ZWOOP_TYPE.get().getStillTexture();
                     }
 
+                    @Override
+                    public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
                 }, ModFluidTypes.ZWOOP_TYPE.get());
                 LOGGER.info("Zwoop");
                 LOGGER.info(ModFluidTypes.ZWOOP_TYPE.get().getStillTexture().getPath());
 
-            }*/
+            }
 
 
 

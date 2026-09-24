@@ -45,7 +45,7 @@ public class BaseFluidType extends FluidType {
         return fogColor;
     }
 
-    @Override
+    /*@Override
     public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
         consumer.accept(new IClientFluidTypeExtensions() {
             @Override
@@ -76,5 +76,5 @@ public class BaseFluidType extends FluidType {
                 RenderSystem.setShaderFogEnd(6f); // distance when the fog starts
             }
         });
-        }
+        }*/
 }
