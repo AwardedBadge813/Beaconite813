@@ -2,7 +2,7 @@ package net.awardedbadge813.beaconite813.block.custom;
 
 import com.mojang.serialization.MapCodec;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
-import net.awardedbadge813.beaconite813.entity.custom.DistilleryBlockEntity;
+import net.awardedbadge813.beaconite813.entity.DistilleryBlockEntity;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

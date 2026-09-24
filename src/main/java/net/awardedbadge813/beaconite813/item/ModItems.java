@@ -1,12 +1,10 @@
 package net.awardedbadge813.beaconite813.item;
 
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -75,6 +73,8 @@ public class ModItems {
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> BUCKET_ZWOOP = ITEMS.register("zwoop_bucket",
+            () -> new BucketItem(ModFluids.SOURCE_ZWOOP.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
 //
 
 
