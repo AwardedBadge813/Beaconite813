@@ -1,7 +1,6 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
-	"parent": "minecraft:block/block",
 	"textures": {
 		"2": "beaconite813:block/distillery/bunsen",
 		"3": "beaconite813:block/distillery/bottle",

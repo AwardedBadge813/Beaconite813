@@ -86,6 +86,7 @@ public class beaconite813 {
                 event.register(ModMenuTypes.REGAL_BEACON_MENU.get(), RegalBeaconScreen::new);
                 event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
                 event.register(ModMenuTypes.ETHER_BEACON_MENU.get(), EtherealBeaconScreen::new);
+                event.register(ModMenuTypes.DISTILLERY_MENU.get(), DistilleryScreen::new);
             }
 
             @SubscribeEvent

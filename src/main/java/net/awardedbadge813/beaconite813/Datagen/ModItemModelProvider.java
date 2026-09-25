@@ -20,7 +20,7 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.PURE_BEACONITE.get());
         basicItem(ModItems.QUARRY_TALISMAN.get());
         basicItem(ModItems.DIM_LATTICE.get());
-        basicItem(ModBlocks.REFINERY.asItem());
+        //basicItem(ModBlocks.REFINERY.asItem());
         basicItem(ModItems.BEACON_POWDER.get());
         basicItem(ModItems.BEACONITE_SEED.get());
         basicItem(ModItems.BEACON_BEAM_SHARD.get());
@@ -48,5 +48,6 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.STORAGE_TRIM_BDOWN.get());
         basicItem(ModItems.STORAGE_TRIM_BUP.get());
         basicItem(ModItems.STORAGE_TRIM_PU.get());
+        basicItem(ModItems.BUCKET_ZWOOP.get());
     }
 }

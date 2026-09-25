@@ -1,8 +1,16 @@
 {
   "variants": {
-    "": {
-      "model": "beaconite813:block/distillery/distillery"
-
+    "facing=north": {
+      "model": "beaconite813:block/distillery/distillery_n"
+    },
+    "facing=south": {
+      "model": "beaconite813:block/distillery/distillery_s"
+    },
+    "facing=east": {
+      "model": "beaconite813:block/distillery/distillery_w"
+    },
+    "facing=west": {
+      "model": "beaconite813:block/distillery/distillery_w"
     }
   }
 }

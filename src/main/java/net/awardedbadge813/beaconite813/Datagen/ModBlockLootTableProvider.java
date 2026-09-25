@@ -56,6 +56,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.NEGATIVE_BEACON_BLOCK.get());
         dropSelf(ModBlocks.VENGEANT_BEACON_BLOCK.get());
         dropSelf(ModBlocks.STORAGE_BEACON_BLOCK.get());
+        dropSelf(ModBlocks.DISTILLERY_BLOCK.get());
 
 
         LootItemCondition.Builder lootItemConditionBuilder =

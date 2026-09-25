@@ -182,7 +182,8 @@ public class Config {
                             "beaconite813:storage_trim_bup",
                             "beaconite813:storage_trim_adown",
                             "beaconite813:storage_trim_aup",
-                            "beaconite813:storage_trim_all"
+                            "beaconite813:storage_trim_all",
+                            "beaconite813:distillery"
 
 
                     ), () -> "", Config::validateItemOrBlock);

@@ -204,9 +204,10 @@ public class ModBlocks {
             () -> new EtherealBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> DISTILLERY_BLOCK =registerBlock("distillery",
             () -> new DistilleryBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
+
     public static final DeferredBlock<LiquidBlock> ZWOOP_BLOCK =
             BLOCKS.register("zwoop_block", () -> new ZwoopBlock(ModFluids.SOURCE_ZWOOP.get(), BlockBehaviour.Properties.of()
-                    .liquid().speedFactor(2).jumpFactor(40).friction(0).pushReaction(PushReaction.IGNORE)));
+                    .liquid().speedFactor(1.4f).jumpFactor(2).friction(0).pushReaction(PushReaction.IGNORE).noLootTable()));
     //below is the setup for creating new block. when making a new block use the above.
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
