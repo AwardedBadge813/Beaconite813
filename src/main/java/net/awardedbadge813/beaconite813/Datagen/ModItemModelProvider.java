@@ -49,5 +49,9 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.STORAGE_TRIM_BUP.get());
         basicItem(ModItems.STORAGE_TRIM_PU.get());
         basicItem(ModItems.BUCKET_ZWOOP.get());
+        basicItem(ModItems.REACTIVE_CONCOCTION.get());
+        basicItem(ModItems.FAKE_STAR.get());
+        basicItem(ModItems.BEACONITE_FLUX.get());
+
     }
 }

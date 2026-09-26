@@ -73,8 +73,26 @@ public class ModItems {
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item>FAKE_STAR = ITEMS.register("fake_nether_star",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> BEACONITE_FLUX = ITEMS.register("beaconite_flux",
+            () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BUCKET_ZWOOP = ITEMS.register("zwoop_bucket",
             () -> new BucketItem(ModFluids.SOURCE_ZWOOP.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+    public static final DeferredItem<Item>REACTIVE_CONCOCTION = ITEMS.register("reactive_concoction",
+            () -> new ToggleableItem(new Item.Properties()) {
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactive_concoction_joke.tooltip"));
+                    if(tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactive_concoction.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+
+            });
 //
 
 

@@ -30,6 +30,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -206,13 +207,14 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                 roll.add(new ItemStack(ModItems.CATALYST.get().asItem(), 1));
             }
         }
+
         if(random>49) {
             if (!((ToggleableItem) ModItems.PURE_BEACONITE.get().asItem()).isDisabled()) {
                 roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
             }
-            if (BeaconiteLib.masterToggleTable.contains(ModItems.BEACONITE_SEED.get().asItem()) ) {
-                roll.add(new ItemStack(ModItems.BEACONITE_SEED.get().asItem(), 3));
-            }
+            //if (BeaconiteLib.masterToggleTable.contains(ModItems.BEACONITE_SEED.get().asItem()) ) {
+                //roll.add(new ItemStack(ModItems.BEACONITE_SEED.get().asItem(), 3));
+            //}
         }
         return roll;
     }
@@ -307,7 +309,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public void tryBlowUpBlock(BlockPos pos) {
         assert level != null;
         BlockState blockstate = level.getBlockState(pos);
-        if(!blockstate.is(BlockTags.WITHER_IMMUNE) && Config.BOMBS_DESTROY_BLOCKS.getAsBoolean()) {
+        if(!blockstate.is(BlockTags.WITHER_IMMUNE) &&!blockstate.is(Blocks.ANCIENT_DEBRIS)&& Config.BOMBS_DESTROY_BLOCKS.getAsBoolean()) {
             BeaconiteLib.safeUpdateBlock(level, pos, AIR.defaultBlockState());
         }
     }

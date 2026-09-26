@@ -37,8 +37,10 @@ public class DistilleryBlock extends BaseEntityBlock {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("tooltip.beaconite813.storage_joke.tooltip"));
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery_joke.tooltip"));
         if(Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery2.tooltip"));
 
         }else {
 
@@ -92,7 +94,7 @@ public class DistilleryBlock extends BaseEntityBlock {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof DistilleryBlockEntity BlockEntity) {
-                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Storage Beacon (WIP)")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Distillery")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }

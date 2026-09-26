@@ -141,9 +141,9 @@ public class DistilleryScreen extends AbstractContainerScreen<DistilleryMenu> {
         guiGraphics.blit(SLOT_TEXTURE, x+186, y+141, 0, 0, 18,18,18,18);
         guiGraphics.blit(SLOT_TEXTURE, x+143, y+131, 0, 0, 18,18,18,18);
         guiGraphics.blit(METERS, x+103, y+105, 0, 0, 30,40,30,40);
-        guiGraphics.blit(HEAT_METER, x+114, y+104+menu.getHeatMeter(), 0, menu.getHeatMeter(), 3,40-menu.getHeatMeter(),3,40);
-        guiGraphics.blit(ZWOOP_METER, x+118, y+104+menu.getZwoopMeter(), 0, menu.getZwoopMeter(), 3,40-menu.getZwoopMeter(),3,40);
-        guiGraphics.drawString(this.font, String.valueOf(menu.data.get(1)), x,y, 10);
+        guiGraphics.blit(HEAT_METER, x+114, y+106+menu.getHeatMeter(), 0, menu.getHeatMeter(), 3,38-menu.getHeatMeter(),3,38);
+        guiGraphics.blit(ZWOOP_METER, x+118, y+106+menu.getZwoopMeter(), 0, menu.getZwoopMeter(), 3,38-menu.getZwoopMeter(),3,38);
+        guiGraphics.blit(ZWOOP_FULL, x+163, y+141+menu.getZwoopTank(), 0, menu.getZwoopTank(), 20,16-menu.getZwoopTank(),20,16);
 
 
 

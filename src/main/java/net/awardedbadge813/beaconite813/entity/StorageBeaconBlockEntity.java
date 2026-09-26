@@ -55,6 +55,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     private boolean configoffset = true;
     private int activeSlots = 1;
     private int stackSize = 0;
+    private int updatedLevel;
     private Direction facing=getBlockState().getValue(FACING);
     public final HashMap<Direction, Direction> getChip = getClockwise();
     private StorageMode storageMode = StorageMode.NONE;
@@ -365,23 +366,6 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     public Block extractFirstUsableBlock(ItemStackHandler itemHandler, boolean simulate) {
         return Block.byItem(extractFirstUsableItem(itemHandler, simulate).getItem());
     }
-
-    @Override
-    public int getLayers(Level level, BlockPos pos) {
-        int currentLayer;
-        int y=pos.getY();
-        for (currentLayer = 1; currentLayer <=20; currentLayer++){
-            for (int x = getX(pos, currentLayer); x < getX(pos, currentLayer) + levelSize(currentLayer); x++) {
-                for (int z = getZ(pos, currentLayer); z < (getZ(pos, currentLayer) + levelSize(currentLayer)); z++) {
-                    if (!checkBlockStateForBeaconBlock(level, new BlockPos(x,y,z))){
-                        return currentLayer -1;
-                    }
-                }
-            }
-            y-=1;
-        }
-        return min(currentLayer-1, Config.MAX_LEVEL_BEACON.getAsInt());
-    }
     private int checkDirection = 20;
 
     private float collectRange = 10;
@@ -412,7 +396,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         if (counter>20&&(random()*2<=1||configoffset)) {
             getFocusTarget(level, pos);
             counter=0;
-            RedirectTick(level, pos, blockState);
+            RedirectTick(level, pos, blockState, 5);
         }
 
 
@@ -496,7 +480,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
 
     //mother function that sends the tick to the right function given the block states and enums. there's a lot here...
-    private void RedirectTick(Level level, BlockPos pos, BlockState blockState) {
+    private void RedirectTick(Level level, BlockPos pos, BlockState blockState, int layers) {
         boolean extract = storageMode==StorageMode.COLLECT||storageMode==StorageMode.FOCUS;
         boolean insert = storageMode==StorageMode.DEPOSIT||storageMode==StorageMode.REDIRECT;
 
@@ -554,8 +538,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                 Containers.dropContents(level, this.worldPosition.above(1), container);
             }
         }
-        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, updatedLevel, validFaces, focusTarget);
-        log.debug(operableHandlers.toString());
+        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, layers, validFaces, focusTarget);
 
         //the main function to determine what the beacon is ACTUALLY doing. most of the previous stuff is just prep for this.
         switch (storageMode) {
@@ -717,7 +700,6 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             super.loadAdditional(pTag, pRegistries);
             itemStorage.deserializeNBT(pRegistries, pTag.getCompound("store_inv"));
             chipSlot.deserializeNBT(pRegistries, pTag.getCompound("chip_inv"));
-            userSelectedLevel = pTag.getInt("selected_level");
             updatedLevel = pTag.getInt("current_level");
             xCurrent = pTag.getInt("x_current");
             yCurrent = pTag.getInt("y_current");
@@ -730,11 +712,9 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
 
     protected final ContainerData data;
-        private int userSelectedLevel=0;
         private int xCurrent = getBlockPos().getX()-1;
         private int yCurrent= getBlockPos().getY()-1;
         private int zCurrent= getBlockPos().getZ()-1;
-        private int updatedLevel=0;
         private int counter;
 
 

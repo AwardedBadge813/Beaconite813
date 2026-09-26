@@ -183,7 +183,10 @@ public class Config {
                             "beaconite813:storage_trim_adown",
                             "beaconite813:storage_trim_aup",
                             "beaconite813:storage_trim_all",
-                            "beaconite813:distillery"
+                            "beaconite813:distillery",
+                            "beaconite813:reactive_concoction",
+                            "beaconite813:fake_nether_star",
+                            "beaconite813:beaconite_flux"
 
 
                     ), () -> "", Config::validateItemOrBlock);

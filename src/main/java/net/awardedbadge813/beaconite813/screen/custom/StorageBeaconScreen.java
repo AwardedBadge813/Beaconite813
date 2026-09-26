@@ -162,6 +162,7 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
 
 
 
+
         //Determine arrow direction and place the focus target and block into the menu. barrier identifies no focus target within 100 blocks. h
         guiGraphics.renderItem(menu.blockEntity.getBlockState().getBlock().asItem().getDefaultInstance(), x+179, y+2);
         guiGraphics.blit(ARROW_BG, x+196, y+7, 0, 0, 15, 7, 15, 7);
@@ -177,6 +178,8 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         if (direction!=null) {
             guiGraphics.blit(direction, x+196, y+8, 0, 0, 15, 5, 15, 5);
         }
+        guiGraphics.drawString(this.font, "Radius: "+String.valueOf(menu.data.get(0)),
+                x+180, y+25, 4210752, false);
 
 
     }

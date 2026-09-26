@@ -155,6 +155,15 @@ public class beaconite813 {
                     public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
                         return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
                     }
+                    @Override
+                    public int getTintColor() {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
+
+                    @Override
+                    public int getTintColor(FluidStack stack) {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
                 }, ModFluidTypes.ZWOOP_TYPE.get());
                 LOGGER.info("Zwoop");
                 LOGGER.info(ModFluidTypes.ZWOOP_TYPE.get().getStillTexture().getPath());

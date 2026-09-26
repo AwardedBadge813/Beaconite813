@@ -145,4 +145,8 @@ public class DistilleryMenu extends AbstractContainerMenu {
     public int getZwoopMeter() {
         return (int)(((1f-(float)(data.get(0))/(float)blockEntity.maxProgress)*40f));
     }
+
+    public int getZwoopTank() {
+        return (int)(((1f-(data.get(2)/4000f))*16f));
+    }
 }

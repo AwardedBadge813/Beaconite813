@@ -27,6 +27,10 @@
   "item.beaconite813.storage_trim_adown": "Chest Trim: Pickup & Bottom Face",
   "item.beaconite813.storage_trim_aup": "Chest Trim: Pickup & Top Face",
   "item.beaconite813.storage_trim_all": "Chest Trim: Pickup & ALL Faces",
+  "item.beaconite813.zwoop_bucket": "Bucket of Zwoop",
+  "item.beaconite813.fake_nether_star": "Fake Nether Star",
+  "item.beaconite813.beaconite_flux": "Beaconite Flux",
+  "block.beaconite813.distillery": "Distillery",
 
   "item.beaconite813.auric_interference_icon": "§bEffect: Auric Interference",
   "item.beaconite813.wrath_effect_icon": "§bEffect: Wrath",
@@ -52,6 +56,8 @@
 
   "effect.beaconite813.fading_effect": "Auric Interference",
 
+  "block.beaconite813.zwoop_block": "Zwoop",
+  "fluid_type.beaconite813.zwoop_type": "Zwoop",
   "block.beaconite813.ethereal_mode.aura": "Mode: Aura",
   "block.beaconite813.ethereal_mode.diffusion": "Mode: Diffusion",
   "block.beaconite813.ethereal_mode.transmute": "Mode: Transmutation",
@@ -71,7 +77,15 @@
   "tooltip.beaconite813.quarry_talisman.tooltip": "§9If placed in the constructor's input, will make the constructor destroy blocks instead of placing them.",
 
 
-  "tooltip.beaconite813.storage_joke.tooltip": "§5§oYou'll never guess what this is.",
+  "tooltip.beaconite813.storage_joke.tooltip": "§5§oBecause originality is truly dead",
+
+
+  "tooltip.beaconite813.distillery_joke.tooltip": "§5§oI feel like I've seen this in a TV show before",
+  "tooltip.beaconite813.distillery1.tooltip": "§9Heats up and concentrates reactive mixtures. Don't keep the heat too high, or you will burn your product!",
+  "tooltip.beaconite813.distillery2.tooltip": "§9(best speeds are in the center green bar, and the mixture will only burn if the process completes in the red section)",
+  "item.beaconite813.reactive_concoction": "Reactive Concoction",
+  "tooltip.beaconite813.reactive_concoction_joke.tooltip": "§5§oBoth of these words are SO fun to say",
+  "tooltip.beaconite813.reactive_concoction.tooltip": "§9Distills into Zwoop in a distillery.",
 
   "tooltip.beaconite813.vengeant_beacon1.tooltip": "§9Gives the §5wrath§9 effect to all players in the area.",
   "tooltip.beaconite813.vengeant_beacon2.tooltip": "§9Requires 10 skulls (placed on or above the  beacon base blocks) to activate, and 10 times more skulls for each level.",
@@ -108,13 +122,13 @@
   "tooltip.beaconite813.ethereal_beacon4.tooltip": "§9Requires a level §510§9 beacon base to activate.",
 
   "block.beaconite813.beaconite_block": "Beaconite Block",
-  "block.beaconite813.condensed_beaconite": "Condensed Beaconite",
+  "block.beaconite813.condensed_beaconite": "Block of Crude Beaconite",
   "block.beaconite813.refinery": "Refinery",
   "block.beaconite813.unstable_beacon": "Unstable Beacon",
   "block.beaconite813.storage_beacon": "Beacon With a Chest In It (WIP)",
   "block.beaconite813.reinforced_glass": "Reinforced Glass",
   "block.beaconite813.constructor": "Bea-Constructor",
-  "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",
+  "block.beaconite813.ultra_dense_beaconite": "Block of Pure Beaconite",
   "block.beaconite813.dormant_egg": "Dormant Dragon Egg",
   "block.beaconite813.beaconite_crop": "Luminous Bulb",
 
@@ -169,7 +183,7 @@
   "tooltip.beaconite813.negative_beacon2.tooltip": "§9Each additional level will retain one level of potency from the inverted effect.",
   "tooltip.beaconite813.negative_beacon3.tooltip": "§9Minimum Beacon level §58§9, maximum level §517§9 (Level §5X§9 effects).",
 
-  "tooltip.beaconite813.invert_talisman1.tooltip": "§5§oWhen placed into a constructor, it will build in the opposite direction.",
+  "tooltip.beaconite813.invert_talisman1.tooltip": "§9When placed into a constructor, it will build in the opposite direction.",
   "tooltip.beaconite813.invert_talisman_joke.tooltip": "§5§oIsn't this just a cardboard box?",
   "tooltip.beaconite813.auric_interference.tooltip": "§5§oSplash ethereal potions interfere with the Aura Module's condensers. effects will not be collected.",
   "tooltip.beaconite813.wrath_effect.tooltip": "§5§oDeal more damage multiplicatively, but negate two levels of resistance per level. Watch out, you'll start taking more damage if you run out of levels!",
@@ -181,4 +195,5 @@
   "tooltip.beaconite813.wrath_flesh.tooltip": "§5§oNote: This is also a polymorph crafting block!",
 
   "tooltip.beaconite813.disabled.tooltip": "§4This item has been disabled by the pack author! Recipes may still be enabled, but this item will not do anything."
+
 }

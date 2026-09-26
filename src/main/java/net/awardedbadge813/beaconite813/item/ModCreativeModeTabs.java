@@ -39,6 +39,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.DORMANT_BOTTLE);
                 output.accept(ModBlocks.DORMANT_EGG);
 
+
                 output.accept(ModItems.STORAGE_FOCUS_COLLECT);
                 output.accept(ModItems.STORAGE_FOCUS_DEPOSIT);
                 output.accept(ModItems.STORAGE_FOCUS_CONC);
@@ -49,6 +50,10 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.STORAGE_TRIM_AUP);
                 output.accept(ModItems.STORAGE_TRIM_ADOWN);
                 output.accept(ModItems.STORAGE_TRIM_ALL);
+                output.accept(ModItems.BUCKET_ZWOOP);
+                output.accept(ModItems.REACTIVE_CONCOCTION);
+                output.accept(ModItems.FAKE_STAR);
+                output.accept(ModItems.BEACONITE_FLUX);
 
 
 
@@ -60,6 +65,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.CONDENSED_BEACONITE);
                 output.accept(ModBlocks.UNSTABLE_BEACON);
                 output.accept(ModBlocks.REFINERY);
+                output.accept(ModBlocks.DISTILLERY_BLOCK);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);
                 output.accept(ModBlocks.CONSTRUCTOR);
                 output.accept(ModBlocks.STORAGE_BEACON_BLOCK);

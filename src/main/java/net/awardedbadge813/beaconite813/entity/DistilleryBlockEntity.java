@@ -1,5 +1,7 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.Fluids.ModFluidTypes;
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.effect.ModEffects;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
@@ -54,9 +56,9 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     private Direction facing;
     protected final ContainerData data;
     public int maxProgress=1000;
-    public int maxHeat=1000;
+    public int maxHeat=5000;
     private int progress=0;
-    private int heat = 700;
+    private int heat = 0;
     public DistilleryBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.DISTILLERY_BE.get(), pos, blockState);
         data = new ContainerData() {
@@ -68,6 +70,9 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
                     }
                     case 1-> {
                         return heat;
+                    }
+                    case 2 -> {
+                        return tank.getFluidAmount();
                     }
 
                 }
@@ -84,12 +89,15 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
                     case 1->{
                         heat=i1;
                     }
+                    default -> {
+
+                    }
                 }
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return 3;
             }
         };
     }
@@ -114,7 +122,7 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         public boolean isItemValid(int slot, ItemStack stack) {
             switch (slot) {
                 case 0 -> {
-                    return stack.is(ModItems.BEACON_POWDER);
+                    return stack.is(ModItems.REACTIVE_CONCOCTION);
                 }
                 case 1 -> {
                     return stack.getBurnTime(RecipeType.SMELTING)>0;
@@ -168,15 +176,16 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
+        //heat loop
         heat--;
         float pct=this.getHeatPct();
         if (pct>=0.580&&pct<=1f) {
-            progress++;
+            progress+=(int)((1f-(abs(pct)-0.650f))*10f);
         }else {
             progress--;
         }
         if (itemInputs.getStackInSlot(1).getCount()>0) {
-            int burnTime = itemInputs.getStackInSlot(1).getBurnTime(RecipeType.SMELTING)/20;
+            int burnTime = itemInputs.getStackInSlot(1).getBurnTime(RecipeType.SMELTING)/4;
             if (burnTime+heat<=maxHeat) {
                 heat+=burnTime;
                 itemInputs.extractItem(1,1,false);
@@ -184,10 +193,38 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
 
         }
         heat=clamp(heat,0, maxHeat);
+        //end heat loop
+
+        //progress loop
+        if (progress>=maxProgress) {
+            boolean consume = true;
+            if (this.getHeatPct()<0.82) {
+                if (tank.getFluidAmount()+250<=tank.getCapacity()) {
+                    tank.setFluid(new FluidStack(ModFluids.SOURCE_ZWOOP, 250+tank.getFluidAmount()));
+                } else {
+                    consume=false;
+                }
+
+            }
+            //there are various factors that can cause or prevent the item from getting consumed.
+            //if you succeed in managing the heat effectively, you will get product, but if you don't your item will simply get consumed.
+            if (consume) {
+                itemInputs.extractItem(0,1,false);
+                progress=0;
+            }
+        }
+        progress=clamp(progress, 0, maxProgress);
+
+        if (tank.getFluidAmount()>=1000&&itemInputs.getStackInSlot(2).is(Items.BUCKET)&&itemInputs.getStackInSlot(3).isEmpty()) {
+            itemInputs.extractItem(2,1,false);
+            itemInputs.setStackInSlot(3, new ItemStack(ModItems.BUCKET_ZWOOP.get(), 1));
+            tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+        }
 
 
 
     }
+
 
 
     @Override

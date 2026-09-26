@@ -20,7 +20,7 @@ public class StorageBeaconMenu extends AbstractContainerMenu {
     protected final ContainerData data;
 
     public StorageBeaconMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(7));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(9));
     }
 
     public StorageBeaconMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
