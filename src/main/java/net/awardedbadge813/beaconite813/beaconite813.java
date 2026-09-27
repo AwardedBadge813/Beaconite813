@@ -87,6 +87,7 @@ public class beaconite813 {
                 event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
                 event.register(ModMenuTypes.ETHER_BEACON_MENU.get(), EtherealBeaconScreen::new);
                 event.register(ModMenuTypes.DISTILLERY_MENU.get(), DistilleryScreen::new);
+                event.register(ModMenuTypes.REACTOR_MENU.get(), ReactorScreen::new);
             }
 
             @SubscribeEvent
@@ -203,7 +204,12 @@ public class beaconite813 {
                         Capabilities.ItemHandler.BLOCK,
                         ModBlockEntities.STORAGE_BEACON_BE.get(),
                         (be, side) -> be.getCapability(be,side));
-                event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntities.DISTILLERY_BE.get(), (be,side) -> be.getCapabilityHandler(be,side));
+                event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntities.DISTILLERY_BE.get(),
+                        (be,side) -> be.getCapabilityHandler(be,side));
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.DISTILLERY_BE.get(),
+                        (be, side) -> be.getItemHandler(be,side));
         });
 
 

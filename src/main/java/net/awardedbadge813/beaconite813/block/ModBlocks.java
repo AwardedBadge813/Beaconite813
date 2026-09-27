@@ -204,6 +204,8 @@ public class ModBlocks {
             () -> new EtherealBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> DISTILLERY_BLOCK =registerBlock("distillery",
             () -> new DistilleryBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> REACTOR_BLOCK =registerBlock("zwoop_reactor",
+            () -> new ZwoopReactorBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops()));
 
     public static final DeferredBlock<LiquidBlock> ZWOOP_BLOCK =
             BLOCKS.register("zwoop_block", () -> new ZwoopBlock(ModFluids.SOURCE_ZWOOP.get(), BlockBehaviour.Properties.of()

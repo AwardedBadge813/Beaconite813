@@ -66,6 +66,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.UNSTABLE_BEACON);
                 output.accept(ModBlocks.REFINERY);
                 output.accept(ModBlocks.DISTILLERY_BLOCK);
+                output.accept(ModBlocks.REACTOR_BLOCK);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);
                 output.accept(ModBlocks.CONSTRUCTOR);
                 output.accept(ModBlocks.STORAGE_BEACON_BLOCK);

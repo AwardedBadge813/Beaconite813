@@ -1,14 +1,9 @@
 package net.awardedbadge813.beaconite813.entity;
 
-import net.awardedbadge813.beaconite813.Fluids.ModFluidTypes;
 import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
-import net.awardedbadge813.beaconite813.effect.ModEffects;
-import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
-import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.item.ModItems;
-import net.awardedbadge813.beaconite813.screen.custom.DistilleryMenu;
-import net.awardedbadge813.beaconite813.screen.custom.StorageBeaconMenu;
+import net.awardedbadge813.beaconite813.screen.custom.ReactorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -17,44 +12,30 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.datafix.fixes.FurnaceRecipeFix;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static java.lang.Math.*;
-import static net.awardedbadge813.beaconite813.block.custom.StorageBeaconBlock.FACING;
-import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
-public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
+public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider {
     private Direction facing;
     protected final ContainerData data;
     public int maxProgress = 1000;
@@ -62,8 +43,8 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     private int progress = 0;
     private int heat = 0;
 
-    public DistilleryBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.DISTILLERY_BE.get(), pos, blockState);
+    public ZwoopReactorBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntities.REACTOR_BE.get(), pos, blockState);
         data = new ContainerData() {
             @Override
             public int get(int i) {
@@ -204,8 +185,8 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
 
 
     @Override
-    public @NotNull BlockEntityType<DistilleryBlockEntity> getType() {
-        return ModBlockEntities.DISTILLERY_BE.get();
+    public @NotNull BlockEntityType<ZwoopReactorBlockEntity> getType() {
+        return ModBlockEntities.REACTOR_BE.get();
     }
 
     public @NotNull Component getDisplayName() {
@@ -282,12 +263,12 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public IFluidHandler getCapabilityHandler(DistilleryBlockEntity be, @Nullable Direction side) {
+    public IFluidHandler getCapabilityHandler(ZwoopReactorBlockEntity be, @Nullable Direction side) {
         return tank;
     }
     @Override
     public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
-        return new DistilleryMenu(i, inventory, this, this.data);
+        return new ReactorMenu(i, inventory, this, this.data);
     }
 
     @Override
@@ -314,7 +295,7 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
 
     }
 
-    public IItemHandler getItemHandler(DistilleryBlockEntity be, @Nullable Direction side) {
+    public IItemHandler getItemHandler(ZwoopReactorBlockEntity be, @Nullable Direction side) {
         if (side==Direction.DOWN) {
             return be.itemOutputs;
         }

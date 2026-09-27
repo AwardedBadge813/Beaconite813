@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 
+import static java.lang.Math.max;
+
 public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMenu> {
     private static final ResourceLocation GUI_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/storage/storage_gui.png");
@@ -180,6 +182,8 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         }
         guiGraphics.drawString(this.font, "Radius: "+String.valueOf(menu.data.get(0)),
                 x+180, y+25, 4210752, false);
+        guiGraphics.drawString(this.font, "Focus: "+String.valueOf(max(menu.data.get(0)*10, 1)),
+                x+180, y+42, 4210752, false);
 
 
     }

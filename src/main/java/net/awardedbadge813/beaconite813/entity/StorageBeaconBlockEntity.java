@@ -366,16 +366,15 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     public Block extractFirstUsableBlock(ItemStackHandler itemHandler, boolean simulate) {
         return Block.byItem(extractFirstUsableItem(itemHandler, simulate).getItem());
     }
-    private int checkDirection = 20;
+    private int checkDirection = 0;
 
-    private float collectRange = 10;
 
     public void tick(Level level, BlockPos pos, BlockState blockState) {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
         updatedLevel=getLayers(level, pos);
-        int blockRadius = updatedLevel; //just for easier notation
+        checkDirection = max(updatedLevel*10, 1);
 
 
 
@@ -396,7 +395,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         if (counter>20&&(random()*2<=1||configoffset)) {
             getFocusTarget(level, pos);
             counter=0;
-            RedirectTick(level, pos, blockState, 5);
+            RedirectTick(level, pos, blockState, updatedLevel);
         }
 
 
@@ -450,7 +449,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
 
     //determine which block is being 'focused' on. should deposit in the face the beacon is 'looking' at.
     public @Nullable BlockEntity getFocusTarget(Level level, BlockPos pos) {
-        for (int i=0; i<checkDirection; i++) {
+        for (int i=0; i<max(updatedLevel*10, 1); i++) {
             pos=pos.relative(facing, 1);
             IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, facing.getOpposite());
             if (maybeHandler!=null) {
@@ -463,7 +462,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
 
     private void collectItems(BlockPos pos) {
-        AABB collectionRange = new AABB(pos).inflate(collectRange);
+        AABB collectionRange = new AABB(pos).inflate(updatedLevel);
         List<ItemEntity> droppedItems = level.getEntitiesOfClass(ItemEntity.class, collectionRange);
         for (ItemEntity item:droppedItems) {
             ItemStack itemStack = item.getItem();

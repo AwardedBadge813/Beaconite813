@@ -36,6 +36,8 @@ public class ModMenuTypes {
             registerMenuType("storage_beacon_menu", StorageBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<DistilleryMenu>> DISTILLERY_MENU =
             registerMenuType("distillery_menu", DistilleryMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR_MENU =
+            registerMenuType("reactor_menu", ReactorMenu::new);
 
 
     private static<T extends AbstractContainerMenu>DeferredHolder<MenuType<?>, MenuType<T>>

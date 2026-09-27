@@ -1,8 +1,7 @@
 package net.awardedbadge813.beaconite813.screen.custom;
 
-import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
-import net.awardedbadge813.beaconite813.entity.DistilleryBlockEntity;
+import net.awardedbadge813.beaconite813.entity.ZwoopReactorBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,19 +12,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-public class DistilleryMenu extends AbstractContainerMenu {
+public class ReactorMenu extends AbstractContainerMenu {
 
-    public final DistilleryBlockEntity blockEntity;
+    public final ZwoopReactorBlockEntity blockEntity;
     private final Level level;
     protected ContainerData data;
 
-    public DistilleryMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+    public ReactorMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(9));
     }
 
-    public DistilleryMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-        super(ModMenuTypes.DISTILLERY_MENU.get(), pContainerId);
-        this.blockEntity = ((DistilleryBlockEntity) entity);
+    public ReactorMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
+        super(ModMenuTypes.REACTOR_MENU.get(), pContainerId);
+        this.blockEntity = ((ZwoopReactorBlockEntity) entity);
         this.level = inv.player.level();
         this.data=data;
         addPlayerInventory(inv);
@@ -135,7 +134,7 @@ public class DistilleryMenu extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-        pPlayer, ModBlocks.DISTILLERY_BLOCK.get());
+        pPlayer, ModBlocks.REACTOR_BLOCK.get());
     }
 
     public int getHeatMeter() {
