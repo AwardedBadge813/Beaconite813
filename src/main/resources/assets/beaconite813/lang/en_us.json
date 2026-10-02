@@ -86,6 +86,7 @@
   "item.beaconite813.reactive_concoction": "Reactive Concoction",
   "tooltip.beaconite813.reactive_concoction_joke.tooltip": "§5§oBoth of these words are SO fun to say",
   "tooltip.beaconite813.reactive_concoction.tooltip": "§9Distills into Zwoop in a distillery.",
+  "block.beaconite813.zwoop_reactor": "Zwoop Reactor",
 
   "tooltip.beaconite813.vengeant_beacon1.tooltip": "§9Gives the §5wrath§9 effect to all players in the area.",
   "tooltip.beaconite813.vengeant_beacon2.tooltip": "§9Requires 10 skulls (placed on or above the  beacon base blocks) to activate, and 10 times more skulls for each level.",

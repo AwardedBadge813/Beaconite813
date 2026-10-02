@@ -11,25 +11,16 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
     private static final ResourceLocation GUI_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/distillery_gui.png");
-    private static final ResourceLocation BOTTLE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/bottle_gui.png");
-    private static final ResourceLocation EXTRA =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/distillery_extra.png");
-    private static final ResourceLocation SLOT_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/storage/itemslot.png");
-    private static final ResourceLocation ARROW_CURVED =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/arrow_curved.png");
-    private static final ResourceLocation ZWOOP_FULL =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/zwoop_full.png");
-    private static final ResourceLocation ARROW_CURVED_OP =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/arrow_curved_op.png");
-    private static final ResourceLocation METERS =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/meters.png");
-    private static final ResourceLocation HEAT_METER =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/heat_meter.png");
-    private static final ResourceLocation ZWOOP_METER =
-            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/distillery/zwoop_meter.png");
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/reactor/reactor_gui.png");
+    private static final ResourceLocation LOCK_U =
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/reactor/zwoop_reactor_lock_u.png");
+    private static final ResourceLocation LOCK =
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/reactor/zwoop_reactor_lock.png");
+    private static final ResourceLocation FULL_TANK =
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/reactor/fulltank.png");
+    private static final ResourceLocation ARROW_PROGRESS =
+            ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "textures/gui/reactor/arrow_progress.png");
+
 
     private ResourceLocation direction;
 
@@ -97,8 +88,8 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
 
     public ReactorScreen(ReactorMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.titleLabelX = -10;
-        this.titleLabelY =-43;
+        this.titleLabelX = 25;
+        this.titleLabelY =-35;
         this.inventoryLabelX = 7;
         this.inventoryLabelY = this.imageHeight - 140;
     }
@@ -113,9 +104,9 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
             }//new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18));
         }
     }
-    private void addInventory(int width, int height, int x, int y, GuiGraphics guiGraphics){
-        addInventory(width, height, x, y, guiGraphics, SLOT_TEXTURE, 18, 18);
-    }
+    //private void addInventory(int width, int height, int x, int y, GuiGraphics guiGraphics){
+    //    addInventory(width, height, x, y, guiGraphics, SLOT_TEXTURE, 18, 18);
+    //}
 
 
 
@@ -128,16 +119,14 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
         int y = (height - imageHeight) / 2;
 
 
-        guiGraphics.blit(GUI_TEXTURE, x-116, y-237, 0, 0, 512, 512, 512, 512);
-        guiGraphics.blit(EXTRA, x+70, y+20, 0, 0, 119,138,119,138);
-        guiGraphics.blit(ARROW_CURVED, x+152, y+150, 0, 0, 7,7,7,7);
-        guiGraphics.blit(ARROW_CURVED_OP, x+190, y+130, 0, 0, 7,7,7,7);
-        guiGraphics.blit(SLOT_TEXTURE, x+186, y+141, 0, 0, 18,18,18,18);
-        guiGraphics.blit(SLOT_TEXTURE, x+143, y+131, 0, 0, 18,18,18,18);
-        guiGraphics.blit(METERS, x+103, y+105, 0, 0, 30,40,30,40);
-        guiGraphics.blit(HEAT_METER, x+114, y+106+menu.getHeatMeter(), 0, menu.getHeatMeter(), 3,38-menu.getHeatMeter(),3,38);
-        guiGraphics.blit(ZWOOP_METER, x+118, y+106+menu.getZwoopMeter(), 0, menu.getZwoopMeter(), 3,38-menu.getZwoopMeter(),3,38);
-        guiGraphics.blit(ZWOOP_FULL, x+163, y+141+menu.getZwoopTank(), 0, menu.getZwoopTank(), 20,16-menu.getZwoopTank(),20,16);
+        guiGraphics.blit(GUI_TEXTURE, x-116, y-235, 0, 0, 512,512,512,512);
+        guiGraphics.blit(FULL_TANK, x+57, y+6+menu.getZwoopTank(), 0, menu.getZwoopTank(), 141,141-menu.getZwoopTank(),141,141);
+
+        ResourceLocation lockTexture = menu.data.get(2)==1?LOCK_U:LOCK;
+        guiGraphics.blit(lockTexture, x+81, y+50, 0, 0, 10,11,10,11);
+        guiGraphics.blit(lockTexture, x+159, y+50, 0, 0, 10,11,10,11);
+        guiGraphics.blit(LOCK, x+120, y+50, 0, 0, 10,11,10,11);
+        guiGraphics.blit(ARROW_PROGRESS, x+138, y+71, 0, 0, menu.getProgress(),5,15,5);
 
 
 

@@ -210,6 +210,14 @@ public class beaconite813 {
                         Capabilities.ItemHandler.BLOCK,
                         ModBlockEntities.DISTILLERY_BE.get(),
                         (be, side) -> be.getItemHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REACTOR_BE.get(),
+                    (be, side) -> be.getItemHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.FluidHandler.BLOCK,
+                    ModBlockEntities.REACTOR_BE.get(),
+                    (be, side) -> be.getFluidHandler(be,side));
         });
 
 

@@ -186,7 +186,8 @@ public class Config {
                             "beaconite813:distillery",
                             "beaconite813:reactive_concoction",
                             "beaconite813:fake_nether_star",
-                            "beaconite813:beaconite_flux"
+                            "beaconite813:beaconite_flux",
+                            "beaconite813:zwoop_reactor"
 
 
                     ), () -> "", Config::validateItemOrBlock);

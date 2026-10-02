@@ -1,8 +1,10 @@
 package net.awardedbadge813.beaconite813.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ZwoopReactorBlockEntity;
+import net.awardedbadge813.beaconite813.item.ModItems;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +15,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -26,6 +29,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +81,9 @@ public class ZwoopReactorBlock extends BaseEntityBlock {
             if(level.getBlockEntity(pos) instanceof ZwoopReactorBlockEntity ZwoopBlockEntity) {
                 level.updateNeighbourForOutputSignal(pos, this);
                 level.invalidateCapabilities(pos);
+                ZwoopBlockEntity.drops();
                 level.removeBlockEntity(pos);
+
             }
         }
 
@@ -87,7 +95,16 @@ public class ZwoopReactorBlock extends BaseEntityBlock {
                                                     @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof ZwoopReactorBlockEntity BlockEntity) {
+            if(entity instanceof ZwoopReactorBlockEntity zwoopEntity && pPlayer.isHolding(ModItems.BUCKET_ZWOOP.get())) {
+                IFluidHandler handler = zwoopEntity.getFluidHandler(zwoopEntity, Direction.UP);
+                if ((handler.getTankCapacity(0)-handler.getFluidInTank(0).getAmount())>=1000) {
+                    zwoopEntity.getFluidHandler(zwoopEntity, Direction.UP).fill(new FluidStack(ModFluids.SOURCE_ZWOOP, 1000), IFluidHandler.FluidAction.EXECUTE);
+                    if (!pPlayer.isCreative()) {
+                        pPlayer.setItemInHand(pHand, Items.BUCKET.getDefaultInstance());
+                    }
+
+                }
+            } else if (entity instanceof ZwoopReactorBlockEntity BlockEntity) {
                 pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Zwoop Reactor")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");

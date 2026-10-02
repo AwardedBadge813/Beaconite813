@@ -1,18 +1,23 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import jdk.dynalink.linker.support.Lookup;
 import net.awardedbadge813.beaconite813.Fluids.ModFluids;
+import net.awardedbadge813.beaconite813.beaconite813;
+import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.screen.custom.ReactorMenu;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,11 +25,12 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.extensions.IHolderLookupProviderExtension;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -33,15 +39,21 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.image.LookupTable;
+import java.rmi.registry.Registry;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import static java.lang.Math.*;
 
 public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider {
-    private Direction facing;
     protected final ContainerData data;
     public int maxProgress = 1000;
-    public int maxHeat = 5000;
     private int progress = 0;
-    private int heat = 0;
+    private boolean opened=false;
+    private String recipe;
+    boolean foundRecipe;
 
     public ZwoopReactorBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.REACTOR_BE.get(), pos, blockState);
@@ -53,10 +65,10 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
                         return progress;
                     }
                     case 1 -> {
-                        return heat;
-                    }
-                    case 2 -> {
                         return tank.getFluidAmount();
+                    }
+                    case 2-> {
+                        return opened?1:0; //boolean to 0-1 conversion
                     }
 
                 }
@@ -70,8 +82,8 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
                     case 0 -> {
                         progress = i1;
                     }
-                    case 1 -> {
-                        heat = i1;
+                    case 2 -> {
+                        opened=i1==1; //0-1 to boolean conversion
                     }
                     default -> {
 
@@ -86,10 +98,6 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
         };
     }
 
-    public float getHeatPct() {
-        return (float) heat / (float) maxHeat;
-    }
-
     public float getProgressPct() {
         return (float) progress / (float) maxProgress;
     }
@@ -98,28 +106,55 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
         return blockItem.isDisabled();
     }
 
-    public ItemStackHandler itemInputs = new ItemStackHandler(3) {
+    public ItemStackHandler operatingSlot = new ItemStackHandler(2) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return stack.getMaxStackSize();
         }
 
 
-        @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+
+        //@Override
+        /*public boolean isItemValid(int slot, ItemStack stack) {
             switch (slot) {
                 case 0 -> {
-                    return stack.is(ModItems.REACTIVE_CONCOCTION);
+                    return stack.is(Blocks.CHEST.asItem())||stack.is(ModItems.DIM_LATTICE.asItem());
                 }
                 case 1 -> {
-                    return stack.getBurnTime(RecipeType.SMELTING) > 0;
-                }
-                case 2 -> {
-                    return stack.is(Items.BUCKET);
+                    return false;
                 }
 
             }
             return false;
+        }*/
+
+        //first slot is the input, second is output
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            if (slot==1) {
+                return super.extractItem(slot, amount, simulate);
+            }
+            if (slot<0) {
+                return super.extractItem(-slot, amount, simulate);
+            }
+
+            return ItemStack.EMPTY;
+
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (slot==0) {
+                return super.insertItem(slot, stack, simulate);
+            }
+            //override for this block to still use insert.
+            // it is a guaranteed crash to reference negative numbers to a normal itemstackhandler, so any modded pipe, etc. will never use this to insert/extract.
+            // since this block always has this special code in it, it can safely do this within this block only.
+            if (slot<0) {
+                return super.insertItem(abs(slot), stack, simulate);
+            }
+
+            return stack;
         }
 
         @Override
@@ -131,7 +166,7 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
             }
         }
     };
-    public ItemStackHandler itemOutputs = new ItemStackHandler(1) {
+    public ItemStackHandler manualSlots = new ItemStackHandler(2) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
             return stack.getMaxStackSize();
@@ -140,8 +175,18 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return false;
+            if (slot==0) {
+                return stack.is(Items.IRON_BARS);
+            }
+            return opened;
+        }
 
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (slot==0||opened) {
+                return super.insertItem(slot, stack, simulate);
+            }
+            return stack;
         }
 
         @Override
@@ -154,23 +199,24 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
         }
     };
 
-
-    //this is the traditional code for extractItem, changing the name so items cant be extracted from input slots.
-    public ItemStack takeItem(ItemStackHandler itemHandler, int slot, int amount, boolean simulate) {
-        if (amount == 0) {
-            return ItemStack.EMPTY;
-        } else {
-            //extract
-            Item item = itemHandler.getStackInSlot(slot).getItem();
-            itemHandler.setStackInSlot(slot, new ItemStack(itemHandler.getStackInSlot(slot).getItem(), max(itemHandler.getStackInSlot(slot).getCount()-1, 0)));
-            return new ItemStack(item, 1);
-        }
-    }
 
     private FluidTank tank = new FluidTank(4000) {
         @Override
         public boolean isFluidValid(FluidStack stack) {
-            return false;
+            return stack.is(ModFluids.SOURCE_ZWOOP.get());
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            if (maxDrain<0) {
+                super.drain(-maxDrain, action);
+            }
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
         }
 
         @Override
@@ -182,6 +228,41 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
             }
         }
     };
+    //too lazy to not hardcode so this is my compromise, if this mod ever becomes popular god help my soul its easy to migrate
+    public List<Item> ingredients = List.of(ModItems.DIM_LATTICE.get(), Items.CHEST, Items.GOLD_INGOT,Items.REDSTONE_BLOCK,Items.EMERALD,Items.DIAMOND);
+    public HashMap<Item, ItemStack> recipes = getZwoopRecipes();
+    public HashMap<Item, Integer> consumed = getConsumed();
+    public HashMap<Item, Integer> zwoopCost = zwoopCost();
+    public static HashMap<Item, ItemStack> getZwoopRecipes() {
+        HashMap<Item, ItemStack> map = new HashMap<>();
+        map.put(Items.CHEST, new ItemStack(ModBlocks.STORAGE_BEACON_BLOCK.asItem(), 1));
+        map.put(ModItems.DIM_LATTICE.get(), new ItemStack(ModItems.DIM_LATTICE.get(),2));
+        map.put(Items.GOLD_INGOT, new ItemStack(ModItems.STORAGE_FOCUS_DISTRIBUTE.get(),1));
+        map.put(Items.REDSTONE_BLOCK, new ItemStack(ModItems.STORAGE_FOCUS_DEPOSIT.get(),1));
+        map.put(Items.EMERALD, new ItemStack(ModItems.STORAGE_FOCUS_COLLECT.get(),1));
+        map.put(Items.DIAMOND, new ItemStack(ModItems.STORAGE_FOCUS_CONC.get(),1));
+        return map;
+    }
+    public static HashMap<Item, Integer> getConsumed() {
+        HashMap<Item, Integer> map = new HashMap<>();
+        map.put(Items.CHEST, 16);
+        map.put(ModItems.DIM_LATTICE.get(), 1);
+        map.put(Items.GOLD_INGOT, 1);
+        map.put(Items.REDSTONE_BLOCK, 1);
+        map.put(Items.EMERALD, 1);
+        map.put(Items.DIAMOND, 1);
+        return map;
+    }
+    public static HashMap<Item, Integer> zwoopCost() {
+        HashMap<Item, Integer> map = new HashMap<>();
+        map.put(Items.CHEST, 1000);
+        map.put(ModItems.DIM_LATTICE.get(), 125);
+        map.put(Items.GOLD_INGOT, 500);
+        map.put(Items.REDSTONE_BLOCK, 500);
+        map.put(Items.EMERALD, 500);
+        map.put(Items.DIAMOND, 500);
+        return map;
+    }
 
 
     @Override
@@ -190,67 +271,82 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
     }
 
     public @NotNull Component getDisplayName() {
-        return Component.literal("igneous_beacon_be");
+        return Component.literal("reactor_be");
     }
 
     public void tick (Level level, BlockPos pos, BlockState blockState) {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        //heat loop
-        float oldHeat=heat;
-        heat--;
-        float pct=this.getHeatPct();
-        if (pct>=0.580&&pct<=1f) {
-            progress+=(int)((1f-(abs(pct)-0.650f))*10f);
-        }else {
-            progress--;
-        }
-        if (itemInputs.getStackInSlot(1).getCount()>0) {
-            int burnTime = itemInputs.getStackInSlot(1).getBurnTime(RecipeType.SMELTING)/4;
-            if (burnTime+heat<=maxHeat) {
-                heat+=burnTime;
-                takeItem(itemInputs, 1, 1, false);
-            }
-
-        }
-        heat=clamp(heat,0, maxHeat);
-        if ((int)(oldHeat/(float)maxHeat*15f)!=(int)((float)heat/(float)maxHeat*15f)) {
-            setChanged();
-        }
-
-        //end heat loop
-
-        //progress loop
-        if (progress>=maxProgress) {
-            boolean consume = true;
-            if (this.getHeatPct()<0.82) {
-                if (tank.getFluidAmount()+250<=tank.getCapacity()) {
-                    tank.setFluid(new FluidStack(ModFluids.SOURCE_ZWOOP, 250+tank.getFluidAmount()));
-                } else {
-                    consume=false;
-                }
-
-            }
-            //there are various factors that can cause or prevent the item from getting consumed.
-            //if you succeed in managing the heat effectively, you will get product, but if you don't your item will simply get consumed.
-            if (consume) {
-                takeItem(itemInputs,0,1,false);
-                progress=0;
+        ItemStack M0 = manualSlots.getStackInSlot(0);
+        //manual bar slot check
+        opened = M0.getCount()>0;
+        //manual slot input check and move it over to op slot 1 if valid item and closed
+        ItemStack M1 = manualSlots.getStackInSlot(1);
+        ItemStack OP0 = operatingSlot.getStackInSlot(0);
+        ItemStack OP1 = operatingSlot.getStackInSlot(1);
+        if (!opened&&ingredients.contains(M1.getItem())) {
+            //if the items are the same, combine them and input. if they are different send the one in input to OP1 and send the one in manual to OP0
+            //this is to cycle inputs since if not OP0 is stuck forever until an item is made
+            //adding to OP1 can be destructive, needs a second if statement
+            manualSlots.setStackInSlot(1, ItemStack.EMPTY);
+            if (M1.getItem()==OP0.getItem()) {
+                operatingSlot.setStackInSlot(0, new ItemStack(M1.getItem(), M1.getCount() + OP0.getCount()));
+            } else if (OP1.is(ItemStack.EMPTY.getItem())){
+                operatingSlot.setStackInSlot(0, M1);
+                operatingSlot.setStackInSlot(1, OP0);
             }
         }
-        progress=clamp(progress, 0, maxProgress);
+        //op slot 1 increases progress if valid
+        OP0 = operatingSlot.getStackInSlot(0);
+        if (ValidRecipe(OP0)&& !opened) {
+            progress++;
+            //if progress maxed, complete craft by finding the product and replacing op slot 2 with it.
+            if (progress>=maxProgress && operatingSlot.insertItem(-1, recipes.get(OP0.getItem()), true).is(ItemStack.EMPTY.getItem())) {
+                progress=progress%maxProgress;
+                operatingSlot.insertItem(-1, recipes.get(OP0.getItem()), false);
+                operatingSlot.setStackInSlot(0, new ItemStack(OP0.getItem(), OP0.getCount()-consumed.get(OP0.getItem())));
+                tank.setFluid(new FluidStack(tank.getFluid().getFluid(), tank.getFluidAmount()-zwoopCost.get(OP0.getItem())));
 
-        if (tank.getFluidAmount()>=1000&&itemInputs.getStackInSlot(2).is(Items.BUCKET)&&itemOutputs.getStackInSlot(0).isEmpty()) {
-            takeItem(itemInputs,2,1,false);
-            itemOutputs.setStackInSlot(0, new ItemStack(ModItems.BUCKET_ZWOOP.get(), 1));
-            tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+            }
+        } else {
+            progress=0;
         }
+
+
+
+
+
+
+
+
+
+
 
 
 
     }
+    public void drops() {
+        SimpleContainer inventory = new SimpleContainer(operatingSlot.getSlots());
+        for (int i = 0; i< operatingSlot.getSlots(); i++) {
+            inventory.setItem(i, operatingSlot.getStackInSlot(i));
+        }
+        SimpleContainer inventory2 = new SimpleContainer(manualSlots.getSlots());
+        for (int i = 0; i< manualSlots.getSlots(); i++) {
+            inventory2.setItem(i, manualSlots.getStackInSlot(i));
+        }
 
+        assert this.level != null;
+        Containers.dropContents(this.level, this.worldPosition, inventory);
+        Containers.dropContents(this.level, this.worldPosition, inventory2);
+        level.invalidateCapabilities(getBlockPos());
+    }
+
+    private boolean ValidRecipe(ItemStack stack) {
+        return recipes.get(stack.getItem())!=null
+                && stack.getCount()>=consumed.get(stack.getItem())
+                && tank.getFluidAmount()>=zwoopCost.get(stack.getItem());
+    }
 
 
     @Override
@@ -273,32 +369,43 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
-        pTag.put("distillery_inventory", itemInputs.serializeNBT(pRegistries));
-        pTag.put("distillery_output", itemOutputs.serializeNBT(pRegistries));
+        pTag.put("reactor_inventory", operatingSlot.serializeNBT(pRegistries));
+        pTag.put("reactor_manual", manualSlots.serializeNBT(pRegistries));
         pTag.putInt("fluid_inv", tank.getFluidAmount());
-        pTag.putInt("distillery_progress", progress);
-        pTag.putInt("distillery_max_progress", maxProgress);
-        pTag.putInt("distillery_heat", heat);
-        pTag.putInt("distillery_max_heat", maxHeat);
+        pTag.putInt("reactor_progress", progress);
+        pTag.putInt("reactor_max_progress", maxProgress);
+        pTag.putBoolean("open", opened);
         super.saveAdditional(pTag, pRegistries);
     }
     @Override
     protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        itemInputs.deserializeNBT(pRegistries, pTag.getCompound("distillery_inventory"));
-        itemOutputs.deserializeNBT(pRegistries, pTag.getCompound("distillery_output"));
+        operatingSlot.deserializeNBT(pRegistries, pTag.getCompound("reactor_inventory"));
+        manualSlots.deserializeNBT(pRegistries, pTag.getCompound("reactor_manual"));
         tank.setFluid(new FluidStack(ModFluids.SOURCE_ZWOOP, pTag.getInt("fluid_inv")));
-        progress = pTag.getInt("distillery_progress");
-        maxProgress = pTag.getInt("distillery_max_progress");
-        heat = pTag.getInt("distillery_heat");
-        maxHeat = pTag.getInt("distillery_max_heat");
+        progress = pTag.getInt("reactor_progress");
+        maxProgress = pTag.getInt("reactor_max_progress");
+        opened=pTag.getBoolean("open");
+
 
     }
 
     public IItemHandler getItemHandler(ZwoopReactorBlockEntity be, @Nullable Direction side) {
         if (side==Direction.DOWN) {
-            return be.itemOutputs;
+            return be.operatingSlot;
         }
-        return be.itemInputs;
+        return be.operatingSlot;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
+    }
+
+    public IFluidHandler getFluidHandler(ZwoopReactorBlockEntity zwoopEntity, Direction direction) {
+        return tank;
     }
 }

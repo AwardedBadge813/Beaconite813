@@ -29,10 +29,24 @@ public class ReactorMenu extends AbstractContainerMenu {
         this.data=data;
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-        this.addSlot(new SlotItemHandler(blockEntity.itemInputs, 0, 43, 28));
-        this.addSlot(new SlotItemHandler(blockEntity.itemInputs, 1, 44, 78));
-        this.addSlot(new SlotItemHandler(blockEntity.itemInputs, 2, 104, 87));
-        this.addSlot(new SlotItemHandler(blockEntity.itemOutputs, 0, 147, 97) {
+        this.addSlot(new SlotItemHandler(blockEntity.manualSlots, 0, -21, 21) {
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return stack.getMaxStackSize();
+            }
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+        });
+        this.addSlot(new SlotItemHandler(blockEntity.manualSlots, 1, 39, 21) {
+            @Override
+            public boolean allowModification(Player player) {
+                return data.get(2)==1;
+            }
+        });
+
+        this.addSlot(new SlotItemHandler(blockEntity.operatingSlot, 1, 117, 21){
             @Override
             public int getMaxStackSize(ItemStack stack) {
                 return 1;
@@ -41,7 +55,33 @@ public class ReactorMenu extends AbstractContainerMenu {
             public int getMaxStackSize() {
                 return 1;
             }
+
+            @Override
+            public boolean mayPickup(Player playerIn) {
+                return data.get(2)==1;
+            }
+
+            @Override
+            public boolean allowModification(Player player) {
+                return data.get(2)==1;
+            }
         });
+        this.addSlot(new SlotItemHandler(blockEntity.operatingSlot, 0, 78, 21){
+            @Override
+            public int getMaxStackSize(ItemStack stack) {
+                return 1;
+            }
+            @Override
+            public int getMaxStackSize() {
+                return 1;
+            }
+            @Override
+            public boolean allowModification(Player player) {
+                return false;
+            }
+        });
+
+
 
 
 
@@ -67,7 +107,7 @@ public class ReactorMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 4;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
@@ -117,7 +157,7 @@ public class ReactorMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory inventory){
         for (int i=0; i<3; ++i){
             for (int l=0; l<9; ++l){
-                this.addSlot(new Slot(inventory, l+i*9+9, xHotbar +l*18, yHotbar -57+i*18));
+                this.addSlot(new Slot(inventory, l+i*9+9, xHotbar +l*18, yHotbar -55+i*18));
 
             }
         }
@@ -125,7 +165,7 @@ public class ReactorMenu extends AbstractContainerMenu {
 
     private void addPlayerHotbar(Inventory inventory) {
         for (int i=0; i<9; ++i){
-            this.addSlot(new Slot(inventory, i, xHotbar +i*18, yHotbar));
+            this.addSlot(new Slot(inventory, i, xHotbar +i*18, yHotbar+2));
         }
     }
     public static int yHotbar =186;
@@ -137,15 +177,11 @@ public class ReactorMenu extends AbstractContainerMenu {
         pPlayer, ModBlocks.REACTOR_BLOCK.get());
     }
 
-    public int getHeatMeter() {
-        return (int)(((1f-(float)(data.get(1))/(float)blockEntity.maxHeat)*40f));
-    }
-
-    public int getZwoopMeter() {
-        return (int)(((1f-(float)(data.get(0))/(float)blockEntity.maxProgress)*40f));
-    }
-
     public int getZwoopTank() {
-        return (int)(((1f-(data.get(2)/4000f))*16f));
+        return (int)(((1f-(data.get(1)/4000f))*141f));
+    }
+
+    public int getProgress() {
+        return (int)(data.get(0)/(float)blockEntity.maxProgress*16f);
     }
 }
