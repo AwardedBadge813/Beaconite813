@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.block.custom.ConstructorBlock;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
@@ -50,7 +51,7 @@ import static java.lang.Math.min;
 import static net.awardedbadge813.beaconite813.block.custom.ConstructorBlock.BASE_DOWN;
 import static net.neoforged.neoforge.capabilities.BlockCapability.createVoid;
 
-public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon, IBlockCapabilityProvider {
+public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
     private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
@@ -505,9 +506,13 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     }
 
     public ItemStackHandler getCapabilityHandler(BlockEntity be, Direction side) {
-        if (side == Direction.DOWN) {
-            return ((ConstructorBlockEntity)be).getoutputItemHandler();
-        } else return ((ConstructorBlockEntity)be).getinputItemHandler();
+        if (be instanceof ConstructorBlockEntity constructorBlockEntity) {
+            if (side == Direction.DOWN) {
+                return constructorBlockEntity.getoutputItemHandler();
+            }
+            return constructorBlockEntity.getinputItemHandler();
+        }
+        return null;
     }
 
     protected final ContainerData data;
@@ -538,14 +543,4 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
 
 
 
-
-
-    private void onCapInvalidate() {
-        invalidateCapabilities();
-    }
-
-    @Override
-    public @Nullable Object getCapability(Level level, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, Object o) {
-        return getCapabilityHandler(blockEntity, o instanceof Direction direction? direction:Direction.UP);
-    }
 }

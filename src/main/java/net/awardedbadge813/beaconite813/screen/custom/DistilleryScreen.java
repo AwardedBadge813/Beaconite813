@@ -3,6 +3,7 @@ package net.awardedbadge813.beaconite813.screen.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.beaconite813;
+import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -11,9 +12,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+
+import static java.lang.Math.max;
 
 public class DistilleryScreen extends AbstractContainerScreen<DistilleryMenu> {
     private static final ResourceLocation GUI_TEXTURE =

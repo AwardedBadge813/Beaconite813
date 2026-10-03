@@ -7,7 +7,9 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
+import net.awardedbadge813.beaconite813.recipe.ReactorRecipe;
 import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
+import net.awardedbadge813.beaconite813.screen.custom.ReactorScreen;
 import net.awardedbadge813.beaconite813.screen.custom.RefineryScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +30,7 @@ public class JEIBeaconiteModPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new RefineryRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new ReactorRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -37,11 +40,16 @@ public class JEIBeaconiteModPlugin implements IModPlugin {
         List<RefineryRecipe> refineryRecipes = recipeManager
                 .getAllRecipesFor(ModRecipes.REFINERY_TYPE.get()).stream().map(RecipeHolder::value).toList();
         registration.addRecipes(RefineryRecipeCategory.REFINERY_RECIPE_RECIPE_TYPE, refineryRecipes);
+        List<ReactorRecipe> reactorRecipes = recipeManager
+                .getAllRecipesFor(ModRecipes.REACTOR_TYPE.get()).stream().map(RecipeHolder::value).toList();
+        registration.addRecipes(ReactorRecipeCategory.REACTOR_RECIPE_TYPE, reactorRecipes);
+
     }
 
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(RefineryScreen.class, 75, -45, 20, 70, RefineryRecipeCategory.REFINERY_RECIPE_RECIPE_TYPE);
+        registration.addRecipeClickArea(ReactorScreen.class, 75, -45, 20, 70, ReactorRecipeCategory.REACTOR_RECIPE_TYPE);
     }
 }

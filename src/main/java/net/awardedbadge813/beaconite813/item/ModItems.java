@@ -3,17 +3,24 @@ package net.awardedbadge813.beaconite813.item;
 import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.effect.ModEffects;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph;
+import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.naming.CompositeName;
 import java.util.List;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS=DeferredRegister
             .createItems(beaconite813.MOD_ID);
+
     public static void register(IEventBus eventbus) {
         ITEMS.register(eventbus);
     }
@@ -30,6 +37,17 @@ public class ModItems {
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BEACONITE_SEED = ITEMS.register("beaconite_seed",
             () -> new ItemNameBlockItem(ModBlocks.BEACONITE_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CREAPER_SEED = ITEMS.register("creaper_seed",
+            () -> new ItemNameBlockItem(ModBlocks.CREAPER_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CREAPER_BERRY = ITEMS.register("creaper_berry",
+            () -> new ToggleableItem(new Item.Properties().food(new FoodProperties
+                    .Builder().nutrition(4).alwaysEdible().effect(new MobEffectInstance(ModEffects.CAPSAICIN, 100, 3), 1).build())){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.creaper_berry.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> BEACON_BEAM_SHARD = ITEMS.register("beam_shard",
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BEACON_BEAM_ITEM = ITEMS.register("encapsulated_beam",

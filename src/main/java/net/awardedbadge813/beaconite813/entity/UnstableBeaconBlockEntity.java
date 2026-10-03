@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -343,4 +344,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     private int explosionActive= 0;
     private final int explosionMaxTime = Config.TIME_EXPLODE.getAsInt();
 
+    public IItemHandler getCapabilityHandler(UnstableBeaconBlockEntity be, @Nullable Direction side) {
+        return itemHandler;
+    }
 }

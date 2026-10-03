@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813.Datagen;
 
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.BeaconiteCropBlock;
+import net.awardedbadge813.beaconite813.block.custom.CreaperCropBlock;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
@@ -65,7 +66,17 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
                         .hasBlockStateProperties(ModBlocks.BEACONITE_CROP.get())
                         .setProperties(StatePropertiesPredicate.Builder.properties()
                         .hasProperty(BeaconiteCropBlock.AGE, BeaconiteCropBlock.MAX_AGE));
-        this.add(ModBlocks.BEACONITE_CROP.get(), this.createBeaconCropDrops(ModBlocks.BEACONITE_CROP.get(), ModItems.BEACON_BEAM_SHARD.get(), ModItems.BEACONITE_SEED.get(), lootItemConditionBuilder));
+
+        this.add(ModBlocks.BEACONITE_CROP.get(), this.createBeaconCropDrops(ModBlocks.BEACONITE_CROP.get(),
+                ModItems.BEACON_BEAM_SHARD.get(), ModItems.BEACONITE_SEED.get(), lootItemConditionBuilder));
+
+        LootItemCondition.Builder lootItemConditionBuilder_creaper =
+                LootItemBlockStatePropertyCondition
+                        .hasBlockStateProperties(ModBlocks.CREAPER_CROP.get())
+                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                .hasProperty(CreaperCropBlock.AGE, CreaperCropBlock.MAX_AGE));
+        this.add(ModBlocks.CREAPER_CROP.get(), this.createCreaperCropDrops(ModBlocks.CREAPER_CROP.get(),
+                ModItems.CREAPER_BERRY.get(), ModItems.CREAPER_BERRY.get(), lootItemConditionBuilder_creaper));
     }
 
     @Override
@@ -86,6 +97,16 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
                                 .apply(ApplyBonusCount
                                         .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
                                                 0.2714286F, 1))))
+                .withPool(LootPool.lootPool()
+                        .when(dropGrownCropCondition)
+                        .add(LootItem.lootTableItem(grownCropItem)
+                                .apply(ApplyBonusCount
+                                        .addBonusBinomialDistributionCount(registrylookup.getOrThrow(Enchantments.FORTUNE),
+                                                0.5714286F, 3)))));
+    }
+    protected LootTable.Builder createCreaperCropDrops(Block cropBlock, Item grownCropItem, Item seedsItem, LootItemCondition.Builder dropGrownCropCondition) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+        return this.applyExplosionDecay(cropBlock, LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .when(dropGrownCropCondition)
                         .add(LootItem.lootTableItem(grownCropItem)

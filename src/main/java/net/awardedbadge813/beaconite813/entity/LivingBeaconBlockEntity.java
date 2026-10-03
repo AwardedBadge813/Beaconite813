@@ -1,13 +1,11 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.screen.custom.LivingBeaconMenu;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -21,6 +19,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -32,6 +31,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -246,11 +247,21 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
         if (!level.isClientSide && (this.effects != null && !this.effects.isEmpty())) {
             int duration = 150;
             AABB aabb = (new AABB(pos)).inflate(range).expandTowards(0.0F, level.getHeight(), 0.0F);
-            List<Player> list = level.getEntitiesOfClass(Player.class, aabb);
+            List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, aabb);
 
-            for(Player player : list) {
+            for(LivingEntity entity : list) {
                 for(Holder<MobEffect> effect: this.effects) {
-                    player.addEffect(new MobEffectInstance(effect, duration, amplifier, true, true));
+                    if (entity instanceof Player) {
+                        if (effect.value().isBeneficial()|| !Config.BAD_EFFECT_OVERRIDE.getAsBoolean()) {
+                            entity.addEffect(new MobEffectInstance(effect, duration, (int)(amplifier/2f), true, true));
+
+                        }
+
+                    } else {
+                        entity.addEffect(new MobEffectInstance(effect, duration, (int)(amplifier/2f), true, true));
+                    }
+
+
                 }
 
             }
@@ -301,5 +312,9 @@ public class LivingBeaconBlockEntity extends BeaconBeamHolder implements MenuPro
     @javax.annotation.Nullable
     public static Holder<MobEffect> decodeEffect(int effectId) {
         return effectId == 0 ? null : BuiltInRegistries.MOB_EFFECT.asHolderIdMap().byId(effectId - 1);
+    }
+
+    public IItemHandler getCapabilityHandler(LivingBeaconBlockEntity be, @Nullable Direction side) {
+        return payment_slot;
     }
 }

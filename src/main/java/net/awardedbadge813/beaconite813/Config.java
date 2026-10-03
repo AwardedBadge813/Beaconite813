@@ -53,7 +53,12 @@ public class Config {
     public static final ModConfigSpec.IntValue EXPLOSION_NOISE = BUILDER
             .comment("The chance for blocks to be destroyed in the noiseMarked range(extra 5 blocks from the outer radius). Default is 40.")
             .defineInRange("noiseMarkChance", 40, 0, 100);
-
+    public static final ModConfigSpec.BooleanValue PHOTOSENSITIVITY_MODE = BUILDER
+            .comment("prevents all photosensitivity events when enabled. TRUE BY DEFAULT!")
+            .define("photosensitivity_mode", true);
+    public static final ModConfigSpec.BooleanValue BAD_EFFECT_OVERRIDE = BUILDER
+            .comment("prevents the living beacon from giving you bad effects. good if you have a public server or trolls.")
+            .define("bad_effect_override", false);
 
     public static final ModConfigSpec.IntValue MAX_BLOCK_POTION_TIME = BUILDER
             .comment("The maximum potion time ethereal beacons can hold, additional time after this is truncated. Default is 1 hour.")
@@ -187,7 +192,9 @@ public class Config {
                             "beaconite813:reactive_concoction",
                             "beaconite813:fake_nether_star",
                             "beaconite813:beaconite_flux",
-                            "beaconite813:zwoop_reactor"
+                            "beaconite813:zwoop_reactor",
+                            "beaconite813:creaper_berry",
+                            "beaconite813:creaper_seed"
 
 
                     ), () -> "", Config::validateItemOrBlock);

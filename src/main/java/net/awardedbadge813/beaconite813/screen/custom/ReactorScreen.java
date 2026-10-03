@@ -26,10 +26,6 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
 
     protected void init() {
         super.init();
-        //ConstructorButton upbutton = new ConstructorButton(100, 100, 1);
-        //this.addRenderableWidget(upbutton);
-        //ConstructorButton downbutton = new ConstructorButton(100, 120, -1);
-        //this.addRenderableWidget(downbutton);
 
     }
 
@@ -38,46 +34,6 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
      * The Y size of the inventory window in pixels.
      */
     protected int imageHeight = 256;
-
-// not added since it is broken
-    /*
-    class ConstructorButton extends AbstractButton {
-        private int increment = 0;
-        protected ConstructorButton(int x, int y, int i) {
-            super(x, y, 20, 20, Component.translatable("beaconite813:increment_up_button"));
-            this.increment=i;
-
-        }
-
-        @Override
-        public void onPress() {
-            getMenu().setContainerData(0, getMenu().getContainerData(0)+this.increment);
-        }
-
-
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-            ResourceLocation resourcelocation;
-            if (this.isHoveredOrFocused()) {
-                resourcelocation = ConstructorScreen.BUTTON_HIGHLIGHTED_SPRITE;
-            } else {
-                resourcelocation = ConstructorScreen.BUTTON_SPRITE;
-            }
-
-            guiGraphics.blitSprite(resourcelocation, this.getX(), this.getY(), this.width, this.height);
-            this.renderIcon(guiGraphics, this.getX(), this.getY());
-        }
-
-        public void renderIcon(GuiGraphics guiGraphics, int x, int y) {
-            guiGraphics.blit(BUTTON_SPRITE, x, y, 0, 0, 20, 20, 80, 80);
-        }
-
-
-        public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
-            this.defaultButtonNarrationText(narrationElementOutput);
-        }
-
-    }
-    */
 
 
     @Override
@@ -104,9 +60,6 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
             }//new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18));
         }
     }
-    //private void addInventory(int width, int height, int x, int y, GuiGraphics guiGraphics){
-    //    addInventory(width, height, x, y, guiGraphics, SLOT_TEXTURE, 18, 18);
-    //}
 
 
 

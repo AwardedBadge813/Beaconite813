@@ -62,7 +62,7 @@ public class ReactorMenu extends AbstractContainerMenu {
             }
 
             @Override
-            public boolean allowModification(Player player) {
+            public boolean mayPlace(ItemStack stack) {
                 return data.get(2)==1;
             }
         });
@@ -77,6 +77,11 @@ public class ReactorMenu extends AbstractContainerMenu {
             }
             @Override
             public boolean allowModification(Player player) {
+                return false;
+            }
+
+            @Override
+            public boolean mayPlace(ItemStack stack) {
                 return false;
             }
         });

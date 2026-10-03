@@ -6,6 +6,7 @@ import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.recipe.*;
 import net.awardedbadge813.beaconite813.screen.custom.ReactorMenu;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +26,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,6 +46,7 @@ import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.*;
 
@@ -135,7 +138,7 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
                 return super.extractItem(slot, amount, simulate);
             }
             if (slot<0) {
-                return super.extractItem(-slot, amount, simulate);
+                return super.extractItem(slot+2, amount, simulate);
             }
 
             return ItemStack.EMPTY;
@@ -151,8 +154,17 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
             // it is a guaranteed crash to reference negative numbers to a normal itemstackhandler, so any modded pipe, etc. will never use this to insert/extract.
             // since this block always has this special code in it, it can safely do this within this block only.
             if (slot<0) {
-                return super.insertItem(abs(slot), stack, simulate);
+                slot+=2;
+                ItemStack stackPresent = getStackInSlot(slot);
+                if (stack.is(stackPresent.getItem())&& stackPresent.getMaxStackSize()-stack.getCount()-stackPresent.getCount()>=0) {
+                    ItemStack result = new ItemStack(stackPresent.getItem(), stack.getCount()+stackPresent.getCount());
+                    if (!simulate) {
+                        setStackInSlot(slot, result);
+                    }
+                    return result;
+                }
             }
+
 
             return stack;
         }
@@ -263,6 +275,11 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
         map.put(Items.DIAMOND, 500);
         return map;
     }
+    private Optional<RecipeHolder<ReactorRecipe>> getCurrentRecipe() {
+        assert this.level != null;
+        return this.level.getRecipeManager()
+                .getRecipeFor(ModRecipes.REACTOR_TYPE.get(), new ReactorRecipeInput(operatingSlot.getStackInSlot(0), tank.getFluid()), level);
+    }
 
 
     @Override
@@ -285,6 +302,61 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
         ItemStack M1 = manualSlots.getStackInSlot(1);
         ItemStack OP0 = operatingSlot.getStackInSlot(0);
         ItemStack OP1 = operatingSlot.getStackInSlot(1);
+
+        //conga line
+        if (!opened) {
+            if (!M1.isEmpty()) {
+                //if the items are the same, combine them and input. if they are different send the one in input to OP1 and send the one in manual to OP0
+                //this is to cycle inputs since if not OP0 is stuck forever until an item is made
+                //adding to OP1 can be destructive, needs a second if.
+
+                if (M1.getItem()==OP0.getItem()&& OP0.isEmpty()) {
+                    manualSlots.setStackInSlot(1, ItemStack.EMPTY);
+                    operatingSlot.setStackInSlot(0, new ItemStack(M1.getItem(), M1.getCount() + OP0.getCount()));
+                } else if (OP1.is(ItemStack.EMPTY.getItem())){
+                    manualSlots.setStackInSlot(1, ItemStack.EMPTY);
+                    operatingSlot.setStackInSlot(0, M1);
+                    operatingSlot.setStackInSlot(1, OP0);
+                }
+            }
+
+            Optional<RecipeHolder<ReactorRecipe>> mayberecipe = getCurrentRecipe();
+            OP0 = operatingSlot.getStackInSlot(0);
+            if (mayberecipe.isPresent()) {
+                ReactorRecipe recipe = mayberecipe.get().value();
+                ItemStack inputItem = recipe.getIngredient();
+                FluidStack fluidStack = recipe.fluidInput().getFluids()[0];
+                ItemStack output = recipe.getResultItem(null);
+                //prevents overwrites
+                if (operatingSlot.insertItem(-1, output, true).is(ItemStack.EMPTY.getItem())) {
+                    progress++;
+                    //if progress maxed, complete craft by finding the product and replacing op slot 2 with it.
+                    if (progress>=maxProgress) {
+                        progress=0;
+                        operatingSlot.insertItem(-1, output, false);
+                        operatingSlot.extractItem(-2, inputItem.getCount(), false);
+                        tank.setFluid(new FluidStack(tank.getFluid().getFluid(), tank.getFluidAmount()-fluidStack.getAmount()));
+
+                    }
+                }
+
+
+
+            }else {
+                progress=0;
+            }
+        }else {
+            progress=0;
+        }
+
+
+
+
+
+
+
+
+        /*
         if (!opened&&ingredients.contains(M1.getItem())) {
             //if the items are the same, combine them and input. if they are different send the one in input to OP1 and send the one in manual to OP0
             //this is to cycle inputs since if not OP0 is stuck forever until an item is made
@@ -297,18 +369,12 @@ public class ZwoopReactorBlockEntity extends BlockEntity implements MenuProvider
                 operatingSlot.setStackInSlot(1, OP0);
             }
         }
-        //op slot 1 increases progress if valid
-        OP0 = operatingSlot.getStackInSlot(0);
-        if (ValidRecipe(OP0)&& !opened) {
-            progress++;
-            //if progress maxed, complete craft by finding the product and replacing op slot 2 with it.
-            if (progress>=maxProgress && operatingSlot.insertItem(-1, recipes.get(OP0.getItem()), true).is(ItemStack.EMPTY.getItem())) {
-                progress=progress%maxProgress;
-                operatingSlot.insertItem(-1, recipes.get(OP0.getItem()), false);
-                operatingSlot.setStackInSlot(0, new ItemStack(OP0.getItem(), OP0.getCount()-consumed.get(OP0.getItem())));
-                tank.setFluid(new FluidStack(tank.getFluid().getFluid(), tank.getFluidAmount()-zwoopCost.get(OP0.getItem())));
 
-            }
+         */
+        //op slot 1 increases progress if valid
+
+        if (ValidRecipe(OP0)&& !opened) {
+
         } else {
             progress=0;
         }

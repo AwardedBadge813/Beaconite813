@@ -34,15 +34,15 @@ public class RefineryMenu extends AbstractContainerMenu {
         int lowYpos  =84;
 
 
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 0, leftXpos+53, lowYpos-48));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 1, leftXpos, lowYpos-74));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 2, leftXpos+24, lowYpos-97));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 3, leftXpos+107, lowYpos-74));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 4, leftXpos+83, lowYpos-97));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 5, leftXpos+83, lowYpos));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 6, leftXpos+107, lowYpos-23));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 7, leftXpos, lowYpos-23));
-        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 8, leftXpos+24, lowYpos));
+        this.addSlot(new SlotItemHandler(blockEntity.outputHandler, 0, leftXpos+53, lowYpos-48));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 0, leftXpos, lowYpos-74));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 1, leftXpos+24, lowYpos-97));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 2, leftXpos+107, lowYpos-74));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 3, leftXpos+83, lowYpos-97));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 4, leftXpos+83, lowYpos));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 5, leftXpos+107, lowYpos-23));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 6, leftXpos, lowYpos-23));
+        this.addSlot(new SlotItemHandler(blockEntity.itemHandler, 7, leftXpos+24, lowYpos));
         addDataSlots(data);
     }
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons

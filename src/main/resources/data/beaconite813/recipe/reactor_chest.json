@@ -1,0 +1,15 @@
+{
+  "type": "beaconite813:reactor",
+  "item_input": {
+    "item": "minecraft:chest",
+    "count": 16
+  },
+  "fluid_input": {
+    "fluid": "beaconite813:zwoop_source",
+    "amount": 1000
+  },
+  "result": {
+    "count": 1,
+    "id": "beaconite813:storage_beacon"
+  }
+}

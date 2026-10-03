@@ -9,6 +9,7 @@ import net.awardedbadge813.beaconite813.recipe.RefineryRecipe;
 import net.awardedbadge813.beaconite813.recipe.RefineryRecipeInput;
 import net.awardedbadge813.beaconite813.screen.custom.RefineryMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +79,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
+        pTag.put("output", outputHandler.serializeNBT(pRegistries));
         pTag.putInt("refinery.progress", progress);
         pTag.putInt("refinery.max_progress", maxProgress);
         super.saveAdditional(pTag, pRegistries);
@@ -85,6 +88,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
     protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        outputHandler.deserializeNBT(pRegistries, pTag.getCompound("output"));
         progress = pTag.getInt("refinery.progress");
         maxProgress = pTag.getInt("refinery.max_progress");
 
@@ -93,10 +97,38 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
 
 
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(9) {
+    public final ItemStackHandler itemHandler = new ItemStackHandler(8) {
         @Override
         protected int getStackLimit(int slot, @NotNull ItemStack stack) {
             return 64;
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return super.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            assert level != null;
+            if(!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
+    public final ItemStackHandler outputHandler = new ItemStackHandler(1) {
+        @Override
+        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+            return 64;
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            if (slot<0) {
+                return super.insertItem(0, stack, simulate);
+            }
+                return stack;
         }
 
         @Override
@@ -109,10 +141,11 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         }
     };
     public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots()+1);
         for (int i=0; i<itemHandler.getSlots(); i++) {
             inventory.setItem(i, itemHandler.getStackInSlot(i));
         }
+        inventory.setItem(itemHandler.getSlots()+1, outputHandler.getStackInSlot(0));
 
         assert level != null;
         Containers.dropContents(level, this.worldPosition, inventory);
@@ -144,6 +177,7 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
             return;
         }
         this.layers = getLayers(level, blockPos);
+
         if(hasRecipe() && getSkyStatus(level, blockPos)==1) {
             progress++;
             if((int)level.getGameTime()%80==0) {
@@ -174,15 +208,13 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         if(recipe.isPresent()) {
             output = recipe.get().value().output();
         }
+        outputHandler.insertItem(-1, output, false);
 
         for(int i=0; i<=inventory_max; i++){
-            if(i==0) {
-                itemHandler.setStackInSlot(0, new ItemStack(output.getItem(), itemHandler.getStackInSlot(0).getCount()+output.getCount()));
-            } else{
-                itemHandler.extractItem(i, 1,  false);
-            }
+            itemHandler.extractItem(i, 1,  false);
         }
     }
+
 
 
     private void resetProgress() {
@@ -196,16 +228,15 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         if (recipe.isEmpty()) {
             return false;
         }
-        for (int i=2; i<9; i++) {
-            if(itemHandler.getStackInSlot(1).getItem()!=itemHandler.getStackInSlot(i).getItem() || itemHandler.getStackInSlot(i).isEmpty()) {
+        for (int i=1; i<8; i++) {
+            if(itemHandler.getStackInSlot(0).getItem()!=itemHandler.getStackInSlot(i).getItem() || itemHandler.getStackInSlot(i).isEmpty()) {
                 return false;
             }
         }
 
 
         ItemStack output=recipe.get().value().output();
-        return canInsertAmountIntoOutputSlot(output.getCount())
-                && canInsertItemIntoOutputSlot(output);
+        return (outputHandler.insertItem(-1, output, true)).is(ItemStack.EMPTY.getItem());
     }
 
     private Optional<RecipeHolder<RefineryRecipe>> getCurrentRecipe() {
@@ -214,15 +245,18 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
                 .getRecipeFor(ModRecipes.REFINERY_TYPE.get(), new RefineryRecipeInput(itemHandler.getStackInSlot(1)), level);
     }
 
+    //deprecated
+    /*
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {
-        return itemHandler.getStackInSlot(0).isEmpty() || itemHandler.getStackInSlot(0).getItem()==output.getItem();
+        return outputHandler.getStackInSlot(0).isEmpty() || outputHandler.getStackInSlot(0).getItem()==output.getItem();
     }
 
     private boolean canInsertAmountIntoOutputSlot(int count) {
-        int maxCount = itemHandler.getStackInSlot(0).isEmpty() ? 64 : itemHandler.getStackInSlot(0).getMaxStackSize();
-        int currentCount=itemHandler.getStackInSlot(0).getCount();
+        int maxCount = outputHandler.getStackInSlot(0).isEmpty() ? 64 : outputHandler.getStackInSlot(0).getMaxStackSize();
+        int currentCount=outputHandler.getStackInSlot(0).getCount();
         return maxCount>=currentCount+count;
     }
+     */
 
 
     @Override
@@ -242,4 +276,10 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         return getSkyStatus(level, pos)==1;
     }
 
+    public IItemHandler getCapabilityHandler(RefineryBlockEntity be, @Nullable Direction side) {
+        if (side==Direction.DOWN) {
+            return outputHandler;
+        }
+        return itemHandler;
+    }
 }

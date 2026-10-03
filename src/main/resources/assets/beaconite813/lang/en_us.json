@@ -30,7 +30,12 @@
   "item.beaconite813.zwoop_bucket": "Bucket of Zwoop",
   "item.beaconite813.fake_nether_star": "Fake Nether Star",
   "item.beaconite813.beaconite_flux": "Beaconite Flux",
+  "item.beaconite813.creaper_berry": "Creaperberry",
+  "item.beaconite813.creaper_seed": "Creaperberry Seeds",
   "block.beaconite813.distillery": "Distillery",
+  "tooltip.beaconite813.creaper_berry.tooltip": "§5§oNo, it's not a berry. Yes, it will still kill you.",
+  "tooltip.beaconite813.reactor_joke.tooltip": "§5§oNow THIS is process engineering! (It isn't)",
+  "tooltip.beaconite813.reactor1.tooltip": "§9Fill with zwoop and place items into the left slot. will only start crafting when closed.",
 
   "item.beaconite813.auric_interference_icon": "§bEffect: Auric Interference",
   "item.beaconite813.wrath_effect_icon": "§bEffect: Wrath",

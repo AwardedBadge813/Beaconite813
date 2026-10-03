@@ -182,6 +182,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> BEACONITE_CROP =BLOCKS.register("beaconite_crop",
             () -> new BeaconiteCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 
+    public static final DeferredBlock<Block> CREAPER_CROP =BLOCKS.register("creaper_crop",
+            () -> new CreaperCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
+
     public static final DeferredBlock<Block> VENGEANT_BEACON_BLOCK =registerBlock("vengeant_beacon",
             () -> new VengeantBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
 

@@ -52,6 +52,8 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.REACTIVE_CONCOCTION.get());
         basicItem(ModItems.FAKE_STAR.get());
         basicItem(ModItems.BEACONITE_FLUX.get());
+        basicItem(ModItems.CREAPER_SEED.get());
+        basicItem(ModItems.CREAPER_BERRY.get());
 
     }
 }

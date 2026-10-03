@@ -25,6 +25,27 @@ public class ModRecipes {
                 }
             });
 
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ReactorRecipe>> REACTOR_SERIALIZER =
+            SERIALIZERS.register("reactor", ReactorRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ReactorRecipe>> REACTOR_TYPE =
+            TYPES.register("reactor", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "reactor";
+                }
+            });
+    /*public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<DistilleryRecipe>> DISTILLERY_SERIALIZER =
+            SERIALIZERS.register("distillery", DistilleryRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeType<?>, RecipeType<DistilleryRecipe>> DISTILLERY_TYPE =
+            TYPES.register("distillery", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "distillery";
+                }
+            });
+
+     */
+
 
     public static void register(IEventBus eventbus) {
         SERIALIZERS.register(eventbus);

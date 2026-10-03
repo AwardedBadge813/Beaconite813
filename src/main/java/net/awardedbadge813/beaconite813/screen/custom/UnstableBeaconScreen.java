@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.entity.UnstableBeaconBlockEntity;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,9 +52,12 @@ public class UnstableBeaconScreen extends AbstractContainerScreen<UnstableBeacon
 
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
         if(menu.ExplosionActive()==1) {
-            for(int j=0; j<11; j++){
-                guiGraphics.blit(OOPS, x+70+ ((int) ((random()-0.5)*300)), y+100+((int) ((random()-0.5)*300)), 0, 0, 128, 51, 128, 51);
+            if (!Config.PHOTOSENSITIVITY_MODE.getAsBoolean()) {
+                for(int j=0; j<11; j++){
+                    guiGraphics.blit(OOPS, x+70+ ((int) ((random()-0.5)*300)), y+100+((int) ((random()-0.5)*300)), 0, 0, 128, 51, 128, 51);
+                }
             }
+
             guiGraphics.blit(OOPS, x+70, y+100, 0, 0, 128, 51, 128, 51);
 
 

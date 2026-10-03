@@ -57,9 +57,6 @@ public class LivingBeaconScreen extends AbstractContainerScreen<LivingBeaconMenu
          if(menu.isFed()) {
              guiGraphics.blit(ARROW_TEXTURE, x+47, y+159, 0, 0, menu.getScaledSatiation(162), 7, 162, 7);
          }
-        guiGraphics.drawString(this.font,
-                "Satiation: "+ModFluidTypes.ZWOOP_TYPE.get().getFlowingTexture().getPath().toLowerCase(),
-                x+90, y+160, 4210752, false);
 
 
     }

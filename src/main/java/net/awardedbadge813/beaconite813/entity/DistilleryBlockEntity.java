@@ -1,14 +1,10 @@
 package net.awardedbadge813.beaconite813.entity;
 
-import net.awardedbadge813.beaconite813.Fluids.ModFluidTypes;
 import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
-import net.awardedbadge813.beaconite813.effect.ModEffects;
-import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
-import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.item.ModItems;
+import net.awardedbadge813.beaconite813.recipe.*;
 import net.awardedbadge813.beaconite813.screen.custom.DistilleryMenu;
-import net.awardedbadge813.beaconite813.screen.custom.StorageBeaconMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -17,42 +13,34 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.util.datafix.fixes.FurnaceRecipeFix;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.registries.datamaps.builtin.FurnaceFuel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.*;
-import static net.awardedbadge813.beaconite813.block.custom.StorageBeaconBlock.FACING;
-import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     private Direction facing;
@@ -61,6 +49,7 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     public int maxHeat = 5000;
     private int progress = 0;
     private int heat = 0;
+    public int consumeAmount;
 
     public DistilleryBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.DISTILLERY_BE.get(), pos, blockState);
@@ -128,7 +117,7 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         public boolean isItemValid(int slot, ItemStack stack) {
             switch (slot) {
                 case 0 -> {
-                    return stack.is(ModItems.REACTIVE_CONCOCTION);
+                    return stack.is(ModItems.REACTIVE_CONCOCTION.get());
                 }
                 case 1 -> {
                     return stack.getBurnTime(RecipeType.SMELTING) > 0;
@@ -172,6 +161,20 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
             }
         }
     };
+    public void drops() {
+        SimpleContainer inventory = new SimpleContainer(itemInputs.getSlots());
+        for (int i=0; i<itemInputs.getSlots(); i++) {
+            inventory.setItem(i, itemInputs.getStackInSlot(i));
+        }
+        SimpleContainer inventoryOP = new SimpleContainer(itemOutputs.getSlots());
+        for (int i=0; i<itemOutputs.getSlots(); i++) {
+            inventoryOP.setItem(i, itemOutputs.getStackInSlot(i));
+        }
+
+        assert level != null;
+        Containers.dropContents(level, this.worldPosition, inventory);
+        Containers.dropContents(level, this.worldPosition, inventoryOP);
+    }
 
 
     //this is the traditional code for extractItem, changing the name so items cant be extracted from input slots.
@@ -187,10 +190,6 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private FluidTank tank = new FluidTank(4000) {
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return false;
-        }
 
         @Override
         protected void onContentsChanged() {
@@ -200,7 +199,19 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return 0;
+        }
     };
+    /*private Optional<RecipeHolder<DistilleryRecipe>> getCurrentRecipe() {
+        assert this.level != null;
+        return this.level.getRecipeManager()
+                .getRecipeFor(ModRecipes.DISTILLERY_TYPE.get(), new DistilleryRecipeInput(itemInputs.getStackInSlot(0)), level);
+    }
+
+     */
 
 
     @Override
@@ -209,22 +220,21 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public @NotNull Component getDisplayName() {
-        return Component.literal("igneous_beacon_be");
+        return Component.literal("distillery_be");
     }
 
     public void tick (Level level, BlockPos pos, BlockState blockState) {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
+        //Optional<RecipeHolder<DistilleryRecipe>> recipeOptional = getCurrentRecipe();
+        FluidStack output = new FluidStack(ModFluids.SOURCE_ZWOOP, 250);
+
         //heat loop
         float oldHeat=heat;
         heat--;
         float pct=this.getHeatPct();
-        if (pct>=0.580&&pct<=1f) {
-            progress+=(int)((1f-(abs(pct)-0.650f))*10f);
-        }else {
-            progress--;
-        }
+
         if (itemInputs.getStackInSlot(1).getCount()>0) {
             int burnTime = itemInputs.getStackInSlot(1).getBurnTime(RecipeType.SMELTING)/4;
             if (burnTime+heat<=maxHeat) {
@@ -241,33 +251,56 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         //end heat loop
 
         //progress loop
-        if (progress>=maxProgress) {
-            boolean consume = true;
-            if (this.getHeatPct()<0.82) {
-                if (tank.getFluidAmount()+250<=tank.getCapacity()) {
-                    tank.setFluid(new FluidStack(ModFluids.SOURCE_ZWOOP, 250+tank.getFluidAmount()));
-                } else {
-                    consume=false;
-                }
+        if (itemInputs.getStackInSlot(0).is(ModItems.REACTIVE_CONCOCTION.get())&&pct>=0.580f) {
+            //RecipeHolder<DistilleryRecipe> recipe = recipeOptional.get();
+            consumeAmount = 1; //recipe.value().ingredient().getItems()[0].getCount();
+            progress+=(int)((1f-(abs(pct)-0.650f))*10f);
+            if (progress>=maxProgress) {
+                if (this.getHeatPct()<0.82) {
+                    //there are various factors that can cause or prevent the item from getting consumed.
+                    //if you succeed in managing the heat effectively, you will get product, but if you don't your item will simply get consumed.
+                    if (canDepositFluid(output)) {
+                        tank.setFluid(new FluidStack(output.getFluid(), output.getAmount()+tank.getFluidAmount()));
+                        takeItem(itemInputs,0,consumeAmount,false);
+                        progress=0;
+                    }
 
+                } else {
+                    takeItem(itemInputs,0,1,false);
+                    progress=0;
+                }
             }
-            //there are various factors that can cause or prevent the item from getting consumed.
-            //if you succeed in managing the heat effectively, you will get product, but if you don't your item will simply get consumed.
-            if (consume) {
-                takeItem(itemInputs,0,1,false);
-                progress=0;
-            }
+        } else {
+            progress--;
         }
         progress=clamp(progress, 0, maxProgress);
 
+        //bucket grabs zwoop from the itemslot
         if (tank.getFluidAmount()>=1000&&itemInputs.getStackInSlot(2).is(Items.BUCKET)&&itemOutputs.getStackInSlot(0).isEmpty()) {
             takeItem(itemInputs,2,1,false);
             itemOutputs.setStackInSlot(0, new ItemStack(ModItems.BUCKET_ZWOOP.get(), 1));
             tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
         }
 
+        //deposits to block below
+        IFluidHandler depositTank = level.getCapability(Capabilities.FluidHandler.BLOCK, pos.offset(0,-1,0), Direction.UP);
+        if (depositTank!=null) {
+            int remaining = depositTank.fill(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(remaining, IFluidHandler.FluidAction.EXECUTE);
+        }
 
 
+
+
+
+    }
+    private boolean canDepositFluid(FluidStack stack) {
+        FluidStack tankFluid = tank.getFluid();
+        boolean isSame = stack.getFluid().isSame(tankFluid.getFluid())||tank.isEmpty();
+        int fillable = tank.getCapacity()-tankFluid.getAmount();
+        int stackAmt = stack.getAmount();
+        boolean canFill = fillable>=stackAmt;
+        return isSame && canFill;
     }
 
 

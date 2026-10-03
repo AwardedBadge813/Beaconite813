@@ -92,6 +92,7 @@ public class DistilleryBlock extends BaseEntityBlock {
             if(level.getBlockEntity(pos) instanceof DistilleryBlockEntity distilleryBlockEntity) {
                 level.updateNeighbourForOutputSignal(pos, this);
                 level.invalidateCapabilities(pos);
+                distilleryBlockEntity.drops();
                 level.removeBlockEntity(pos);
             }
         }

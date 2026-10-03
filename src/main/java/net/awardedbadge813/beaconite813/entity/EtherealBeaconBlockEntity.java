@@ -13,6 +13,7 @@ import net.awardedbadge813.beaconite813.screen.custom.EtherealBeaconMenu;
 import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.awardedbadge813.beaconite813.util.ModTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
@@ -40,6 +41,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -241,6 +243,11 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
+
+    public IItemHandler getCapabilityHandler(EtherealBeaconBlockEntity be, @Nullable Direction side) {
+        return itemHandler;
+    }
+
     public enum Operation {
         NORMAL,
         AURA,

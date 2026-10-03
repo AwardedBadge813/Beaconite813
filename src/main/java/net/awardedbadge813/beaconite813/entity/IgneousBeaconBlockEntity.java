@@ -1,10 +1,12 @@
 package net.awardedbadge813.beaconite813.entity;
 
+import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.effect.ModEffects;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -13,18 +15,21 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.random;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class IgneousBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
@@ -52,15 +57,31 @@ public class IgneousBeaconBlockEntity extends BeaconBeamHolder implements CanFor
 
         if(isBeaconActive(level, pos)) {
             int radius = restrict(20+5* (beaconLayers-6), 20, 60);
-            AABB range = new AABB(pos).inflate(radius).expandTowards(0, 300,0 );
-            List<Player> inRangePlayers = new ArrayList<>(level.getEntitiesOfClass(Player.class, range));
-            for (Player player : inRangePlayers) {
-                if(player.isOnFire()) {
-                    player.addEffect(new MobEffectInstance(ModEffects.CAPSAICIN, 40, beaconLayers -6, true, true, true));
-                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 40, beaconLayers -6, true, false, false));
+            int cropRadius = radius/5;
+            if (level.getGameTime()%120==0) {
+                for (int x=-cropRadius;x<cropRadius;x++ ) {
+                    for (int y=-cropRadius;y<cropRadius;y++ ) {
+                        for (int z=-cropRadius;z<cropRadius;z++ ) {
+                            BlockPos cropCheck = pos.offset(x,y,z);
+                            boolean viable = level.getBlockState(cropCheck.above(1)).isAir()&&level.getBlockState(cropCheck).is(Tags.Blocks.VILLAGER_FARMLANDS);
+                            if (viable&& random()<0.01f) {
+                                level.setBlockAndUpdate(cropCheck.above(1), ModBlocks.CREAPER_CROP.get().defaultBlockState());
+                            }
+                        }
+                    }
+                }
+            }
 
-                    if(player.getRemainingFireTicks()<=40) {
-                        player.setRemainingFireTicks(60);
+
+            AABB range = new AABB(pos).inflate(radius).expandTowards(0, 300,0 );
+            List<LivingEntity> inRangeEntities = new ArrayList<>(level.getEntitiesOfClass(LivingEntity.class, range));
+            for (LivingEntity entity : inRangeEntities) {
+                if(entity.isOnFire()) {
+                    entity.addEffect(new MobEffectInstance(ModEffects.CAPSAICIN, 40, beaconLayers -6, true, true, true));
+                    entity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 40, beaconLayers -6, true, false, false));
+
+                    if(entity.getRemainingFireTicks()<=40) {
+                        entity.setRemainingFireTicks(60);
                     }
                 }
             }

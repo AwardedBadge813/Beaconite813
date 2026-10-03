@@ -37,21 +37,20 @@ public class CapsaicinEffect extends MobEffect {
         super(category, color);
     }
 
-    // I wanted to make it so
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
+
+        //scaling algorithm that feels reasonable.
+        if (livingEntity.level().getGameTime()%(max(10-1*amplifier, 1))==0L || max(10-1*amplifier, 1)==1) {
+            livingEntity.hurt(new DamageSource(livingEntity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(ModDamageTypes.CAPSAICIN)), 0.25f);
+        }
         if (BeaconiteLib.effectDisabled(ModEffects.CAPSAICIN.value())) {
             livingEntity.removeEffect(ModEffects.CAPSAICIN);
-        }
-        //scaling algorithm that feels reasonable.
-        if (livingEntity.level().getGameTime()%(max(20-2*amplifier, 1))==0L || max(20-2*amplifier, 1)==1) {
-            livingEntity.hurt(new DamageSource(livingEntity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(ModDamageTypes.CAPSAICIN)), 0.5f);
-        }
-        if (!livingEntity.isOnFire() && Objects.requireNonNull(livingEntity.getEffect(ModEffects.CAPSAICIN)).isAmbient()){
-            livingEntity.removeEffect(ModEffects.CAPSAICIN);
+            return false;
+        } else {
+            return super.applyEffectTick(livingEntity, amplifier);
         }
 
-        return super.applyEffectTick(livingEntity, amplifier);
     }
 
     @Override

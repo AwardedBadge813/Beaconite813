@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
@@ -310,6 +311,52 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('C', Items.NETHER_STAR)
                 .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK)).save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_PU.get(), 1)
+                .pattern("BCB")
+                .pattern("B B")
+                .pattern("BBB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_ADOWN.get(), 1)
+                .pattern("BCB")
+                .pattern("B B")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_ALL.get(), 1)
+                .pattern("BHB")
+                .pattern("HDH")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('D', Items.DIAMOND)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_AUP.get(), 1)
+                .pattern("BHB")
+                .pattern("B B")
+                .pattern("BCB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_BDOWN.get(), 1)
+                .pattern("BBB")
+                .pattern("B B")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_BUP.get(), 1)
+                .pattern("BHB")
+                .pattern("B B")
+                .pattern("BBB")
+                .define('B', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DIM_LATTICE.get(), 2)
                 .requires(ModItems.REFINED_BEACONITE)
                 .requires(Items.GREEN_DYE)
@@ -326,6 +373,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PURE_BEACONITE.get(), 9)
                 .requires(ModBlocks.ULTRA_DENSE_BEACONITE)
                 .unlockedBy("has_pure_beaconite_block", has(ModBlocks.ULTRA_DENSE_BEACONITE)).save(recipeOutput, "pb_from_block");
+
+
 
 
 

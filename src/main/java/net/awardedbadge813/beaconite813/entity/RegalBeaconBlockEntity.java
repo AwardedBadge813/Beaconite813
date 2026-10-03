@@ -9,6 +9,7 @@ import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.screen.custom.RegalBeaconMenu;
 import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -280,4 +282,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
     }
 
 
+    public IItemHandler getCapabilityHandler(RegalBeaconBlockEntity be, @Nullable Direction side) {
+        return itemHandler;
+    }
 }

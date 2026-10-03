@@ -218,6 +218,26 @@ public class beaconite813 {
                     Capabilities.FluidHandler.BLOCK,
                     ModBlockEntities.REACTOR_BE.get(),
                     (be, side) -> be.getFluidHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REFINERY_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.LIVING_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.ETHER_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REGAL_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.UNSTABLE_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
         });
 
 
