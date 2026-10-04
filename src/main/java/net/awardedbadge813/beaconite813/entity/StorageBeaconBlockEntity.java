@@ -426,16 +426,16 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
             if (handler != null) {
                 int handlerSize = handler.getSlots(); //i
                 int storageSize = itemStorage.getSlots();//j
-                for (int i=0; i<storageSize;i++) { //itemStorage
-                    ItemStack collected = itemStorage.extractItem(i,itemStorage.getSlotLimit(i),false);
-                    for (int j=0;j<handlerSize;j++) {//handler
-                        collected = handler.insertItem(j,collected,false);
+                for (int i=0; i<handlerSize;i++) { //itemStorage
+                    ItemStack collected = handler.extractItem(i,handler.getSlotLimit(i),false);
+                    for (int j=0;j<storageSize;j++) {//handler
+                        collected = itemStorage.insertItem(j,collected,false);
                         if (collected == ItemStack.EMPTY) {
                             break;
                         }
                     }
                     if (collected!=ItemStack.EMPTY) {
-                        itemStorage.insertItem(i,collected,false);
+                        handler.insertItem(i,collected,false);
                     }
                 }
                 //reversed version of ConcentrateHelper. goofy ahh function.
@@ -459,7 +459,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
 
     private void collectItems(BlockPos pos) {
-        AABB collectionRange = new AABB(pos).inflate(updatedLevel);
+        AABB collectionRange = new AABB(pos).inflate(updatedLevel+1);
         List<ItemEntity> droppedItems = level.getEntitiesOfClass(ItemEntity.class, collectionRange);
         for (ItemEntity item:droppedItems) {
             ItemStack itemStack = item.getItem();
@@ -618,9 +618,6 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                 RedirectHelper(level);
             }
         }
-
-
-
     }
 
     private ArrayList<IItemHandler> getListOfIItemHandlers(Level level, BlockPos pos, int updatedLevel, List<Direction> validFaces, BlockEntity focusTarget) {

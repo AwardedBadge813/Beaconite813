@@ -96,7 +96,7 @@ public class StorageBeaconBlock extends BaseEntityBlock {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof StorageBeaconBlockEntity BlockEntity) {
-                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Storage Beacon (WIP)")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Storage Beacon")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }
