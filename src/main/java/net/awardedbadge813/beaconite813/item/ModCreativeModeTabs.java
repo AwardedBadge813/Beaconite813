@@ -29,6 +29,7 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.BEACON_BEAM_ITEM);
                 output.accept(ModItems.QUARRY_TALISMAN);
                 output.accept(ModItems.INVERT_TALISMAN);
+                output.accept(ModItems.DIM_LATTICE);
                 output.accept(ModItems.ETHER_FILTER);
                 output.accept(ModItems.AURA_MODULE);
                 output.accept(ModItems.DIFFUSE_MODULE);
@@ -36,7 +37,29 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.INFUSE_MODULE);
                 output.accept(ModItems.BOTTOMLESS_BOTTLE);
                 output.accept(ModItems.DORMANT_BOTTLE);
+                output.accept(ModItems.CREAPER_BERRY);
+                output.accept(ModItems.CREAPER_SEED);
                 output.accept(ModBlocks.DORMANT_EGG);
+
+
+                output.accept(ModItems.STORAGE_FOCUS_COLLECT);
+                output.accept(ModItems.STORAGE_FOCUS_DEPOSIT);
+                output.accept(ModItems.STORAGE_FOCUS_CONC);
+                output.accept(ModItems.STORAGE_FOCUS_DISTRIBUTE);
+                output.accept(ModItems.STORAGE_TRIM_PU);
+                output.accept(ModItems.STORAGE_TRIM_BUP);
+                output.accept(ModItems.STORAGE_TRIM_BDOWN);
+                output.accept(ModItems.STORAGE_TRIM_AUP);
+                output.accept(ModItems.STORAGE_TRIM_ADOWN);
+                output.accept(ModItems.STORAGE_TRIM_ALL);
+                output.accept(ModItems.BUCKET_ZWOOP);
+                output.accept(ModItems.REACTIVE_CONCOCTION);
+                output.accept(ModItems.FAKE_STAR);
+                output.accept(ModItems.BEACONITE_FLUX);
+
+
+
+
 
 
                 output.accept(ModBlocks.BEACONITE_BLOCK);
@@ -44,8 +67,11 @@ public class ModCreativeModeTabs {
                 output.accept(ModBlocks.CONDENSED_BEACONITE);
                 output.accept(ModBlocks.UNSTABLE_BEACON);
                 output.accept(ModBlocks.REFINERY);
+                output.accept(ModBlocks.DISTILLERY_BLOCK);
+                output.accept(ModBlocks.REACTOR_BLOCK);
                 output.accept(ModBlocks.ULTRA_DENSE_BEACONITE);
                 output.accept(ModBlocks.CONSTRUCTOR);
+                output.accept(ModBlocks.STORAGE_BEACON_BLOCK);
                 output.accept(ModBlocks.POLYMORPH_BEACONITE);
                 output.accept(ModBlocks.BASE_BEACON_BLOCK);
                 output.accept(ModBlocks.WRATHFUL_FLESH);

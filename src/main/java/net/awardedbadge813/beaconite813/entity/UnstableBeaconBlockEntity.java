@@ -30,8 +30,10 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -206,13 +208,14 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                 roll.add(new ItemStack(ModItems.CATALYST.get().asItem(), 1));
             }
         }
+
         if(random>49) {
             if (!((ToggleableItem) ModItems.PURE_BEACONITE.get().asItem()).isDisabled()) {
                 roll.add(new ItemStack(ModItems.PURE_BEACONITE.get().asItem(), 16));
             }
-            if (BeaconiteLib.masterToggleTable.contains(ModItems.BEACONITE_SEED.get().asItem()) ) {
-                roll.add(new ItemStack(ModItems.BEACONITE_SEED.get().asItem(), 3));
-            }
+            //if (BeaconiteLib.masterToggleTable.contains(ModItems.BEACONITE_SEED.get().asItem()) ) {
+                //roll.add(new ItemStack(ModItems.BEACONITE_SEED.get().asItem(), 3));
+            //}
         }
         return roll;
     }
@@ -248,9 +251,11 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         for(LivingEntity entity: list) {
             float distance = getDist(pos, entity.getOnPos());
             if(entity instanceof WitherBoss)
-                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC_KILL), entity, null, null), 10000);
+                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC_KILL), entity, null, null), 100000);
             else {
-                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.EXPLOSION), entity, null, null), (float) pow(distance-radius, 2));
+                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.EXPLOSION), entity, null, null),
+                        100f*(float)pow((distance-radius)/radius, 4));
+
 
             }
             }
@@ -307,7 +312,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public void tryBlowUpBlock(BlockPos pos) {
         assert level != null;
         BlockState blockstate = level.getBlockState(pos);
-        if(!blockstate.is(BlockTags.WITHER_IMMUNE) && Config.BOMBS_DESTROY_BLOCKS.getAsBoolean()) {
+        if(!blockstate.is(BlockTags.WITHER_IMMUNE) &&!blockstate.is(Blocks.ANCIENT_DEBRIS)&& Config.BOMBS_DESTROY_BLOCKS.getAsBoolean()) {
             BeaconiteLib.safeUpdateBlock(level, pos, AIR.defaultBlockState());
         }
     }
@@ -316,7 +321,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     @Override
     public List<BeaconBeamSection> getBeamSections() {
         BeaconBeamSection beamSection = null;
-        if(isBeaconActive(getLevel(), getBlockPos())) {
+        if(isActive()) {
             beamSection = new BeaconBeamSection();
             assert level != null;
             beamSection.setParams(DyeColor.BLACK.getTextureDiffuseColor(), level.getMaxBuildHeight() - getBlockPos().getY());
@@ -325,7 +330,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         return beamSection==null ? List.of(): List.of(beamSection);
     }
 
-    private boolean isBeaconActive(Level level, BlockPos blockPos) {
+    private boolean isActive() {
         return explosionActive==1;
     }
 
@@ -341,4 +346,7 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     private int explosionActive= 0;
     private final int explosionMaxTime = Config.TIME_EXPLODE.getAsInt();
 
+    public IItemHandler getCapabilityHandler(UnstableBeaconBlockEntity be, @Nullable Direction side) {
+        return itemHandler;
+    }
 }

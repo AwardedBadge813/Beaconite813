@@ -1,21 +1,26 @@
 package net.awardedbadge813.beaconite813.item;
 
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.effect.ModEffects;
+import net.minecraft.client.gui.font.glyphs.BakedGlyph;
+import net.minecraft.client.renderer.EffectInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.naming.CompositeName;
 import java.util.List;
 
 public class ModItems {
     public static final DeferredRegister.Items ITEMS=DeferredRegister
             .createItems(beaconite813.MOD_ID);
+
     public static void register(IEventBus eventbus) {
         ITEMS.register(eventbus);
     }
@@ -32,6 +37,17 @@ public class ModItems {
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BEACONITE_SEED = ITEMS.register("beaconite_seed",
             () -> new ItemNameBlockItem(ModBlocks.BEACONITE_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CREAPER_SEED = ITEMS.register("creaper_seed",
+            () -> new ItemNameBlockItem(ModBlocks.CREAPER_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CREAPER_BERRY = ITEMS.register("creaper_berry",
+            () -> new ToggleableItem(new Item.Properties().food(new FoodProperties
+                    .Builder().nutrition(4).alwaysEdible().effect(new MobEffectInstance(ModEffects.CAPSAICIN, 100, 3), 1).build())){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.creaper_berry.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> BEACON_BEAM_SHARD = ITEMS.register("beam_shard",
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BEACON_BEAM_ITEM = ITEMS.register("encapsulated_beam",
@@ -51,8 +67,107 @@ public class ModItems {
                     super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
                 }
             });
+    public static final DeferredItem<Item> DIM_LATTICE = ITEMS.register("dimensional_lattice",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.dim_lattice.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> STORAGE_FOCUS_COLLECT = ITEMS.register("storage_focus_collect",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.collect.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> STORAGE_FOCUS_DEPOSIT = ITEMS.register("storage_focus_deposit",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.deposit.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> STORAGE_FOCUS_CONC = ITEMS.register("storage_focus_conc",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.conc.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> STORAGE_FOCUS_DISTRIBUTE = ITEMS.register("storage_focus_distribute",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.distribute.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> STORAGE_TRIM_PU = ITEMS.register("storage_trim_pu",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_BDOWN = ITEMS.register("storage_trim_bdown",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_BUP = ITEMS.register("storage_trim_bup",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_ADOWN = ITEMS.register("storage_trim_adown",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_AUP = ITEMS.register("storage_trim_aup",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> STORAGE_TRIM_ALL = ITEMS.register("storage_trim_all",
+            () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item>FAKE_STAR = ITEMS.register("fake_nether_star",
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.star_joke.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
+    public static final DeferredItem<Item> BEACONITE_FLUX = ITEMS.register("beaconite_flux",
+            () -> new ToggleableItem(new Item.Properties()));
+    public static final DeferredItem<Item> BUCKET_ZWOOP = ITEMS.register("zwoop_bucket",
+            () -> new BucketItem(ModFluids.SOURCE_ZWOOP.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+    public static final DeferredItem<Item>REACTIVE_CONCOCTION = ITEMS.register("reactive_concoction",
+            () -> new ToggleableItem(new Item.Properties()) {
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactive_concoction_joke.tooltip"));
+                    if(tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactive_concoction.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+
+            });
+//
 
 
     public static final DeferredItem<Item> AURA_MODULE = ITEMS.register("aura_module",

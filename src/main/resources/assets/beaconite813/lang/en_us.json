@@ -16,6 +16,27 @@
   "item.beaconite813.ether_filter": "Ether Filter",
   "item.beaconite813.dormant_bottle": "Dormant Bottle",
   "item.beaconite813.bottomless_bottle": "Bottomless Bottle",
+  "item.beaconite813.dimensional_lattice": "Dimensional Lattice",
+  "item.beaconite813.storage_focus_collect": "Chest Focus: Collect",
+  "item.beaconite813.storage_focus_deposit": "Chest Focus: Deposit",
+  "item.beaconite813.storage_focus_conc": "Chest Focus: Concentrate",
+  "item.beaconite813.storage_focus_distribute": "Chest Focus: Redirect",
+  "item.beaconite813.storage_trim_pu": "Chest Trim: Pickup",
+  "item.beaconite813.storage_trim_bdown": "Chest Trim: Bottom Face",
+  "item.beaconite813.storage_trim_bup": "Chest Trim: Top Face",
+  "item.beaconite813.storage_trim_adown": "Chest Trim: Pickup & Bottom Face",
+  "item.beaconite813.storage_trim_aup": "Chest Trim: Pickup & Top Face",
+  "item.beaconite813.storage_trim_all": "Chest Trim: Pickup & ALL Faces",
+  "item.beaconite813.zwoop_bucket": "Bucket of Zwoop",
+  "item.beaconite813.fake_nether_star": "Fake Nether Star",
+  "item.beaconite813.beaconite_flux": "Beaconite Flux",
+  "item.beaconite813.creaper_berry": "Creaperberry",
+  "item.beaconite813.creaper_seed": "Creaperberry Seeds",
+  "tooltip.beaconite813.star_joke.tooltip": "§5§oWell it's real to me :(",
+  "tooltip.beaconite813.dim_lattice.tooltip": "§5§oSeems to grow slightly when soaked in Zwoop.",
+  "block.beaconite813.distillery": "Distillery",
+  "tooltip.beaconite813.creaper_berry.tooltip": "§5§oNo, it's not a berry. Yes, it will still kill you.",
+  "tooltip.beaconite813.reactor_joke.tooltip": "§5§oNow THIS is process engineering! (It isn't)",
 
   "item.beaconite813.auric_interference_icon": "§bEffect: Auric Interference",
   "item.beaconite813.wrath_effect_icon": "§bEffect: Wrath",
@@ -41,6 +62,8 @@
 
   "effect.beaconite813.fading_effect": "Auric Interference",
 
+  "block.beaconite813.zwoop_block": "Zwoop",
+  "fluid_type.beaconite813.zwoop_type": "Zwoop",
   "block.beaconite813.ethereal_mode.aura": "Mode: Aura",
   "block.beaconite813.ethereal_mode.diffusion": "Mode: Diffusion",
   "block.beaconite813.ethereal_mode.transmute": "Mode: Transmutation",
@@ -58,6 +81,21 @@
   "tooltip.beaconite813.constructor1.tooltip": "§9For every beacon block below the constructor, it will build a base of the corresponding area.",
   "tooltip.beaconite813.constructor2.tooltip": "§9You can get a max of §520§9 levels by default, changeable in the config.",
   "tooltip.beaconite813.quarry_talisman.tooltip": "§9If placed in the constructor's input, will make the constructor destroy blocks instead of placing them.",
+
+
+  "tooltip.beaconite813.storage_joke.tooltip": "§5§oBecause originality is truly dead",
+
+
+  "tooltip.beaconite813.distillery_joke.tooltip": "§5§oI feel like I've seen this in a TV show before",
+  "tooltip.beaconite813.distillery1.tooltip": "§9Heats up and concentrates reactive mixtures. Don't keep the heat too high, or you will burn your product!",
+  "tooltip.beaconite813.distillery2.tooltip": "§9(best speeds are in the center green bar, and the mixture will only burn if the process completes in the red section)",
+  "item.beaconite813.reactive_concoction": "Reactive Concoction",
+  "tooltip.beaconite813.reactive_concoction_joke.tooltip": "§5§oBoth of these words are SO fun to say",
+  "tooltip.beaconite813.reactive_concoction.tooltip": "§9Distills into Zwoop in a distillery.",
+  "block.beaconite813.zwoop_reactor": "Zwoop Reactor",
+  "tooltip.beaconite813.reactor1.tooltip": "§9Converts things into other things using high-pressure Zwoop.",
+  "tooltip.beaconite813.reactor2.tooltip": "§9Use iron bars to open the reactor, and close it to start cooking.",
+
 
   "tooltip.beaconite813.vengeant_beacon1.tooltip": "§9Gives the §5wrath§9 effect to all players in the area.",
   "tooltip.beaconite813.vengeant_beacon2.tooltip": "§9Requires 10 skulls (placed on or above the  beacon base blocks) to activate, and 10 times more skulls for each level.",
@@ -80,7 +118,7 @@
   "tooltip.beaconite813.amorph_beacon3.tooltip": "§9Higher levels shrink the range of bubble spawning, but make the bubbles give less time.",
 
   "tooltip.beaconite813.igneous_beacon1.tooltip": "§9Gives §5Speed§9, §5Strength§9, and §5Jump Boost§9 in exchange for fire damage.",
-  "tooltip.beaconite813.igneous_beacon2.tooltip": "§9Make sure you have some water handy...",
+  "tooltip.beaconite813.igneous_beacon2.tooltip": "§9Also grows a special crop to nearby farmland...",
   "tooltip.beaconite813.igneous_beacon_joke.tooltip": "§5§oHAA HOO HOO AGA GA GA",
   "tooltip.beaconite813.igneous_beacon_joke2.tooltip": "§5§o-Super Mario (Super Mario Galaxy)",
 
@@ -93,13 +131,23 @@
   "tooltip.beaconite813.ethereal_beacon3.tooltip": "§9Can be outfitted with modules to change the beacon's behavior.",
   "tooltip.beaconite813.ethereal_beacon4.tooltip": "§9Requires a level §510§9 beacon base to activate.",
 
+  "tooltip.beaconite813.storage_beacon1.tooltip": "§9Stores items which can be piped in and out.",
+  "tooltip.beaconite813.storage_beacon2.tooltip": "§9Increase stack size with dimensional lattices.",
+  "tooltip.beaconite813.storage_beacon3.tooltip": "§9Chest foci and chest trims change the beacon's behaviour.",
+
+  "tooltip.beaconite813.conc.tooltip": "§9Chest extracts from nearby blocks and deposits into focus target.",
+  "tooltip.beaconite813.distribute.tooltip": "§9Chest extracts from focus target and deposits into nearby chests. Will NOT drop items if set to pickup.",
+  "tooltip.beaconite813.collect.tooltip": "§9Chest collects items from nearby chests from the specified face.",
+  "tooltip.beaconite813.deposit.tooltip": "§9Chest ignores focus target and deposits into nearby chests. If set to pickup, drops items.",
+
   "block.beaconite813.beaconite_block": "Beaconite Block",
-  "block.beaconite813.condensed_beaconite": "Condensed Beaconite",
+  "block.beaconite813.condensed_beaconite": "Block of Crude Beaconite",
   "block.beaconite813.refinery": "Refinery",
   "block.beaconite813.unstable_beacon": "Unstable Beacon",
+  "block.beaconite813.storage_beacon": "Beacon With a Chest In It",
   "block.beaconite813.reinforced_glass": "Reinforced Glass",
   "block.beaconite813.constructor": "Bea-Constructor",
-  "block.beaconite813.ultra_dense_beaconite": "Ultra-Dense Beaconite",
+  "block.beaconite813.ultra_dense_beaconite": "Block of Pure Beaconite",
   "block.beaconite813.dormant_egg": "Dormant Dragon Egg",
   "block.beaconite813.beaconite_crop": "Luminous Bulb",
 
@@ -154,7 +202,7 @@
   "tooltip.beaconite813.negative_beacon2.tooltip": "§9Each additional level will retain one level of potency from the inverted effect.",
   "tooltip.beaconite813.negative_beacon3.tooltip": "§9Minimum Beacon level §58§9, maximum level §517§9 (Level §5X§9 effects).",
 
-  "tooltip.beaconite813.invert_talisman1.tooltip": "§5§oWhen placed into a constructor, it will build in the opposite direction.",
+  "tooltip.beaconite813.invert_talisman1.tooltip": "§9When placed into a constructor, it will build in the opposite direction.",
   "tooltip.beaconite813.invert_talisman_joke.tooltip": "§5§oIsn't this just a cardboard box?",
   "tooltip.beaconite813.auric_interference.tooltip": "§5§oSplash ethereal potions interfere with the Aura Module's condensers. effects will not be collected.",
   "tooltip.beaconite813.wrath_effect.tooltip": "§5§oDeal more damage multiplicatively, but negate two levels of resistance per level. Watch out, you'll start taking more damage if you run out of levels!",
@@ -166,4 +214,5 @@
   "tooltip.beaconite813.wrath_flesh.tooltip": "§5§oNote: This is also a polymorph crafting block!",
 
   "tooltip.beaconite813.disabled.tooltip": "§4This item has been disabled by the pack author! Recipes may still be enabled, but this item will not do anything."
+
 }

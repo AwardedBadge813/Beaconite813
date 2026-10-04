@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.awardedbadge813.beaconite813.Fluids.ModFluidTypes;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

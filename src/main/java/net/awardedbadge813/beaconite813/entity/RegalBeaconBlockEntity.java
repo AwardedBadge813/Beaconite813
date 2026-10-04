@@ -9,6 +9,7 @@ import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
 import net.awardedbadge813.beaconite813.screen.custom.RegalBeaconMenu;
 import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -34,14 +35,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
-import static java.lang.Math.*;
+import static java.lang.Math.clamp;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.*;
 
 public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
@@ -146,7 +147,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        int amplifier = BeaconiteLib.restrict(getLayers(level, pos) -8, 0, 9);
+        int amplifier = clamp(getLayers(level, pos) -8, 0, 9);
         addGoldTime(itemHandler, 0);
         addLootTime(itemHandler, 1);
         if (goldTime>0) {
@@ -175,7 +176,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         //However, in the spirit of keeping the time near max but not wasting any, the beacon should wait to consume an item until there is space for its time.
         if (pendingTime>0 && (pendingTime+goldTime<=Config.MAX_GOLD_TIME.getAsInt() || pendingTime>Config.MAX_GOLD_TIME.getAsInt())) {
             itemHandler.extractItem(slot, 1, false);
-            goldTime=BeaconiteLib.restrict(goldTime+pendingTime, 0, Config.MAX_GOLD_TIME.getAsInt());
+            goldTime=clamp(goldTime+pendingTime, 0, Config.MAX_GOLD_TIME.getAsInt());
         }
     }
     public void addLootTime(ItemStackHandler itemHandler, int slot) {
@@ -190,7 +191,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         //However, in the spirit of keeping the time near max but not wasting any, the beacon should wait to consume an item until there is space for its time.
         if (pendingTime>0 && (pendingTime+lootTime<=Config.MAX_LOOT_TIME.getAsInt() || pendingTime>Config.MAX_LOOT_TIME.getAsInt())) {
             itemHandler.extractItem(slot, 1, false);
-            lootTime=BeaconiteLib.restrict(lootTime+pendingTime, 0, Config.MAX_LOOT_TIME.getAsInt());
+            lootTime=clamp(lootTime+pendingTime, 0, Config.MAX_LOOT_TIME.getAsInt());
         }
     }
     public boolean applyLootEffect(Holder<MobEffect> mobEffect, int amplifier, Level level, BlockPos pos) {
@@ -250,19 +251,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
 
 
 
-    //vanilla beacon code, credit to mojang
-    private void applyEffect(Level level, BlockPos pos, int range, MobEffectInstance mobEffect) {
-        int duration = 150;
-        AABB aabb = (new AABB(pos)).inflate(range).expandTowards(0.0F, level.getMaxBuildHeight(), 0.0F);
-        List<Player> list = level.getEntitiesOfClass(Player.class, aabb);
-        for(Player player : list) {
-            if (!player.hasEffect(mobEffect.getEffect()) || Objects.requireNonNull(player.getEffect(mobEffect.getEffect())).getDuration()<=max(mobEffect.getDuration()*0.25, 2)) {
-                player.addEffect(mobEffect);
-            }
 
-        }
-
-    }
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveCustomAndMetadata(pRegistries);
@@ -295,4 +284,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
     }
 
 
+    public IItemHandler getCapabilityHandler(RegalBeaconBlockEntity be, @Nullable Direction side) {
+        return itemHandler;
+    }
 }

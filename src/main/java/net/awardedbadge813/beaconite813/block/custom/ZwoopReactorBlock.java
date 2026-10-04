@@ -1,0 +1,123 @@
+package net.awardedbadge813.beaconite813.block.custom;
+
+import com.mojang.serialization.MapCodec;
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
+import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
+import net.awardedbadge813.beaconite813.entity.ZwoopReactorBlockEntity;
+import net.awardedbadge813.beaconite813.item.ModItems;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class ZwoopReactorBlock extends BaseEntityBlock {
+    public static final MapCodec<ZwoopReactorBlock> CODEC = simpleCodec(ZwoopReactorBlock::new);
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor_joke.tooltip"));
+        if(Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor2.tooltip"));
+
+        }else {
+
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+        }
+
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    }
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+
+
+    public ZwoopReactorBlock(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        return new ZwoopReactorBlockEntity(blockPos, blockState);
+    }
+    @Override
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+
+    @Override
+    protected void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if(state.getBlock()!=newState.getBlock()) {
+            if(level.getBlockEntity(pos) instanceof ZwoopReactorBlockEntity ZwoopBlockEntity) {
+                level.updateNeighbourForOutputSignal(pos, this);
+                level.invalidateCapabilities(pos);
+                ZwoopBlockEntity.drops();
+                level.removeBlockEntity(pos);
+
+            }
+        }
+
+    }
+
+
+
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack pStack, @NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos,
+                                                    @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
+        if(!pLevel.isClientSide()){
+            BlockEntity entity = pLevel.getBlockEntity(pPos);
+            if((entity instanceof ZwoopReactorBlockEntity zwoopEntity) && (pPlayer.getMainHandItem().getItem() instanceof BucketItem bucket)) {
+                IFluidHandler handler = zwoopEntity.getFluidHandler(zwoopEntity, Direction.UP);
+                if ((handler.getTankCapacity(0)-handler.getFluidInTank(0).getAmount())>=1000) {
+
+                    handler.fill(new FluidStack(bucket.content, 1000), IFluidHandler.FluidAction.EXECUTE);
+
+                    if (!pPlayer.isCreative()) {
+                        pPlayer.setItemInHand(pHand, Items.BUCKET.getDefaultInstance());
+                    }
+
+                }
+            } else if (entity instanceof ZwoopReactorBlockEntity BlockEntity) {
+                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Reactor")), pPos);
+            } else {
+                throw new IllegalStateException("Container Provider Missing");
+            }
+        }
+        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    public  <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
+        if(level.isClientSide()) {
+            return null;
+        }
+
+        return createTickerHelper(blockEntityType, ModBlockEntities.REACTOR_BE.get(),
+                (level1, blockPos, blockState, blockEntity) -> blockEntity.tick(level1, blockPos, blockState));
+    }
+}

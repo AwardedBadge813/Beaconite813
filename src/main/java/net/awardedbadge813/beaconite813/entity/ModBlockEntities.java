@@ -64,7 +64,18 @@ public class ModBlockEntities {
                             EtherealBeaconBlockEntity::new, ModBlocks.ETHER_BEACON_BLOCK.get())
                     .build(null));
 
-
+    public static final Supplier<BlockEntityType<StorageBeaconBlockEntity>> STORAGE_BEACON_BE =
+            BLOCK_ENTITIES.register("storage_beacon_be", () -> BlockEntityType.Builder.of(
+                            StorageBeaconBlockEntity::new, ModBlocks.STORAGE_BEACON_BLOCK.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<DistilleryBlockEntity>> DISTILLERY_BE =
+            BLOCK_ENTITIES.register("distillery_be", () -> BlockEntityType.Builder.of(
+                            DistilleryBlockEntity::new, ModBlocks.DISTILLERY_BLOCK.get())
+                    .build(null));
+    public static final Supplier<BlockEntityType<ZwoopReactorBlockEntity>> REACTOR_BE =
+            BLOCK_ENTITIES.register("reactor_be", () -> BlockEntityType.Builder.of(
+                            ZwoopReactorBlockEntity::new, ModBlocks.REACTOR_BLOCK.get())
+                    .build(null));
 
 
     public static void register(IEventBus eventBus){

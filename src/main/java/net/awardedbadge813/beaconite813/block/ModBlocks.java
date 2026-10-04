@@ -1,26 +1,25 @@
 package net.awardedbadge813.beaconite813.block;
 
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.beaconite813;
 
 
 import net.awardedbadge813.beaconite813.block.custom.*;
 import net.awardedbadge813.beaconite813.item.ModItems;
-import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -174,11 +173,17 @@ public class ModBlocks {
     public static final DeferredBlock<Block> CONSTRUCTOR =registerBlock("constructor",
             () -> new ConstructorBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
 
+    public static final DeferredBlock<Block> STORAGE_BEACON_BLOCK =registerBlock("storage_beacon",
+            () -> new StorageBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion()));
+
     public static final DeferredBlock<Block> BASE_BEACON_BLOCK =registerBlock("base_beacon_block",
             () -> new BaseBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.MUD).noOcclusion().requiresCorrectToolForDrops()));
 
     public static final DeferredBlock<Block> BEACONITE_CROP =BLOCKS.register("beaconite_crop",
             () -> new BeaconiteCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
+
+    public static final DeferredBlock<Block> CREAPER_CROP =BLOCKS.register("creaper_crop",
+            () -> new CreaperCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 
     public static final DeferredBlock<Block> VENGEANT_BEACON_BLOCK =registerBlock("vengeant_beacon",
             () -> new VengeantBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.GLASS).noOcclusion().requiresCorrectToolForDrops()));
@@ -200,10 +205,14 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> ETHER_BEACON_BLOCK =registerBlock("ethereal_beacon",
             () -> new EtherealBeaconBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DISTILLERY_BLOCK =registerBlock("distillery",
+            () -> new DistilleryBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.AMETHYST_CLUSTER).noOcclusion().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> REACTOR_BLOCK =registerBlock("zwoop_reactor",
+            () -> new ZwoopReactorBlock(BlockBehaviour.Properties.of().strength(5f).sound(SoundType.METAL).noOcclusion().requiresCorrectToolForDrops()));
 
-
-
-
+    public static final DeferredBlock<LiquidBlock> ZWOOP_BLOCK =
+            BLOCKS.register("zwoop_block", () -> new ZwoopBlock(ModFluids.SOURCE_ZWOOP.get(), BlockBehaviour.Properties.of()
+                    .liquid().speedFactor(1.4f).jumpFactor(2).friction(0).pushReaction(PushReaction.IGNORE).noLootTable()));
     //below is the setup for creating new block. when making a new block use the above.
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {

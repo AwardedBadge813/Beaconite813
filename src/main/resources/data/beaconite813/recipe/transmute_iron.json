@@ -1,7 +1,7 @@
 {
   "type": "beaconite813:refinery",
   "ingredient": {
-    "item": "minecraft:netherite_block"
+    "item": "minecraft:netherite_ingot"
   },
   "result": {
     "count":64,

@@ -18,7 +18,11 @@ version = mod_version
 group = mod_group_id
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    maven {
+        // location of the maven that hosts JEI files before January 2023
+        name = "Progwml6's maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
     maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
@@ -28,6 +32,11 @@ repositories {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://mvnrepository.com/artifact"
     }
 }
 
@@ -124,10 +133,10 @@ configurations {
 dependencies {
         /* other minecraft dependencies are here */
 
-        // compile against the JEI API but do not include it at runtime
-        compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-        // at runtime, use the full JEI jar for NeoForge
-        runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    // compile against the JEI API but do not include it at runtime
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
+    // at runtime, use the full JEI jar for NeoForge
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
 
 

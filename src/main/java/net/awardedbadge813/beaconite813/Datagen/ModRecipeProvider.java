@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
@@ -40,9 +41,9 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("BCB")
                 .pattern("CDC")
                 .pattern("BCB")
-                .define('B', Items.DIAMOND.asItem())
-                .define('C', Items.NETHERITE_SCRAP.asItem())
-                .define('D', Items.NETHER_STAR.asItem())
+                .define('B', Items.IRON_INGOT.asItem())
+                .define('C', ModItems.FAKE_STAR)
+                .define('D', Items.NETHERITE_SCRAP)
                 .unlockedBy("has_beaconite", has(ModItems.BEACONITE))
                 .save(recipeOutput, "beaconite813:beaconite_synthesis");
 
@@ -65,7 +66,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_pure_beaconite", has(ModItems.PURE_BEACONITE))
                 .save(recipeOutput);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Blocks.NETHERITE_BLOCK.asItem())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.NETHERITE_INGOT.asItem())
                 .pattern("BBB")
                 .pattern("BCB")
                 .pattern("BBB")
@@ -123,7 +124,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("CCC")
                 .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModBlocks.ULTRA_DENSE_BEACONITE.get())
-                .define('C', Blocks.NETHERITE_BLOCK.asItem())
+                .define('C', Items.NETHERITE_INGOT.asItem())
                 .unlockedBy("has_pure_beaconite", has(ModItems.PURE_BEACONITE)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.BASE_BEACON_BLOCK.get())
@@ -141,7 +142,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("CCC")
                 .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModItems.CATALYST.get())
-                .define('C', Blocks.NETHERITE_BLOCK.asItem())
+                .define('C', Items.NETHERITE_INGOT.asItem())
                 .unlockedBy("has_catalyst", has(ModItems.CATALYST)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.UNSTABLE_BEACON.get())
@@ -150,7 +151,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .pattern("CCC")
                 .define('B', ModBlocks.BEACONITE_GLASS.get())
                 .define('D', ModBlocks.CONDENSED_BEACONITE.get())
-                .define('C', Blocks.NETHERITE_BLOCK.asItem())
+                .define('C', Items.NETHERITE_INGOT.asItem())
                 .unlockedBy("has_refined_beaconite", has(ModItems.REFINED_BEACONITE)).save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BEACON_BEAM_ITEM.get())
@@ -263,13 +264,112 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK))
                 .save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.DISTILLERY_BLOCK.get(), 1)
+                .pattern("BAA")
+                .pattern("EDB")
+                .pattern("CCC")
+                .define('A', Blocks.GLASS)
+                .define('B', Items.GLASS_BOTTLE)
+                .define('C', Blocks.STONE_SLAB)
+                .define('D', Items.WATER_BUCKET)
+                .define('E', Items.IRON_INGOT)
+                .unlockedBy("has_iron", has(Items.IRON_INGOT)).save(recipeOutput);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModBlocks.WRATHFUL_FLESH.get(), 1)
                 .requires(Items.ROTTEN_FLESH)
                 .requires(ModItems.BEACON_BEAM_ITEM)
                 .unlockedBy("has_beacon_beam_item", has(ModItems.BEACON_BEAM_ITEM)).save(recipeOutput);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BEACONITE_SEED.get(), 1)
+                .requires(ModItems.BEACON_POWDER)
+                .requires(Items.DIAMOND)
+                .requires(ItemTags.VILLAGER_PLANTABLE_SEEDS)
+                .unlockedBy("has_beacon_powder", has(ModItems.BEACON_POWDER)).save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REACTIVE_CONCOCTION.get(), 2)
+                .pattern("BDB")
+                .pattern("DBD")
+                .pattern("BDB")
+                .define('B', ModItems.BEACON_POWDER.get())
+                .define('D', ModItems.BEACON_BEAM_ITEM.get())
+                .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK)).save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FAKE_STAR.get(), 1)
+                .pattern("BDB")
+                .pattern("DCD")
+                .pattern("BDB")
+                .define('B', Blocks.NETHERRACK)
+                .define('C', Blocks.GLOWSTONE)
+                .define('D', Blocks.SOUL_SAND)
+                .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK)).save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BEACONITE_FLUX.get(), 8)
+                .pattern("BBB")
+                .pattern("BCB")
+                .pattern("BBB")
+                .define('B', ModItems.REFINED_BEACONITE)
+                .define('C', Items.NETHER_STAR)
+                .unlockedBy("has_antimatter_block", has(ModBlocks.ANTIMATTER_BLOCK)).save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_PU.get(), 1)
+                .pattern("BCB")
+                .pattern("B B")
+                .pattern("BBB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_ADOWN.get(), 1)
+                .pattern("BCB")
+                .pattern("B B")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_ALL.get(), 1)
+                .pattern("BHB")
+                .pattern("HDH")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('D', Items.DIAMOND)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_AUP.get(), 1)
+                .pattern("BHB")
+                .pattern("B B")
+                .pattern("BCB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Items.CHAIN)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_BDOWN.get(), 1)
+                .pattern("BBB")
+                .pattern("B B")
+                .pattern("BHB")
+                .define('B', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STORAGE_TRIM_BUP.get(), 1)
+                .pattern("BHB")
+                .pattern("B B")
+                .pattern("BBB")
+                .define('B', Items.IRON_INGOT)
+                .define('H', Items.HOPPER)
+                .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.REACTOR_BLOCK.get(), 1)
+                .pattern("BCB")
+                .pattern("CDC")
+                .pattern("BCB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Blocks.GLASS)
+                .define('D', ModItems.DIM_LATTICE)
+                .unlockedBy("has_hopper", has(ModItems.DIM_LATTICE)).save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DIM_LATTICE.get(), 2)
+                .requires(ModItems.REFINED_BEACONITE)
+                .requires(Items.GREEN_DYE)
+                .unlockedBy("has_refined_beaconite", has(ModItems.REFINED_BEACONITE)).save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.BEACONITE.get(), 9)
                 .requires(ModBlocks.BEACONITE_BLOCK)
@@ -282,6 +382,8 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PURE_BEACONITE.get(), 9)
                 .requires(ModBlocks.ULTRA_DENSE_BEACONITE)
                 .unlockedBy("has_pure_beaconite_block", has(ModBlocks.ULTRA_DENSE_BEACONITE)).save(recipeOutput, "pb_from_block");
+
+
 
 
 

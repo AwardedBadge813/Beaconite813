@@ -2,7 +2,6 @@ package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
-import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +53,7 @@ public class BaseBeaconBlockEntity extends BlockEntity {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
+        //no point adding recipes for this if its so easy to add them here. maybe if in the future anyone wants to modify it? don't see why they would want to.
         AABB aabb = new AABB(blockPos).inflate(0.5);
         checkForInput(aabb, blockPos, ModBlocks.WRATHFUL_FLESH.get(), ModBlocks.VENGEANT_BEACON_BLOCK.get(), level, -1);
         checkForInput(aabb, blockPos, ModBlocks.BLAZING_MAGMA.get(), ModBlocks.IGNEOUS_BEACON_BLOCK.get(), level, -1);
@@ -79,10 +79,7 @@ public class BaseBeaconBlockEntity extends BlockEntity {
                 input++;
             }
         }
-        if (input ==26) {
-            try {
-                sleep(1000);
-            } catch(Exception ignored) {}
+        if (input ==26&& level.getGameTime()%40==0) {
             for(int xVal = blockPos.getX()-1; xVal <=blockPos.getX()+1; xVal++) {
                 for(int yVal = blockPos.getY()-1; yVal <=blockPos.getY()+1; yVal++) {
                     for(int zVal = blockPos.getZ()-1; zVal <=blockPos.getZ()+1; zVal++) {

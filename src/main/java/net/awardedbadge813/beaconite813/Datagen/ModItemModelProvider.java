@@ -19,7 +19,8 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.BEACONITE.get());
         basicItem(ModItems.PURE_BEACONITE.get());
         basicItem(ModItems.QUARRY_TALISMAN.get());
-        basicItem(ModBlocks.REFINERY.asItem());
+        basicItem(ModItems.DIM_LATTICE.get());
+        //basicItem(ModBlocks.REFINERY.asItem());
         basicItem(ModItems.BEACON_POWDER.get());
         basicItem(ModItems.BEACONITE_SEED.get());
         basicItem(ModItems.BEACON_BEAM_SHARD.get());
@@ -36,5 +37,23 @@ public class ModItemModelProvider  extends ItemModelProvider {
         basicItem(ModItems.CAPSAICIN_ICON.get());
         basicItem(ModItems.MIDAS_ROT_ICON.get());
         basicItem(ModItems.HYPERTROPHY_ICON.get());
+
+        basicItem(ModItems.STORAGE_FOCUS_COLLECT.get());
+        basicItem(ModItems.STORAGE_FOCUS_CONC.get());
+        basicItem(ModItems.STORAGE_FOCUS_DEPOSIT.get());
+        basicItem(ModItems.STORAGE_FOCUS_DISTRIBUTE.get());
+        basicItem(ModItems.STORAGE_TRIM_ADOWN.get());
+        basicItem(ModItems.STORAGE_TRIM_AUP.get());
+        basicItem(ModItems.STORAGE_TRIM_ALL.get());
+        basicItem(ModItems.STORAGE_TRIM_BDOWN.get());
+        basicItem(ModItems.STORAGE_TRIM_BUP.get());
+        basicItem(ModItems.STORAGE_TRIM_PU.get());
+        basicItem(ModItems.BUCKET_ZWOOP.get());
+        basicItem(ModItems.REACTIVE_CONCOCTION.get());
+        basicItem(ModItems.FAKE_STAR.get());
+        basicItem(ModItems.BEACONITE_FLUX.get());
+        basicItem(ModItems.CREAPER_SEED.get());
+        basicItem(ModItems.CREAPER_BERRY.get());
+
     }
 }

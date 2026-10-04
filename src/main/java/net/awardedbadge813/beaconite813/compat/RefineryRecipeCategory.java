@@ -31,7 +31,7 @@ public class RefineryRecipeCategory implements IRecipeCategory<RefineryRecipe> {
     private final IDrawable icon;
 
     public RefineryRecipeCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 0,0,256,256);
+        this.background = helper.createDrawable(TEXTURE, 0,0,256,150);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.REFINERY));
     }
 

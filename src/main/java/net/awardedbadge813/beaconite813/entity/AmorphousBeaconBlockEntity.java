@@ -27,11 +27,8 @@ import java.util.List;
 
 import static java.lang.Math.*;
 import static java.lang.Thread.sleep;
-import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
-    private int beaconLayers;
-    private boolean canSeeSky;
     public AmorphousBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.AMORPH_BEACON_BE.get(), pos, blockState);
     }
@@ -42,6 +39,7 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
     }
 
 
+
     public @NotNull Component getDisplayName() {
         return Component.literal("amorph_beacon_be");
     }
@@ -50,49 +48,38 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        this.beaconLayers=getLayers(level, pos);
-        this.canSeeSky=getSkyStatus(level, pos)==1;
+        int beaconLayers = getLayers(level, pos);
 
         if(isBeaconActive(level, pos)) {
-            int radius = restrict(80-5* beaconLayers, 20, 60);
+            int radius = clamp(65-5*beaconLayers, 20, 40);
             AABB range = new AABB(pos).inflate(radius).expandTowards(0, 300,0 );
             List<BubbleEntity> inRangeBubbles = new ArrayList<>(level.getEntitiesOfClass(BubbleEntity.class, range));
             int bubbleCount=inRangeBubbles.size();
             for (BubbleEntity bubble : inRangeBubbles) {
-                bubble.setPowerLevel(restrict(beaconLayers -6, 0, 9));
+                bubble.setPowerLevel(clamp(beaconLayers -6, 0, 9));
+            }
+            //delay so the latter happens more rarely
+            if (level.getGameTime()%20!=0) {
+                return;
             }
 
-
+            //spawns bubbles in the radius rarely that give the conduit effect.
             if(bubbleCount<= beaconLayers) {
-                int xPosStart = pos.getX()-radius;
-                int zPosStart = pos.getZ()-radius;
+                int xPos = (int)(random()*radius*2f-radius);
+                int zPos = (int)(random()*radius*2f-radius);
                 int yPos;
 
-                while (xPosStart <= (pos.getX() + radius)) {
-                    while (zPosStart <= (pos.getZ() + radius)) {
-
-                        if(random()< (double) 1 /(2*pow(radius, 2))) {
-                            try {
-                                sleep(100);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                            if(pos.getY()<level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX(), pos.getZ())){
-                                yPos = level.getHeight(Heightmap.Types.OCEAN_FLOOR, xPosStart, zPosStart);
-                            } else {
-                                yPos = level.getHeight(Heightmap.Types.WORLD_SURFACE, xPosStart, zPosStart);
-                            }
-                            BubbleEntity bubble = new BubbleEntity(ModEntities.BUBBLE.get(), level);
-                            bubble.setAttributes(xPosStart, yPos+(int)(random()*5)+1, zPosStart, restrict(beaconLayers -8, 0, 9));
-                            level.addFreshEntity(bubble);
-                            bubbleCount++;
-                        }
-
-                        zPosStart++;
+                if(random()< (double) 10/radius) {
+                    if(pos.getY()<level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX()+xPos, pos.getZ()+zPos)){
+                        yPos = level.getHeight(Heightmap.Types.OCEAN_FLOOR, pos.getX()+xPos, pos.getZ()+zPos);
+                    } else {
+                        yPos = level.getHeight(Heightmap.Types.WORLD_SURFACE, pos.getX()+xPos, pos.getZ()+zPos);
                     }
-                    xPosStart++;
-                    zPosStart=pos.getZ()-radius;
+                    BubbleEntity bubble = new BubbleEntity(ModEntities.BUBBLE.get(), level);
+                    bubble.setAttributes(pos.getX()+xPos, yPos+(int)(random()*5)+1, pos.getZ()+zPos, clamp(beaconLayers -8, 0, 9));
+                    level.addFreshEntity(bubble);
                 }
+
             }
         }
     }
@@ -136,7 +123,6 @@ public class AmorphousBeaconBlockEntity extends BeaconBeamHolder implements CanF
         }
         return 0;
     }
-
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);

@@ -2,6 +2,7 @@ package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.block.custom.ConstructorBlock;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.entity.custom.BeaconBeamHolder;
 import net.awardedbadge813.beaconite813.entity.custom.CanFormBeacon;
@@ -10,13 +11,16 @@ import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.awardedbadge813.beaconite813.screen.custom.ConstructorMenu;
 import net.awardedbadge813.beaconite813.util.BeaconiteLib;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -30,8 +34,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,10 +51,10 @@ import java.util.List;
 
 import static java.lang.Math.min;
 import static net.awardedbadge813.beaconite813.block.custom.ConstructorBlock.BASE_DOWN;
+import static net.neoforged.neoforge.capabilities.BlockCapability.createVoid;
 
 public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
-
-
+    private BlockCapabilityCache<IItemHandler, @Nullable Direction> capCache;
     private boolean currentInverted= false;
     private int MaxPlacingLevel=20;
 
@@ -117,9 +129,22 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             }
 
         };
+
     }
 
-
+    @Override
+    public void onLoad() {
+        // Later, for example in `onLoad` for a block entity:
+        if (level instanceof ServerLevel serverLevel) {
+            this.capCache = BlockCapabilityCache.create(
+                    Capabilities.ItemHandler.BLOCK, // capability to cache
+                    serverLevel, // level
+                    getBlockPos(), // target position
+                    Direction.NORTH // context
+            );
+        }
+        super.onLoad();
+    }
 
     public final ItemStackHandler inputItemHandler = new ItemStackHandler(15) {
         @Override
@@ -137,7 +162,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
 
         @Override
-        public ItemStack getStackInSlot(int slot) {
+        public @NotNull ItemStack getStackInSlot(int slot) {
             this.validateSlotIndex(slot);
             if (this.stacks.get(slot).getItem() instanceof ToggleableItem && ((ToggleableItem) this.stacks.get(slot).getItem()).isDisabled()) {
                 return ItemStack.EMPTY;
@@ -145,6 +170,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             return this.stacks.get(slot);
         }
     };
+
 
     public void placeItemsInContainer(ItemStackHandler itemHandler, List<ItemStack> itemStacks) {
         for (ItemStack itemstack : itemStacks) {
@@ -158,41 +184,25 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     }
     public boolean compareSelectedHeight(int height) {
         if(!isInverted()) {
+            assert getLevel() != null;
             return height>getLevel().getMinBuildHeight();
         } else {
+            assert getLevel() != null;
             return height<getLevel().getMaxBuildHeight();
         }
     }
 
 
-    private void updateSelectedLevel(Level level) {
+    private void updateSelectedLevel(BlockPos pos, Level level) {
         int yLevel=0;
-        for(int i=getBlockPos().getY()+getBuildYDirection(); compareSelectedHeight(i); i+=getBuildYDirection()) {
-            if(level.getBlockState(new BlockPos(getBlockPos().getX(), i, getBlockPos().getZ())).is(BlockTags.BEACON_BASE_BLOCKS)) {
+        for(int i=pos.getY()+getBuildYDirection(); compareSelectedHeight(i); i+=getBuildYDirection()) {
+            if(level.getBlockState(new BlockPos(pos.getX(), i, pos.getZ())).is(BlockTags.BEACON_BASE_BLOCKS)) {
                 yLevel++;
             } else {
                 break;
             }
         }
         userSelectedLevel=yLevel;
-    }
-
-
-
-
-    //I rewrote this so many times before figuring out how simulate works...
-    public boolean hasSpaceForItems(ItemStackHandler itemHandler,  List<ItemStack> itemStacks) {
-        for(ItemStack itemstack : itemStacks) {
-            for(int i=0; i<itemHandler.getSlots(); i++) {
-                itemstack=itemHandler.insertItem(i, itemstack, true);
-            }
-            if (!itemstack.isEmpty()) {
-                return false;
-            }
-        }
-            //item stacks wil all have been distributed, so true.
-        return true;
-
     }
 
 
@@ -264,8 +274,22 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
     public Block extractFirstUsableBlock(ItemStackHandler itemHandler, boolean simulate) {
         return Block.byItem(extractFirstUsableItem(itemHandler, simulate).getItem());
     }
-    public int extractFirstUsableQuantity(ItemStackHandler itemHandler, boolean simulate) {
-        return extractFirstUsableItem(itemHandler, simulate).getCount();
+
+
+    public int getAnything(Level level, BlockPos pos) {
+        int currentLayer;
+        int y=getBuildYDirection();
+        for (currentLayer = 1; currentLayer <=20; currentLayer++){
+            for (int x = -1*currentLayer; x <currentLayer; x++) {
+                for (int z = -1*currentLayer; z < currentLayer; z++) {
+                    if (!level.getBlockState(pos.offset(x,y,z)).is(Blocks.AIR)&&!(x==0&&z==0)){
+                        return currentLayer -1;
+                    }
+                }
+            }
+            y+=getBuildYDirection();
+        }
+        return min(currentLayer-1, Config.MAX_LEVEL_BEACON.getAsInt());
     }
 
     @Override
@@ -291,106 +315,100 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        //if the tick takes too long, don't re-tick till the system ends the operation.
+
+        //rewritten code because it was kinda awful
+        updateSelectedLevel(pos, level);
+        updatedLevel = getLayers(level, pos);
         level.setBlockAndUpdate(pos, blockState.setValue(BASE_DOWN, !isInverted()));
-        for (int i=0; i<20; i++) {
-            BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
-            updatedLevel=getLayers(level, pos);
-            updateSelectedLevel(level);
-            BlockState currentBlockState = level.getBlockState(currentPos);
-            if (currentInverted!=isInverted()) {
-                currentInverted = isInverted();
-                yCurrent=pos.getY()+getBuildYDirection();
-                xCurrent=pos.getX()-1;
-                zCurrent=pos.getZ()-1;
-            }
-
-
-
-            this.counter%=40;
-            Block toPlace = Blocks.AIR;
-            if (!isQuarry()) {
-                if(Dev) {
-                    toPlace = level.getBlockState(new BlockPos(pos.getX(), yCurrent, pos.getZ())).getBlock();
-                } else if (isViableReplacement(extractFirstUsableBlock(inputItemHandler, true), currentBlockState)) {
-                    toPlace = extractFirstUsableBlock(inputItemHandler, false);
-                }
-            }
-            //whatever the placing block is, it is good to place now.
-            if (hasSpaceForItems(outputItemHandler, Block.getDrops(currentBlockState,
-                    (ServerLevel) level,
-                    currentPos,
-                    level.getBlockEntity(currentPos)))) {
-                if (isViableReplacement(toPlace, currentBlockState)) {
-                    //retains center blocks.
-                    if (!(currentPos.getX()==pos.getX() && currentPos.getZ()==pos.getZ() && isQuarry())) {
-                        if (placeBlock(toPlace, isQuarry(), level)) {
-                            placeItemsInContainer(outputItemHandler, Block.getDrops(currentBlockState,
-                                    (ServerLevel) level,
-                                    currentPos,
-                                    level.getBlockEntity(currentPos)));
-                        }
-                    } else {
-                        placeBlock(toPlace, isQuarry(), level);
-                    }
-                    isPlacing = true;
-                    nextBlockLocation();
-                } else if (userSelectedLevel != updatedLevel && extractFirstUsableItem(inputItemHandler, true)!=ItemStack.EMPTY) {
-                    nextBlockLocation();
-                } else {
-                    isPlacing = false;
-                    break;
-                }
-            }
-
+        //will have it so it checks any unfinished layer every 20 ticks.
+        int layerLevel = updatedLevel + 1;
+        if (isQuarry()) {
+            layerLevel = getAnything(level, pos)+1;
         }
-        if (isPlacing) {
-            counter++;
+        int dy = layerLevel * getBuildYDirection();
+        BlockPos currentPos;
+        if (level.getGameTime()%40!=0) {
+            return;
+        }
+        if (userSelectedLevel>updatedLevel) {
+            isPlacing=true;
+            counter=40;
         } else {
-            this.counter=0;
+            counter=0;
+        }
+
+        if (layerLevel <= userSelectedLevel) {
+            for (int x = -1*layerLevel; x < layerLevel + 1; x++) {
+                for (int z = -1*layerLevel; z < layerLevel + 1; z++) {
+                    currentPos = pos.offset(x, dy, z);
+                    Block testBlock;
+                    if (!isQuarry()) {
+                        testBlock = extractFirstUsableBlock(inputItemHandler, true);
+                    }else {
+                        testBlock = Blocks.AIR;
+                    }
+                    if (level instanceof ServerLevel serverLevel) {
+                        List<ItemStack> drops = Block.getDrops(serverLevel.getBlockState(currentPos), serverLevel, currentPos, serverLevel.getBlockEntity(currentPos));
+                        if (!testBlock.defaultBlockState().is(serverLevel.getBlockState(currentPos).getBlock())
+                                && (!testBlock.defaultBlockState().is(Blocks.AIR) || isQuarry())
+                                && BlockValidForDestruction(serverLevel.getBlockState(currentPos))
+                                && canDepositItems(drops, outputItemHandler)
+                                && !(x == 0 && z == 0)) {
+
+                            if (!Config.MASTER_DESTROY_TOGGLE.getAsBoolean()) {
+                                if (serverLevel.setBlockAndUpdate(currentPos, testBlock.defaultBlockState())) {
+                                    placeItemsInContainer(outputItemHandler, drops);
+                                    if (!isQuarry()) {
+                                        extractFirstUsableBlock(inputItemHandler, false);
+                                    }
+                                }
+
+
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
         }
     }
 
-
-
-    private boolean isViableReplacement(Block toPlace, BlockState blockState) {
-        return (!blockState.is(toPlace) && !toPlace.defaultBlockState().is(Blocks.AIR) || (isQuarry())) && BlockValidForDestruction(blockState);
+    private boolean canDepositItems(BlockState blockState, ItemStackHandler outputItemHandler, BlockPos pos, Level level) {
+        if (level instanceof ServerLevel serverLevel) {
+            List<ItemStack> items = Block.getDrops(blockState, serverLevel, pos, serverLevel.getBlockEntity(pos));
+            return canDepositItems(items, outputItemHandler);
+        }
+        return false;
     }
 
+    private boolean canDepositItems(List<ItemStack> items, ItemStackHandler outputItemHandler) {
+            //initialize a new container, and try storing the items in it. if successful, the actual items can be stored.
+            ItemStackHandler container = new ItemStackHandler(outputItemHandler.getSlots());
+            for (int i=0; i<outputItemHandler.getSlots(); i++) {
+                container.setStackInSlot(i,outputItemHandler.getStackInSlot(i));
+            }
+
+            for (ItemStack itemStack : items) {
+                ItemStack item = itemStack;
+                for (int i=0; i<outputItemHandler.getSlots(); i++) {
+                    item = container.insertItem(i,item, false);
+                }
+                if (!item.isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+    }
 
     private boolean isPlacing;
-
-    private boolean testBlockItem(Block block, Item item) {
-            return block==Block.byItem(item);
-    }
 
     private boolean BlockValidForDestruction(BlockState blockState) {
             //may change this later but is a decent 'should not destroy this block' placeholder for now
         assert level != null;
         return !blockState.is(BlockTags.WITHER_IMMUNE) || blockState.is(ModBlocks.ULTRA_DENSE_BEACONITE.get());
 
-    }
-    public BlockPos nextBlockLocation(){
-        BlockPos pos = getBlockPos();
-        int x=pos.getX();
-        int y=pos.getY();
-        int z=pos.getZ();
-        int currentSize = (yCurrent-y)*getBuildYDirection();
-        if (xCurrent+1<=x+currentSize) {
-            xCurrent++;
-        } else if (zCurrent+1<=z+currentSize) {
-            zCurrent++;
-            xCurrent=getX(pos, currentSize);
-        } else if(currentSize+1> this.userSelectedLevel) {
-            xCurrent = x - 1;
-            yCurrent = y + getBuildYDirection();
-            zCurrent = z - 1;
-        } else {
-            yCurrent+=getBuildYDirection();
-            xCurrent=getX(pos, currentSize+1);
-            zCurrent=getZ(pos, currentSize+1);
-        }
-        return new BlockPos(xCurrent, yCurrent, zCurrent);
     }
 
     //if the block is inverted, the constructor should place up instead of down.
@@ -423,23 +441,6 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
             if(inputItemHandler.getStackInSlot(slot).getItem()==ModItems.QUARRY_TALISMAN.get()) {
                 return true;
             }
-        }
-        return false;
-    }
-
-
-    public boolean placeBlock(@NotNull Block block, boolean retainCenter, Level level) {
-        // Initial declaration of positions, etc. that are used often in this method
-        BlockPos pos = getBlockPos();
-        BlockPos currentPos = new BlockPos(xCurrent, yCurrent, zCurrent);
-        if(isPlacing) {
-            assert level != null;
-            level.playSound(null, pos, SoundEvents.NETHERITE_BLOCK_BREAK, SoundSource.BLOCKS);
-        }
-        // I cannot be bothered to sort out this negation.
-        //if the block is directly below the constructor, destroying it messes up the constructor mechanics, so those blocks should be retained.
-        if(!(currentPos.getX()==pos.getX() && currentPos.getZ()==pos.getZ() && retainCenter)) {
-            return BeaconiteLib.safeUpdateBlock(getLevel(), currentPos, block.defaultBlockState());
         }
         return false;
     }
@@ -480,8 +481,24 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
         private final boolean Dev = Config.DEV_MODE.get();
 
+    public ItemStackHandler getinputItemHandler() {
+        return this.inputItemHandler;
+    }
+    public ItemStackHandler getoutputItemHandler() {
+        return this.outputItemHandler;
+    }
 
-        protected final ContainerData data;
+    public ItemStackHandler getCapabilityHandler(BlockEntity be, Direction side) {
+        if (be instanceof ConstructorBlockEntity constructorBlockEntity) {
+            if (side == Direction.DOWN) {
+                return constructorBlockEntity.getoutputItemHandler();
+            }
+            return constructorBlockEntity.getinputItemHandler();
+        }
+        return null;
+    }
+
+    protected final ContainerData data;
         private int userSelectedLevel=0;
         private int xCurrent = getBlockPos().getX()-1;
         private int yCurrent= getBlockPos().getY()-1;
@@ -506,5 +523,7 @@ public class ConstructorBlockEntity extends BeaconBeamHolder implements MenuProv
         }
         return beamSection==null ? List.of(): List.of(beamSection);
     }
+
+
 
 }

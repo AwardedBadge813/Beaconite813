@@ -1,7 +1,17 @@
 package net.awardedbadge813.beaconite813;
 
+
+import com.mojang.blaze3d.shaders.FogShape;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.awardedbadge813.beaconite813.Fluids.BaseFluidType;
+import net.awardedbadge813.beaconite813.Fluids.ModFluidTypes;
+import net.awardedbadge813.beaconite813.Fluids.ModFluids;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
+import net.awardedbadge813.beaconite813.block.custom.ZwoopBlock;
 import net.awardedbadge813.beaconite813.effect.ModEffects;
+import net.awardedbadge813.beaconite813.entity.ConstructorBlockEntity;
+import net.awardedbadge813.beaconite813.entity.DistilleryBlockEntity;
 import net.awardedbadge813.beaconite813.entity.ModBlockEntities;
 import net.awardedbadge813.beaconite813.entity.ModEntities;
 import net.awardedbadge813.beaconite813.entity.client.BubbleRenderer;
@@ -12,13 +22,34 @@ import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.potion.ModPotions;
 import net.awardedbadge813.beaconite813.recipe.ModRecipes;
 import net.awardedbadge813.beaconite813.screen.custom.*;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -31,6 +62,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
+import java.awt.color.ColorSpace;
 import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -43,16 +75,19 @@ public class beaconite813 {
     //Since I am a hoarder I have kept the example code used to make block/items, which is what you see below.
     // Feel free to ignore anything inside the /*  */.
 
-    @EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = MOD_ID)
         public static class ClientModEvents {
             @SubscribeEvent
             public static void registerScreens(RegisterMenuScreensEvent event) {
                 event.register(ModMenuTypes.REFINERY_MENU.get(), RefineryScreen::new);
                 event.register(ModMenuTypes.UNSTABLE_BEACON_MENU.get(), UnstableBeaconScreen::new);
                 event.register(ModMenuTypes.CONSTRUCTOR_MENU.get(), ConstructorScreen::new);
+                event.register(ModMenuTypes.STORAGE_BEACON_MENU.get(), StorageBeaconScreen::new);
                 event.register(ModMenuTypes.REGAL_BEACON_MENU.get(), RegalBeaconScreen::new);
                 event.register(ModMenuTypes.LIVING_BEACON_MENU.get(), LivingBeaconScreen::new);
                 event.register(ModMenuTypes.ETHER_BEACON_MENU.get(), EtherealBeaconScreen::new);
+                event.register(ModMenuTypes.DISTILLERY_MENU.get(), DistilleryScreen::new);
+                event.register(ModMenuTypes.REACTOR_MENU.get(), ReactorScreen::new);
             }
 
             @SubscribeEvent
@@ -71,10 +106,71 @@ public class beaconite813 {
                 BlockEntityRenderers.register(ModBlockEntities.NEGATIVE_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.AMORPH_BEACON_BE.get(), BasicBeaconRenderer::new);
                 BlockEntityRenderers.register(ModBlockEntities.ETHER_BEACON_BE.get(), BasicBeaconRenderer::new);
+                //ItemBlockRenderTypes.setRenderLayer(ModFluids.SOURCE_ZWOOP.get(), RenderType.TRANSLUCENT);
+                //ItemBlockRenderTypes.setRenderLayer(ModFluids.FLOWING_ZWOOP.get(), RenderType.TRANSLUCENT);
+
 
 
 
             }
+            @SubscribeEvent
+            private static void onRegisterClientExtensions(RegisterClientExtensionsEvent event) {
+                event.registerFluidType(new IClientFluidTypeExtensions() {
+
+                    @Override
+                    public ResourceLocation getStillTexture() {
+                        return ModFluidTypes.WATER_STILL_RL;
+                    }
+
+                    @Override
+                    public ResourceLocation getStillTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                        return ModFluidTypes.WATER_STILL_RL;
+                    }
+
+                    @Override
+                    public ResourceLocation getStillTexture(FluidStack stack) {
+                        return ModFluidTypes.WATER_STILL_RL;
+                    }
+
+                    @Override
+                    public ResourceLocation getFlowingTexture() {
+                        return ModFluidTypes.WATER_FLOW_RL;
+                    }
+
+                    @Override
+                    public ResourceLocation getFlowingTexture(FluidStack stack) {
+                        return ModFluidTypes.WATER_FLOW_RL;
+                    }
+
+                    @Override
+                    public ResourceLocation getFlowingTexture(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                        return ModFluidTypes.WATER_FLOW_RL;
+                    }
+
+                    @Override
+                    public @Nullable ResourceLocation getOverlayTexture() {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getStillTexture();
+                    }
+
+                    @Override
+                    public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
+                    @Override
+                    public int getTintColor() {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
+
+                    @Override
+                    public int getTintColor(FluidStack stack) {
+                        return ModFluidTypes.ZWOOP_TYPE.get().getTintColor();
+                    }
+                }, ModFluidTypes.ZWOOP_TYPE.get());
+                LOGGER.info("Zwoop");
+                LOGGER.info(ModFluidTypes.ZWOOP_TYPE.get().getStillTexture().getPath());
+
+            }
+
 
 
         }
@@ -93,6 +189,57 @@ public class beaconite813 {
         ModRecipes.register(modEventBus);
         ModPotions.register(modEventBus);
         ModEffects.register(modEventBus);
+        ModFluids.register(modEventBus);
+        ModFluidTypes.register(modEventBus);
+
+
+        //shoutout to Ishrit Madan https://discord.com/channels/313125603924639766/1249305774987939900/1287989964092739656
+        //this saved my life oml
+        modEventBus.addListener(RegisterCapabilitiesEvent.class, event -> {
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.CONSTRUCTOR_BE.get(),
+                        (be, side) -> be.getCapabilityHandler(be,side));
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.STORAGE_BEACON_BE.get(),
+                        (be, side) -> be.getCapability(be,side));
+                event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntities.DISTILLERY_BE.get(),
+                        (be,side) -> be.getCapabilityHandler(be,side));
+                event.registerBlockEntity(
+                        Capabilities.ItemHandler.BLOCK,
+                        ModBlockEntities.DISTILLERY_BE.get(),
+                        (be, side) -> be.getItemHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REACTOR_BE.get(),
+                    (be, side) -> be.getItemHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.FluidHandler.BLOCK,
+                    ModBlockEntities.REACTOR_BE.get(),
+                    (be, side) -> be.getFluidHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REFINERY_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.LIVING_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.ETHER_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.REGAL_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+            event.registerBlockEntity(
+                    Capabilities.ItemHandler.BLOCK,
+                    ModBlockEntities.UNSTABLE_BEACON_BE.get(),
+                    (be, side) -> be.getCapabilityHandler(be,side));
+        });
+
 
 
 

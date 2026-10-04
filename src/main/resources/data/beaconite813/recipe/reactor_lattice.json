@@ -1,0 +1,15 @@
+{
+  "type": "beaconite813:reactor",
+  "item_input": {
+    "item": "beaconite813:dimensional_lattice",
+    "count": 1
+  },
+  "fluid_input": {
+    "fluid": "beaconite813:zwoop_source",
+    "amount": 125
+  },
+  "result": {
+    "count": 2,
+    "id": "beaconite813:dimensional_lattice"
+  }
+}

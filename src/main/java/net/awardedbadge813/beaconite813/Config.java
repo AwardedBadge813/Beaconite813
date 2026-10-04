@@ -20,13 +20,17 @@ import java.util.Map;
 // Demonstrates how to use Neo's config APIs
 public class Config {
 
+
+
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.IntValue REFINERY_COOK_TIME = BUILDER
             .comment("The time it takes a refinery to craft an item. More layers below the refinery divide this time.")
             .defineInRange("refineryCookTime", 10000, 0, Integer.MAX_VALUE);
 
-
+    public static final ModConfigSpec.IntValue NEGATIVE_BEACON_RADIUS = BUILDER
+            .comment("The radius of the negative beacon's inversion effect in blocks.")
+            .defineInRange("negativeBeaconRadius", 20, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue MAX_LEVEL_UNSTABLE_BEACON = BUILDER
             .comment("The amount of levels required to activate an unstable beacon. default is 5.")
@@ -49,7 +53,12 @@ public class Config {
     public static final ModConfigSpec.IntValue EXPLOSION_NOISE = BUILDER
             .comment("The chance for blocks to be destroyed in the noiseMarked range(extra 5 blocks from the outer radius). Default is 40.")
             .defineInRange("noiseMarkChance", 40, 0, 100);
-
+    public static final ModConfigSpec.BooleanValue PHOTOSENSITIVITY_MODE = BUILDER
+            .comment("prevents all photosensitivity events when enabled. TRUE BY DEFAULT!")
+            .define("photosensitivity_mode", true);
+    public static final ModConfigSpec.BooleanValue BAD_EFFECT_OVERRIDE = BUILDER
+            .comment("prevents the living beacon from giving you bad effects. good if you have a public server or trolls.")
+            .define("bad_effect_override", false);
 
     public static final ModConfigSpec.IntValue MAX_BLOCK_POTION_TIME = BUILDER
             .comment("The maximum potion time ethereal beacons can hold, additional time after this is truncated. Default is 1 hour.")
@@ -85,6 +94,9 @@ public class Config {
     public static final ModConfigSpec.BooleanValue MASTER_DESTROY_TOGGLE = BUILDER
             .comment("stops all block destruction in the mod, except for BlockState updates. may break some things like constructors.")
             .define("masterDestroyToggle", false);
+    public static final ModConfigSpec.IntValue MAX_STORAGE_SIZE = BUILDER
+            .comment("The upper limit for the storage beacon, or Beacon with a chest in it, or whatever I end up calling it. 8192 by default, 0 sets the value to infinite.")
+            .defineInRange("MaxStorageBeaconSize", 8192, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> GOLD_TRANSFORMATIONS = BUILDER
             .comment("The amount of gold time each gold-based item gives. default are vanilla items and golden apples.")
@@ -113,7 +125,7 @@ public class Config {
             .define("extraRolls", true);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> ENABLED_ITEMS = BUILDER
-            .comment("Removing an item from this list disables it, marking it in red and disabling all interactions. THIS DOES NOT REMOVE RECIPES! MAKE SURE TO REMOVE THEIR JSONS OR GET A MOD TO DO IT FOR YOU.")
+            .comment("Removing an item from this list disables it, marking it in red and disabling all interactions. THIS DOES NOT REMOVE RECIPES! Make sure to remove jsons or get a mod (like kubejs) to do it for you.")
             .comment("Disabling a beacon will disable its recipe in the polymorph beacon. Disabling the polymorph beacon will disable all polymorph recipes.")
             .comment("Disabling an effect icon will disable the corresponding effect i.e. it will not be applied through normal circumstances and will immediately remove itself if applied.")
             .defineListAllowEmpty("enabledItemsMaster",
@@ -130,6 +142,7 @@ public class Config {
                             "beaconite813:encapsulated_beam",
                             "beaconite813:quarry_talisman",
                             "beaconite813:inversion_talisman",
+                            "beaconite813:dimensional_lattice",
                             "beaconite813:ether_filter",
                             "beaconite813:aura_module",
                             "beaconite813:diffuse_module",
@@ -140,6 +153,7 @@ public class Config {
                             "beaconite813:reinforced_glass",
                             "beaconite813:condensed_beaconite",
                             "beaconite813:unstable_beacon",
+                            "beaconite813:storage_beacon",
                             "beaconite813:refinery",
                             "beaconite813:ultra_dense_beaconite",
                             "beaconite813:constructor",
@@ -163,7 +177,24 @@ public class Config {
                             "beaconite813:wrath_effect_icon",
                             "beaconite813:capsaicin_effect_icon",
                             "beaconite813:midas_rot_effect_icon",
-                            "beaconite813:hypertrophy_effect_icon"
+                            "beaconite813:hypertrophy_effect_icon",
+                            "beaconite813:storage_focus_collect",
+                            "beaconite813:storage_focus_deposit",
+                            "beaconite813:storage_focus_conc",
+                            "beaconite813:storage_focus_distribute",
+                            "beaconite813:storage_trim_pu",
+                            "beaconite813:storage_trim_bdown",
+                            "beaconite813:storage_trim_bup",
+                            "beaconite813:storage_trim_adown",
+                            "beaconite813:storage_trim_aup",
+                            "beaconite813:storage_trim_all",
+                            "beaconite813:distillery",
+                            "beaconite813:reactive_concoction",
+                            "beaconite813:fake_nether_star",
+                            "beaconite813:beaconite_flux",
+                            "beaconite813:zwoop_reactor",
+                            "beaconite813:creaper_berry",
+                            "beaconite813:creaper_seed"
 
 
                     ), () -> "", Config::validateItemOrBlock);

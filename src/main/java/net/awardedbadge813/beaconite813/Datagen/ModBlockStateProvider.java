@@ -3,6 +3,7 @@ package net.awardedbadge813.beaconite813.Datagen;
 import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.BeaconiteCropBlock;
+import net.awardedbadge813.beaconite813.block.custom.CreaperCropBlock;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.CropBlock;
@@ -33,6 +34,7 @@ public class ModBlockStateProvider  extends BlockStateProvider {
         BlockWithItem(ModBlocks.WRATHFUL_FLESH);
 
         makeCrop(((CropBlock) ModBlocks.BEACONITE_CROP.get()), "beaconite_crop_stage", "beaconite_crop_stage");
+        makeCrop(((CropBlock) ModBlocks.CREAPER_CROP.get()), "creaper_", "creaper_");
 
 
     }
@@ -48,9 +50,17 @@ public class ModBlockStateProvider  extends BlockStateProvider {
     }
     private ConfiguredModel[] CropStates(BlockState state, CropBlock block, String modelName, String textureName) {
         ConfiguredModel[] models = new ConfiguredModel[1];
-        models[0] = new ConfiguredModel(models().crop(modelName+state.getValue(((BeaconiteCropBlock) block).getAgeProperty()),
-                ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "block/"+textureName+
-                        state.getValue(((BeaconiteCropBlock) block).getAgeProperty()))).renderType("cutout"));
+        if (block instanceof BeaconiteCropBlock cropBlock) {
+            models[0] = new ConfiguredModel(models().crop(modelName+state.getValue(cropBlock.getAgeProperty()),
+                    ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "block/"+textureName+
+                            state.getValue(cropBlock.getAgeProperty()))).renderType("cutout"));
+        }
+        if (block instanceof CreaperCropBlock cropBlock) {
+            models[0] = new ConfiguredModel(models().crop(modelName+state.getValue(cropBlock.getAgeProperty()),
+                    ResourceLocation.fromNamespaceAndPath(beaconite813.MOD_ID, "block/"+textureName+
+                            state.getValue(cropBlock.getAgeProperty()))).renderType("cutout"));
+        }
+
 
         return models;
     }

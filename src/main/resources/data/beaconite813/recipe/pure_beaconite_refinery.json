@@ -1,7 +1,7 @@
 {
   "type": "beaconite813:refinery",
   "ingredient": {
-    "item": "beaconite813:refined_beaconite"
+    "item": "beaconite813:beaconite_flux"
   },
   "result": {
     "count": 4,

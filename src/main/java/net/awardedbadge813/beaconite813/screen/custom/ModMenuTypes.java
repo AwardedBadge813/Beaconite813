@@ -11,6 +11,8 @@ import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.naming.CompositeName;
+
 public class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS =
             DeferredRegister.create(Registries.MENU, beaconite813.MOD_ID);
@@ -30,10 +32,12 @@ public class ModMenuTypes {
             registerMenuType("living_beacon_menu", LivingBeaconMenu::new);
     public static final DeferredHolder<MenuType<?>, MenuType<EtherealBeaconMenu>> ETHER_BEACON_MENU =
             registerMenuType("ether_beacon_menu", EtherealBeaconMenu::new);
-
-
-
-
+    public static final DeferredHolder<MenuType<?>, MenuType<StorageBeaconMenu>> STORAGE_BEACON_MENU =
+            registerMenuType("storage_beacon_menu", StorageBeaconMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<DistilleryMenu>> DISTILLERY_MENU =
+            registerMenuType("distillery_menu", DistilleryMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR_MENU =
+            registerMenuType("reactor_menu", ReactorMenu::new);
 
 
     private static<T extends AbstractContainerMenu>DeferredHolder<MenuType<?>, MenuType<T>>

@@ -32,11 +32,10 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.Math.*;
-import static net.awardedbadge813.beaconite813.util.BeaconiteLib.restrict;
 
 public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFormBeacon {
     private int beaconLayers;
-    private boolean canSeeSky;
+
     public VengeantBeaconBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.VENGEANT_BEACON_BE.get(), pos, blockState);
     }
@@ -58,11 +57,10 @@ public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFo
             return;
         }
         this.beaconLayers =getLayers(level, pos);
-        this.canSeeSky=getSkyStatus(level, pos)==1;
         int vengeanceModifier = getVengeanceModifier(pos, level, beaconLayers);
 
         if(isBeaconActive(level, pos)) {
-            int radius = restrict(10+5* (beaconLayers-8), 20, 60);
+            int radius = clamp(10+5* (beaconLayers-8), 20, 60);
             AABB range = new AABB(pos).inflate(radius).expandTowards(0, 300,0 );
             List<Player> inRangePlayers = new ArrayList<>(level.getEntitiesOfClass(Player.class, range));
             for (Player player : inRangePlayers) {
@@ -78,13 +76,13 @@ public class VengeantBeaconBlockEntity extends BeaconBeamHolder implements CanFo
         AABB checkerRange = new AABB(pos).inflate(beaconLayers);
         for (BlockState blockState : level.getBlockStates(checkerRange).toList()) {
             //skulls is an item tag, not a block tag (even though it shows up as a blockTag in jei?)
-            if (Item.byBlock(blockState.getBlock()).getDefaultInstance().is(ItemTags.SKULLS)) {
+            if (Item.BY_BLOCK.equals(blockState.getBlock())) {
                 updateSkulls+=1;
             }
         }
         //max is 7 for layers so skulls are required to get the last 2. layers included so level 10 is actually possible.
         //the second restrict requires that there be at least 10 skulls.
-        return  (int)floor(log10(updateSkulls+1))+restrict(this.beaconLayers-8, 0, 8)*restrict((int)floor(log10(updateSkulls+1)), 0, 1)-1;
+        return  (int)floor(log10(updateSkulls+1))+clamp(this.beaconLayers-8, 0, 8)*clamp((int)floor(log10(updateSkulls+1)), 0, 1)-1;
     }
 
     @Override

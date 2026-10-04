@@ -5,6 +5,7 @@ import net.awardedbadge813.beaconite813.effect.ModEffects;
 import net.awardedbadge813.beaconite813.item.ModItems;
 import net.awardedbadge813.beaconite813.item.ToggleableItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,10 +22,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class BeaconiteLib {
-    public static int restrict (int operand, int lowerBound, int upperBound) {
-        //i should be between j(low) and k(high)
-        return min(max(operand, lowerBound), upperBound);
-    }
     public static boolean safeUpdateBlock(Level level, BlockPos pos, BlockState state) {
         if (!Config.MASTER_DESTROY_TOGGLE.getAsBoolean()) {
             return level.setBlockAndUpdate(pos, state);
@@ -102,6 +99,17 @@ public class BeaconiteLib {
         }
         return false;
     }
+    /*
+    public static HashMap<Direction, Direction> getClockwise() {
+        HashMap<Direction, Direction> map = new HashMap<>();
+        map.put(Direction.NORTH, Direction.EAST);
+        map.put(Direction.EAST, Direction.SOUTH);
+        map.put(Direction.SOUTH, Direction.WEST);
+        map.put(Direction.WEST, Direction.NORTH);
+        return map;
+    }
+
+     */
 
 
 

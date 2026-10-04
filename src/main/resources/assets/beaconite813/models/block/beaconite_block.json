@@ -1,7 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
-  "render_type": "translucent",
   "textures":  {
-    "all": "beaconite813:item/beaconite"
+    "all": "beaconite813:block/beaconite_block"
   }
 }
