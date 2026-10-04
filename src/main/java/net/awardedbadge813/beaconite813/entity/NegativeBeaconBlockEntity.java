@@ -70,6 +70,7 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
     private void invertEffects(Player player, int maxAmplifier) {
         for(MobEffectInstance effectInstance : player.getActiveEffects().stream().toList()) {
             if(!effectInstance.isAmbient()) {
+                //swaps positive and negative effects for random other positive/negative effects
                 switch(effectInstance.getEffect().value().getCategory()) {
                     case MobEffectCategory.BENEFICIAL -> {
                         MobEffect effectToAdd=negEffects.get((int) Math.floor(Math.random()*negEffects.size()));
@@ -87,7 +88,6 @@ public class NegativeBeaconBlockEntity extends BeaconBeamHolder implements CanFo
                 }
             }
         }
-
     }
 
     public static List<MobEffect> DefineEffects(){

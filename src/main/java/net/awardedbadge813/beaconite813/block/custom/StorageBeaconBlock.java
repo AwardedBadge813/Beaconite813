@@ -40,6 +40,9 @@ public class StorageBeaconBlock extends BaseEntityBlock {
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
         tooltipComponents.add(Component.translatable("tooltip.beaconite813.storage_joke.tooltip"));
         if(Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.storage_beacon1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.storage_beacon2.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.storage_beacon3.tooltip"));
 
         }else {
 

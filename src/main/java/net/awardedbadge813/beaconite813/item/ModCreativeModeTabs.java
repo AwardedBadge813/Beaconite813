@@ -37,6 +37,8 @@ public class ModCreativeModeTabs {
                 output.accept(ModItems.INFUSE_MODULE);
                 output.accept(ModItems.BOTTOMLESS_BOTTLE);
                 output.accept(ModItems.DORMANT_BOTTLE);
+                output.accept(ModItems.CREAPER_BERRY);
+                output.accept(ModItems.CREAPER_SEED);
                 output.accept(ModBlocks.DORMANT_EGG);
 
 

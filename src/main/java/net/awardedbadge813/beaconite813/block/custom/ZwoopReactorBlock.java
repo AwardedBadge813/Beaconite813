@@ -13,10 +13,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -42,10 +39,10 @@ public class ZwoopReactorBlock extends BaseEntityBlock {
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Item.@NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery_joke.tooltip"));
+        tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor_joke.tooltip"));
         if(Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery1.tooltip"));
-            tooltipComponents.add(Component.translatable("tooltip.beaconite813.distillery2.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor1.tooltip"));
+            tooltipComponents.add(Component.translatable("tooltip.beaconite813.reactor2.tooltip"));
 
         }else {
 
@@ -95,17 +92,19 @@ public class ZwoopReactorBlock extends BaseEntityBlock {
                                                     @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHitResult) {
         if(!pLevel.isClientSide()){
             BlockEntity entity = pLevel.getBlockEntity(pPos);
-            if(entity instanceof ZwoopReactorBlockEntity zwoopEntity && pPlayer.isHolding(ModItems.BUCKET_ZWOOP.get())) {
+            if((entity instanceof ZwoopReactorBlockEntity zwoopEntity) && (pPlayer.getMainHandItem().getItem() instanceof BucketItem bucket)) {
                 IFluidHandler handler = zwoopEntity.getFluidHandler(zwoopEntity, Direction.UP);
                 if ((handler.getTankCapacity(0)-handler.getFluidInTank(0).getAmount())>=1000) {
-                    zwoopEntity.getFluidHandler(zwoopEntity, Direction.UP).fill(new FluidStack(ModFluids.SOURCE_ZWOOP, 1000), IFluidHandler.FluidAction.EXECUTE);
+
+                    handler.fill(new FluidStack(bucket.content, 1000), IFluidHandler.FluidAction.EXECUTE);
+
                     if (!pPlayer.isCreative()) {
                         pPlayer.setItemInHand(pHand, Items.BUCKET.getDefaultInstance());
                     }
 
                 }
             } else if (entity instanceof ZwoopReactorBlockEntity BlockEntity) {
-                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Zwoop Reactor")), pPos);
+                pPlayer.openMenu(new SimpleMenuProvider(BlockEntity, Component.literal("Reactor")), pPos);
             } else {
                 throw new IllegalStateException("Container Provider Missing");
             }

@@ -22,10 +22,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class BeaconiteLib {
-    public static int restrict (int operand, int lowerBound, int upperBound) {
-        //i should be between j(low) and k(high)
-        return min(max(operand, lowerBound), upperBound);
-    }
     public static boolean safeUpdateBlock(Level level, BlockPos pos, BlockState state) {
         if (!Config.MASTER_DESTROY_TOGGLE.getAsBoolean()) {
             return level.setBlockAndUpdate(pos, state);
@@ -103,6 +99,7 @@ public class BeaconiteLib {
         }
         return false;
     }
+    /*
     public static HashMap<Direction, Direction> getClockwise() {
         HashMap<Direction, Direction> map = new HashMap<>();
         map.put(Direction.NORTH, Direction.EAST);
@@ -111,6 +108,8 @@ public class BeaconiteLib {
         map.put(Direction.WEST, Direction.NORTH);
         return map;
     }
+
+     */
 
 
 

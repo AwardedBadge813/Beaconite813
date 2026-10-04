@@ -41,6 +41,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+
+import static java.lang.Math.clamp;
 import static net.awardedbadge813.beaconite813.util.BeaconiteLib.*;
 
 public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
@@ -145,7 +147,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        int amplifier = BeaconiteLib.restrict(getLayers(level, pos) -8, 0, 9);
+        int amplifier = clamp(getLayers(level, pos) -8, 0, 9);
         addGoldTime(itemHandler, 0);
         addLootTime(itemHandler, 1);
         if (goldTime>0) {
@@ -174,7 +176,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         //However, in the spirit of keeping the time near max but not wasting any, the beacon should wait to consume an item until there is space for its time.
         if (pendingTime>0 && (pendingTime+goldTime<=Config.MAX_GOLD_TIME.getAsInt() || pendingTime>Config.MAX_GOLD_TIME.getAsInt())) {
             itemHandler.extractItem(slot, 1, false);
-            goldTime=BeaconiteLib.restrict(goldTime+pendingTime, 0, Config.MAX_GOLD_TIME.getAsInt());
+            goldTime=clamp(goldTime+pendingTime, 0, Config.MAX_GOLD_TIME.getAsInt());
         }
     }
     public void addLootTime(ItemStackHandler itemHandler, int slot) {
@@ -189,7 +191,7 @@ public class RegalBeaconBlockEntity extends BeaconBeamHolder implements MenuProv
         //However, in the spirit of keeping the time near max but not wasting any, the beacon should wait to consume an item until there is space for its time.
         if (pendingTime>0 && (pendingTime+lootTime<=Config.MAX_LOOT_TIME.getAsInt() || pendingTime>Config.MAX_LOOT_TIME.getAsInt())) {
             itemHandler.extractItem(slot, 1, false);
-            lootTime=BeaconiteLib.restrict(lootTime+pendingTime, 0, Config.MAX_LOOT_TIME.getAsInt());
+            lootTime=clamp(lootTime+pendingTime, 0, Config.MAX_LOOT_TIME.getAsInt());
         }
     }
     public boolean applyLootEffect(Holder<MobEffect> mobEffect, int amplifier, Level level, BlockPos pos) {

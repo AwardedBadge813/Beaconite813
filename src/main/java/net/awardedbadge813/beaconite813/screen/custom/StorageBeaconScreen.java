@@ -137,7 +137,7 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         int y = (height - imageHeight) / 2;
         int stackSize = menu.getSlot(36).getItem().getCount()+16;
         //identify the focus target for display
-        @Nullable BlockEntity be = menu.blockEntity.getFocusTarget(menu.blockEntity.getLevel(), menu.blockEntity.getBlockPos());
+        @Nullable BlockEntity be = menu.blockEntity.getFocusTarget(menu.blockEntity.getLevel(), menu.blockEntity.getBlockPos(), max(menu.data.get(0)*10, 1));
         @Nullable Item focusTarget = be==null? null:be.getBlockState().getBlock().asItem();
 
 
@@ -180,7 +180,7 @@ public class StorageBeaconScreen extends AbstractContainerScreen<StorageBeaconMe
         if (direction!=null) {
             guiGraphics.blit(direction, x+196, y+8, 0, 0, 15, 5, 15, 5);
         }
-        guiGraphics.drawString(this.font, "Radius: "+String.valueOf(menu.data.get(0)),
+        guiGraphics.drawString(this.font, "Radius: "+String.valueOf(menu.data.get(0)+1),
                 x+180, y+25, 4210752, false);
         guiGraphics.drawString(this.font, "Focus: "+String.valueOf(max(menu.data.get(0)*10, 1)),
                 x+180, y+42, 4210752, false);

@@ -194,7 +194,6 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         }
 
     }
-    //Config.REFINERY_COOK_TIME.getAsInt()/layers, add this after testing
     private int maxProgress = Config.REFINERY_COOK_TIME.getAsInt()/layers;
 
 
@@ -244,19 +243,6 @@ public class RefineryBlockEntity extends BeaconBeamHolder implements MenuProvide
         return this.level.getRecipeManager()
                 .getRecipeFor(ModRecipes.REFINERY_TYPE.get(), new RefineryRecipeInput(itemHandler.getStackInSlot(1)), level);
     }
-
-    //deprecated
-    /*
-    private boolean canInsertItemIntoOutputSlot(ItemStack output) {
-        return outputHandler.getStackInSlot(0).isEmpty() || outputHandler.getStackInSlot(0).getItem()==output.getItem();
-    }
-
-    private boolean canInsertAmountIntoOutputSlot(int count) {
-        int maxCount = outputHandler.getStackInSlot(0).isEmpty() ? 64 : outputHandler.getStackInSlot(0).getMaxStackSize();
-        int currentCount=outputHandler.getStackInSlot(0).getCount();
-        return maxCount>=currentCount+count;
-    }
-     */
 
 
     @Override

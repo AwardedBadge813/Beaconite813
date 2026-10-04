@@ -32,10 +32,11 @@
   "item.beaconite813.beaconite_flux": "Beaconite Flux",
   "item.beaconite813.creaper_berry": "Creaperberry",
   "item.beaconite813.creaper_seed": "Creaperberry Seeds",
+  "tooltip.beaconite813.star_joke.tooltip": "§5§oWell it's real to me :(",
+  "tooltip.beaconite813.dim_lattice.tooltip": "§5§oSeems to grow slightly when soaked in Zwoop.",
   "block.beaconite813.distillery": "Distillery",
   "tooltip.beaconite813.creaper_berry.tooltip": "§5§oNo, it's not a berry. Yes, it will still kill you.",
   "tooltip.beaconite813.reactor_joke.tooltip": "§5§oNow THIS is process engineering! (It isn't)",
-  "tooltip.beaconite813.reactor1.tooltip": "§9Fill with zwoop and place items into the left slot. will only start crafting when closed.",
 
   "item.beaconite813.auric_interference_icon": "§bEffect: Auric Interference",
   "item.beaconite813.wrath_effect_icon": "§bEffect: Wrath",
@@ -92,6 +93,9 @@
   "tooltip.beaconite813.reactive_concoction_joke.tooltip": "§5§oBoth of these words are SO fun to say",
   "tooltip.beaconite813.reactive_concoction.tooltip": "§9Distills into Zwoop in a distillery.",
   "block.beaconite813.zwoop_reactor": "Zwoop Reactor",
+  "tooltip.beaconite813.reactor1.tooltip": "§9Converts things into other things using high-pressure Zwoop.",
+  "tooltip.beaconite813.reactor2.tooltip": "§9Use iron bars to open the reactor, and close it to start cooking.",
+
 
   "tooltip.beaconite813.vengeant_beacon1.tooltip": "§9Gives the §5wrath§9 effect to all players in the area.",
   "tooltip.beaconite813.vengeant_beacon2.tooltip": "§9Requires 10 skulls (placed on or above the  beacon base blocks) to activate, and 10 times more skulls for each level.",
@@ -114,7 +118,7 @@
   "tooltip.beaconite813.amorph_beacon3.tooltip": "§9Higher levels shrink the range of bubble spawning, but make the bubbles give less time.",
 
   "tooltip.beaconite813.igneous_beacon1.tooltip": "§9Gives §5Speed§9, §5Strength§9, and §5Jump Boost§9 in exchange for fire damage.",
-  "tooltip.beaconite813.igneous_beacon2.tooltip": "§9Make sure you have some water handy...",
+  "tooltip.beaconite813.igneous_beacon2.tooltip": "§9Also grows a special crop to nearby farmland...",
   "tooltip.beaconite813.igneous_beacon_joke.tooltip": "§5§oHAA HOO HOO AGA GA GA",
   "tooltip.beaconite813.igneous_beacon_joke2.tooltip": "§5§o-Super Mario (Super Mario Galaxy)",
 
@@ -127,11 +131,20 @@
   "tooltip.beaconite813.ethereal_beacon3.tooltip": "§9Can be outfitted with modules to change the beacon's behavior.",
   "tooltip.beaconite813.ethereal_beacon4.tooltip": "§9Requires a level §510§9 beacon base to activate.",
 
+  "tooltip.beaconite813.storage_beacon1.tooltip": "§9Stores items which can be piped in and out.",
+  "tooltip.beaconite813.storage_beacon2.tooltip": "§9Increase stack size with dimensional lattices.",
+  "tooltip.beaconite813.storage_beacon3.tooltip": "§9Chest foci and chest trims change the beacon's behaviour.",
+
+  "tooltip.beaconite813.conc.tooltip": "§9Chest extracts from nearby blocks and deposits into focus target.",
+  "tooltip.beaconite813.distribute.tooltip": "§9Chest extracts from focus target and deposits into nearby chests. Will NOT drop items if set to pickup.",
+  "tooltip.beaconite813.collect.tooltip": "§9Chest collects items from nearby chests from the specified face.",
+  "tooltip.beaconite813.deposit.tooltip": "§9Chest ignores focus target and deposits into nearby chests. If set to pickup, drops items.",
+
   "block.beaconite813.beaconite_block": "Beaconite Block",
   "block.beaconite813.condensed_beaconite": "Block of Crude Beaconite",
   "block.beaconite813.refinery": "Refinery",
   "block.beaconite813.unstable_beacon": "Unstable Beacon",
-  "block.beaconite813.storage_beacon": "Beacon With a Chest In It (WIP)",
+  "block.beaconite813.storage_beacon": "Beacon With a Chest In It",
   "block.beaconite813.reinforced_glass": "Reinforced Glass",
   "block.beaconite813.constructor": "Bea-Constructor",
   "block.beaconite813.ultra_dense_beaconite": "Block of Pure Beaconite",

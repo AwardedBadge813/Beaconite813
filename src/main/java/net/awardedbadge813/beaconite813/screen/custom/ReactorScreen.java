@@ -5,9 +5,13 @@ import net.awardedbadge813.beaconite813.beaconite813;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
     private static final ResourceLocation GUI_TEXTURE =
@@ -49,19 +53,6 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
         this.inventoryLabelX = 7;
         this.inventoryLabelY = this.imageHeight - 140;
     }
-    private void addInventory(int width, int height, int x, int y, GuiGraphics guiGraphics, ResourceLocation texture, int tWidth, int tHeight){
-        for (int i=0; i<height; ++i){
-            for (int l=0; l<width; ++l){
-                int index = l+i*width;
-                int offsetX= x+l*18;
-                int offsetY= y+i*18;
-                guiGraphics.blit(texture, offsetX, offsetY, 0, 0, tWidth, tHeight, tWidth, tHeight);
-
-            }//new SlotItemHandler(itemHandler, l+i*width, x+l*18, y+i*18));
-        }
-    }
-
-
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
@@ -74,12 +65,13 @@ public class ReactorScreen extends AbstractContainerScreen<ReactorMenu> {
 
         guiGraphics.blit(GUI_TEXTURE, x-116, y-235, 0, 0, 512,512,512,512);
         guiGraphics.blit(FULL_TANK, x+57, y+6+menu.getZwoopTank(), 0, menu.getZwoopTank(), 141,141-menu.getZwoopTank(),141,141);
-
         ResourceLocation lockTexture = menu.data.get(2)==1?LOCK_U:LOCK;
         guiGraphics.blit(lockTexture, x+81, y+50, 0, 0, 10,11,10,11);
         guiGraphics.blit(lockTexture, x+159, y+50, 0, 0, 10,11,10,11);
         guiGraphics.blit(LOCK, x+120, y+50, 0, 0, 10,11,10,11);
         guiGraphics.blit(ARROW_PROGRESS, x+138, y+71, 0, 0, menu.getProgress(),5,15,5);
+        String name = menu.blockEntity.getTank().getFluidInTank(1).getHoverName().getString();
+        guiGraphics.drawString(this.font, "Fluid: "+(name.equals("Air") ?"None":name), x+65, y+25,4210752, false);
 
 
 

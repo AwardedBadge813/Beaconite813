@@ -251,9 +251,11 @@ public class UnstableBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         for(LivingEntity entity: list) {
             float distance = getDist(pos, entity.getOnPos());
             if(entity instanceof WitherBoss)
-                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC_KILL), entity, null, null), 10000);
+                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.GENERIC_KILL), entity, null, null), 100000);
             else {
-                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.EXPLOSION), entity, null, null), (float) pow(distance-radius, 2));
+                entity.hurt(new DamageSource(this.level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.EXPLOSION), entity, null, null),
+                        100f*(float)pow((distance-radius)/radius, 4));
+
 
             }
             }

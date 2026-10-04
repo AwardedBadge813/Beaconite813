@@ -357,6 +357,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('H', Items.HOPPER)
                 .unlockedBy("has_hopper", has(Items.HOPPER)).save(recipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.REACTOR_BLOCK.get(), 1)
+                .pattern("BCB")
+                .pattern("CDC")
+                .pattern("BCB")
+                .define('B', Items.IRON_INGOT)
+                .define('C', Blocks.GLASS)
+                .define('D', ModItems.DIM_LATTICE)
+                .unlockedBy("has_hopper", has(ModItems.DIM_LATTICE)).save(recipeOutput);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DIM_LATTICE.get(), 2)
                 .requires(ModItems.REFINED_BEACONITE)
                 .requires(Items.GREEN_DYE)

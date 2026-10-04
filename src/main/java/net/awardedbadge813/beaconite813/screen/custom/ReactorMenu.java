@@ -41,7 +41,7 @@ public class ReactorMenu extends AbstractContainerMenu {
         });
         this.addSlot(new SlotItemHandler(blockEntity.manualSlots, 1, 39, 21) {
             @Override
-            public boolean allowModification(Player player) {
+            public boolean mayPlace(ItemStack stack) {
                 return data.get(2)==1;
             }
         });
@@ -74,10 +74,6 @@ public class ReactorMenu extends AbstractContainerMenu {
             @Override
             public int getMaxStackSize() {
                 return 1;
-            }
-            @Override
-            public boolean allowModification(Player player) {
-                return false;
             }
 
             @Override

@@ -68,15 +68,65 @@ public class ModItems {
                 }
             });
     public static final DeferredItem<Item> DIM_LATTICE = ITEMS.register("dimensional_lattice",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.dim_lattice.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> STORAGE_FOCUS_COLLECT = ITEMS.register("storage_focus_collect",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.collect.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> STORAGE_FOCUS_DEPOSIT = ITEMS.register("storage_focus_deposit",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.deposit.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> STORAGE_FOCUS_CONC = ITEMS.register("storage_focus_conc",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.conc.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> STORAGE_FOCUS_DISTRIBUTE = ITEMS.register("storage_focus_distribute",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    if (tooltipFlag.hasShiftDown()) {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.distribute.tooltip"));
+                    } else {
+                        tooltipComponents.add(Component.translatable("tooltip.beaconite813.shift.tooltip"));
+                    }
+
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> STORAGE_TRIM_PU = ITEMS.register("storage_trim_pu",
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> STORAGE_TRIM_BDOWN = ITEMS.register("storage_trim_bdown",
@@ -92,7 +142,13 @@ public class ModItems {
     public static final DeferredItem<Item>DORMANT_BOTTLE = ITEMS.register("dormant_bottle",
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item>FAKE_STAR = ITEMS.register("fake_nether_star",
-            () -> new ToggleableItem(new Item.Properties()));
+            () -> new ToggleableItem(new Item.Properties()){
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+                    tooltipComponents.add(Component.translatable("tooltip.beaconite813.star_joke.tooltip"));
+                    super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+                }
+            });
     public static final DeferredItem<Item> BEACONITE_FLUX = ITEMS.register("beaconite_flux",
             () -> new ToggleableItem(new Item.Properties()));
     public static final DeferredItem<Item> BUCKET_ZWOOP = ITEMS.register("zwoop_bucket",

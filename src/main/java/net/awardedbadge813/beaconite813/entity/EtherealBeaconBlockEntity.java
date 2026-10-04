@@ -1,6 +1,7 @@
 package net.awardedbadge813.beaconite813.entity;
 
 import net.awardedbadge813.beaconite813.Config;
+import net.awardedbadge813.beaconite813.beaconite813;
 import net.awardedbadge813.beaconite813.block.ModBlocks;
 import net.awardedbadge813.beaconite813.block.custom.ToggleableBlockItem;
 import net.awardedbadge813.beaconite813.effect.ModEffects;
@@ -271,6 +272,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
 
     public void updateOperation(ItemStack inputStack, Level level, BlockPos pos) {
+        //plays a little sound and changes the mode of the beacon to match the module.
         SoundEvent toPlay;
         if (moduleMap.get(inputStack.getItem())==Operation.CLEAR) {
             toPlay = SoundEvents.BREWING_STAND_BREW;
@@ -296,6 +298,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     public void changeEnum(Operation operation, Level level, BlockPos pos, SoundEvent toPlay) {
         if (currentOperation != operation) {
             currentOperation = operation;
+            //i dont think this would work in a switch statement
             if(toPlay.equals(SoundEvents.BEACON_DEACTIVATE)) {
                 level.playSound(null, pos, toPlay, SoundSource.AMBIENT, 1f, 1.5f);
             } else if(toPlay.equals(SoundEvents.BREWING_STAND_BREW)) {
@@ -311,14 +314,18 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         if (this.isDisabled((ToggleableBlockItem) state.getBlock().asItem())) {
             return;
         }
+        //if there's no time left, clear the effect so the next potion can be added.
         if(potionTime <= 0){
             setEffect(null);
         }
+        //changes the enum value and plays a sound
         updateOperation(itemHandler.getStackInSlot(10), level, pos);
         if(this.isBeaconActive(level, pos)) {
+            //prevent time overfilling
             potionTime = Math.clamp(potionTime, 0, Config.MAX_BLOCK_POTION_TIME.getAsInt());
             switch (currentOperation) {
                 case NORMAL -> {
+                    //consumes potion time from slot 10 and adds it to other potions.
                     consumePotionTime(10);
                     for (int slot = 0; slot < 10; slot++) {
                         if ((int) (20 * pow(2, slot)) <= potionTime && isPotionStorable(itemHandler.getStackInSlot(slot).getItem())) {
@@ -329,6 +336,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                     }
                 }
                 case DIFFUSION -> {
+                    //consumes potion time from all slots and spreads it out in range.
                     for (int slot = 0; slot < 10; slot++) {
                         consumePotionTime(slot);
                     }
@@ -351,7 +359,8 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                 }
                 case AURA -> {
                     //"cloudchecker fuckyou" is bigger because if you have a lingering potion you could get the system to give you WAY more time than you put in, making a potion dupe.
-                    //this makes it so the cheack occurs farther than the extraction, so you can't put stuff on the border and get free time.
+                    //this makes it so the check occurs farther than the extraction, so you can't put stuff on the border and get free time.
+                    //aura also has a slight duping hazard, but it can't dupe indefinitely - it can only multiply the effects of splash potions, rebottling them ends the cycle.
                     AABB aabb = new AABB(pos).inflate(Config.AURA_DIFFUSE_RADIUS.getAsInt());
                     AABB cloudchecker_fuckyou = new AABB(pos).inflate(Config.AURA_DIFFUSE_RADIUS.getAsInt()+10);
                     List<AreaEffectCloud> clouds = level.getEntitiesOfClass(AreaEffectCloud.class, cloudchecker_fuckyou);
@@ -361,13 +370,14 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                         try {
                             pullEffects(entities);
                         } catch (Exception e) {
-                            log.error("[ERROR] Ethereal beacon at ({}, {}, {}) could not pull effects from entities, so it'll do nothing instead.", pos.getX(), pos.getY(), pos.getZ());
+                            beaconite813.LOGGER.warn("Ethereal beacon at ({}, {}, {}) could not pull effects from entities, so it'll do nothing instead. No action needed.", pos.getX(), pos.getY(), pos.getZ());
                             // Don't know why this throws a concurrent modification exception very rarely. can't handle it since it is not consistent.
                             // So if it happens, the ethereal beacon will instead do nothing.
                             // This should give the game the necessary delay to prevent the modifications from overlapping, and it happens every tick so it doesn't really matter.
                         }
 
                     }
+                    //i dont remember what this does
                     for (int slot = 0; slot < 10; slot++) {
                         if ((int) (20 * pow(2, slot)) <= potionTime && isPotionStorable(itemHandler.getStackInSlot(slot).getItem())) {
                             if (storeEffect(heldEffect, slot, slot)) {
@@ -381,6 +391,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                     }
                 }
                 case TRANSMUTATION -> {
+                    //turns effects into other effects at a 0.5 rate
                     for(int slot=0; slot < 5; slot++) {
                         consumePotionTime(slot);
                     }
@@ -402,6 +413,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                     }
                 }
                 case INFUSION -> {
+                    //functions as a crafter.
                     for(int slot=0; slot < 10; slot++) {
                         if(slot!=7) {
                             consumePotionTime(slot);
@@ -413,9 +425,11 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
                     }
                 }
                 case INACTIVE -> {
+                    //self explanatory.
 
                 }
                 case CLEAR -> {
+                    //drains all time to make it easier to get rid of residual effects or drain bad effects from nearby mobs with an additional ethereal beacon.
                     potionTime=1;
                     for(int slot=0; slot < 10; slot++) {
                         consumePotionTime(slot);
@@ -427,6 +441,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
                 }
                 default -> {
+                    //just in case
                     currentOperation=Operation.NORMAL;
                 }
             }
@@ -443,6 +458,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
 
 
     private void infuseItem(int slot, ItemStack recipeInput, ItemStack recipeOutput, int timeCost, boolean metadata) {
+        //checks whether item can be crafted and crafts if so.
         boolean meta = itemHandler.getStackInSlot(slot).getComponents().equals(recipeInput.getComponents());
         boolean checker = itemHandler.getStackInSlot(slot).getItem() == recipeInput.getItem() && itemHandler.getStackInSlot(slot).getCount()==recipeInput.getCount() && (meta || !metadata);
         if (checker && potionTime>=min(Config.MAX_BLOCK_POTION_TIME.getAsInt(), timeCost)) {
@@ -454,6 +470,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     }
 
     public void pullEffects(List<LivingEntity> entities) {
+        //this can cause crashes if not caught properly because of the way it works with dynamic entities. therefore it will sometimes do nothing.
         int extracted_last;
         int toAdd=0;
         int extractedTot=0;
@@ -479,6 +496,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
     }
 
     private int takeEffect(MobEffectInstance effect,  LivingEntity entity, boolean simulate) {
+        //this can cause crashes. keep the error catcher active.
         int extracted;
         int extractedtot=0;
         if (!effect.isAmbient()) {
@@ -573,6 +591,7 @@ public class EtherealBeaconBlockEntity extends BeaconBeamHolder implements MenuP
         }
     }
     public ArrayList<MobEffectInstance> getMark(List<MobEffectInstance> effects) {
+        //basically just adds marked effect. the usage of it is deprecated but it serves as a visual indicator.
         ArrayList<MobEffectInstance> effectsUpdated= new ArrayList<>();
         for(MobEffectInstance effectInstance : effects){
             if (effectInstance.getEffect()!=ModEffects.MARKED_SPLASH){

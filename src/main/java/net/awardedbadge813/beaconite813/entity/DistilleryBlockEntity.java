@@ -227,7 +227,6 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
         if (this.isDisabled((ToggleableBlockItem) blockState.getBlock().asItem())) {
             return;
         }
-        //Optional<RecipeHolder<DistilleryRecipe>> recipeOptional = getCurrentRecipe();
         FluidStack output = new FluidStack(ModFluids.SOURCE_ZWOOP, 250);
 
         //heat loop
@@ -295,6 +294,7 @@ public class DistilleryBlockEntity extends BlockEntity implements MenuProvider {
 
     }
     private boolean canDepositFluid(FluidStack stack) {
+        //simple check for amount and type to make sure fluids can be combined.
         FluidStack tankFluid = tank.getFluid();
         boolean isSame = stack.getFluid().isSame(tankFluid.getFluid())||tank.isEmpty();
         int fillable = tank.getCapacity()-tankFluid.getAmount();

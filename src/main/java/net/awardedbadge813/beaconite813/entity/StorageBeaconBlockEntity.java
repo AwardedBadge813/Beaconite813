@@ -45,7 +45,6 @@ import java.util.*;
 
 import static java.lang.Math.*;
 import static net.awardedbadge813.beaconite813.block.custom.StorageBeaconBlock.FACING;
-import static net.awardedbadge813.beaconite813.util.BeaconiteLib.getClockwise;
 
 public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuProvider, CanFormBeacon {
     private static final Log log = LogFactory.getLog(StorageBeaconBlockEntity.class);
@@ -57,7 +56,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     private int stackSize = 0;
     private int updatedLevel;
     private Direction facing=getBlockState().getValue(FACING);
-    public final HashMap<Direction, Direction> getChip = getClockwise();
+    //public final HashMap<Direction, Direction> getChip = getClockwise();
     private StorageMode storageMode = StorageMode.NONE;
     private SafeCollect collectTarget = SafeCollect.PICKUP;
     private BlockEntity focusTarget;
@@ -363,9 +362,6 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         //if no block exists, just return air.
         return ItemStack.EMPTY;
     }
-    public Block extractFirstUsableBlock(ItemStackHandler itemHandler, boolean simulate) {
-        return Block.byItem(extractFirstUsableItem(itemHandler, simulate).getItem());
-    }
     private int checkDirection = 0;
 
 
@@ -390,10 +386,10 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         //update chipslot data
         stackSize=chipSlot.getStackInSlot(0).getCount();
         //determine which blocks are exempt from the requested operation
+        getFocusTarget(level, pos, max(updatedLevel*10, 1));
 
         //beacon actions, must be done last since it requires updated data
         if (counter>20&&(random()*2<=1||configoffset)) {
-            getFocusTarget(level, pos);
             counter=0;
             RedirectTick(level, pos, blockState, updatedLevel);
         }
@@ -448,12 +444,13 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
     }
 
     //determine which block is being 'focused' on. should deposit in the face the beacon is 'looking' at.
-    public @Nullable BlockEntity getFocusTarget(Level level, BlockPos pos) {
-        for (int i=0; i<max(updatedLevel*10, 1); i++) {
-            pos=pos.relative(facing, 1);
-            IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, facing.getOpposite());
+    public @Nullable BlockEntity getFocusTarget(Level level, BlockPos pos, int checkDistance) {
+        BlockPos newPos;
+        for (int i=1; i<checkDistance+1; i++) {
+            newPos=pos.relative(facing, i);
+            IItemHandler maybeHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, newPos, facing.getOpposite());
             if (maybeHandler!=null) {
-                BlockEntity focus=level.getBlockEntity(pos);
+                BlockEntity focus=level.getBlockEntity(newPos);
                 focusTarget = focus;
                 return focus;
             }
@@ -537,7 +534,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
                 Containers.dropContents(level, this.worldPosition.above(1), container);
             }
         }
-        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, layers, validFaces, focusTarget);
+        ArrayList<IItemHandler> operableHandlers = getListOfIItemHandlers(level, pos, layers+1, validFaces, focusTarget);
 
         //the main function to determine what the beacon is ACTUALLY doing. most of the previous stuff is just prep for this.
         switch (storageMode) {
@@ -757,7 +754,7 @@ public class StorageBeaconBlockEntity extends BeaconBeamHolder implements MenuPr
         if (dir == null) {
             return be==null?null:be.itemStorage;
         }
-        if (dir==getChip.get(facing)) {
+        if (dir==facing.getClockWise()) {
             return chipSlot;
         }
         return be.itemStorage;
